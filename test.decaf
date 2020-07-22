@@ -1,0 +1,16 @@
+class Program {
+    int a;
+
+    void myMethod() {
+        int b;
+        int c;
+        b = 8;
+        c = a + b;
+    }
+
+    void main(){
+        if(1 == 1){
+            myMethod();
+        }
+    }
+}
