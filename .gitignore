@@ -51,6 +51,7 @@ _deps
 
 # Executables
 build/
+java_code/
 
 # Vscode
 .vscode/
