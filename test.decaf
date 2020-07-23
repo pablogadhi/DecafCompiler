@@ -13,4 +13,12 @@ class Program {
             myMethod();
         }
     }
+
+    void hello(){
+        boolean test;
+        test = true;
+        while(test){
+
+        }
+    }
 }

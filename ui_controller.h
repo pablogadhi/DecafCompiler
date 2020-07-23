@@ -19,20 +19,38 @@ public:
   TreeModelColumn<int> m_col_number;
 };
 
+class ErrorColumns : public TreeModelColumnRecord {
+public:
+  ErrorColumns() {
+    add(line);
+    add(col);
+    add(msg);
+  }
+
+  TreeModelColumn<int> line;
+  TreeModelColumn<int> col;
+  TreeModelColumn<ustring> msg;
+};
+
 class UIController {
 private:
   RefPtr<Builder> builder;
   Window *main_window;
+  Window *error_dialog;
   FileChooserButton *file_chooser;
+  Button *error_close_btn;
   TreeView *tree_view;
+  TreeView *error_list;
 
   ModelColumns m_columns;
+  ErrorColumns e_columns;
 
 public:
   UIController();
   ~UIController();
   Window *main();
   void parse_file();
+  void close_error_window();
 };
 
 #endif
