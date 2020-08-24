@@ -1,5 +1,5 @@
 class Program {
-    int a;
+    int a;~
 
     void myMethod() {
         int b;
@@ -12,13 +12,14 @@ class Program {
         if(1 == 1){
             myMethod();
         }
+        while true;
     }
 
     void hello(){
         boolean test;
         test = true;
         while(test){
-
+            != x;
         }
     }
 }

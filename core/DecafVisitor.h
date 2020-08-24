@@ -1,5 +1,5 @@
 
-// Generated from /home/gadhi/Documents/Compis/Decaf/Decaf.g4 by ANTLR 4.8
+// Generated from Decaf.g4 by ANTLR 4.7.1
 
 #pragma once
 
@@ -50,15 +50,19 @@ public:
 
     virtual antlrcpp::Any visitArg(DecafParser::ArgContext *context) = 0;
 
-    virtual antlrcpp::Any visitOp(DecafParser::OpContext *context) = 0;
-
     virtual antlrcpp::Any visitArith_op(DecafParser::Arith_opContext *context) = 0;
+
+    virtual antlrcpp::Any visitArith_high_precedence(DecafParser::Arith_high_precedenceContext *context) = 0;
+
+    virtual antlrcpp::Any visitArith_low_precedence(DecafParser::Arith_low_precedenceContext *context) = 0;
 
     virtual antlrcpp::Any visitRel_op(DecafParser::Rel_opContext *context) = 0;
 
     virtual antlrcpp::Any visitEq_op(DecafParser::Eq_opContext *context) = 0;
 
-    virtual antlrcpp::Any visitCond_op(DecafParser::Cond_opContext *context) = 0;
+    virtual antlrcpp::Any visitCond_and(DecafParser::Cond_andContext *context) = 0;
+
+    virtual antlrcpp::Any visitCond_or(DecafParser::Cond_orContext *context) = 0;
 
     virtual antlrcpp::Any visitLiteral(DecafParser::LiteralContext *context) = 0;
 

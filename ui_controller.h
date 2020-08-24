@@ -10,13 +10,9 @@ using namespace Glib;
 
 class ModelColumns : public TreeModelColumnRecord {
 public:
-  ModelColumns() {
-    add(m_col_text);
-    add(m_col_number);
-  }
+  ModelColumns() { add(m_col_text); }
 
   TreeModelColumn<ustring> m_col_text;
-  TreeModelColumn<int> m_col_number;
 };
 
 class ErrorColumns : public TreeModelColumnRecord {

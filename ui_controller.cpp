@@ -18,7 +18,7 @@ UIController::UIController() {
   error_close_btn->signal_clicked().connect(
       sigc::mem_fun(*this, &UIController::close_error_window));
 
-  tree_view->append_column("index", m_columns.m_col_number);
+  // tree_view->append_column("index", m_columns.m_col_number);
   tree_view->append_column("Name", m_columns.m_col_text);
 
   error_list->append_column("Line", e_columns.line);
@@ -34,7 +34,7 @@ void add_parsing_level(RefPtr<TreeStore> &store, shared_ptr<DataNode> parent,
                        TreeModel::iterator &last_iter, ModelColumns &columns,
                        int &counter) {
   TreeModel::Row last_row = *last_iter;
-  last_row[columns.m_col_number] = counter;
+  // last_row[columns.m_col_number] = counter;
   last_row[columns.m_col_text] = parent->get_text();
   counter++;
 

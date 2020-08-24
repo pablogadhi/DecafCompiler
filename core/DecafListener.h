@@ -1,5 +1,5 @@
 
-// Generated from /home/gadhi/Documents/Compis/Decaf/Decaf.g4 by ANTLR 4.8
+// Generated from Decaf.g4 by ANTLR 4.7.1
 
 #pragma once
 
@@ -61,11 +61,14 @@ public:
   virtual void enterArg(DecafParser::ArgContext *ctx) = 0;
   virtual void exitArg(DecafParser::ArgContext *ctx) = 0;
 
-  virtual void enterOp(DecafParser::OpContext *ctx) = 0;
-  virtual void exitOp(DecafParser::OpContext *ctx) = 0;
-
   virtual void enterArith_op(DecafParser::Arith_opContext *ctx) = 0;
   virtual void exitArith_op(DecafParser::Arith_opContext *ctx) = 0;
+
+  virtual void enterArith_high_precedence(DecafParser::Arith_high_precedenceContext *ctx) = 0;
+  virtual void exitArith_high_precedence(DecafParser::Arith_high_precedenceContext *ctx) = 0;
+
+  virtual void enterArith_low_precedence(DecafParser::Arith_low_precedenceContext *ctx) = 0;
+  virtual void exitArith_low_precedence(DecafParser::Arith_low_precedenceContext *ctx) = 0;
 
   virtual void enterRel_op(DecafParser::Rel_opContext *ctx) = 0;
   virtual void exitRel_op(DecafParser::Rel_opContext *ctx) = 0;
@@ -73,8 +76,11 @@ public:
   virtual void enterEq_op(DecafParser::Eq_opContext *ctx) = 0;
   virtual void exitEq_op(DecafParser::Eq_opContext *ctx) = 0;
 
-  virtual void enterCond_op(DecafParser::Cond_opContext *ctx) = 0;
-  virtual void exitCond_op(DecafParser::Cond_opContext *ctx) = 0;
+  virtual void enterCond_and(DecafParser::Cond_andContext *ctx) = 0;
+  virtual void exitCond_and(DecafParser::Cond_andContext *ctx) = 0;
+
+  virtual void enterCond_or(DecafParser::Cond_orContext *ctx) = 0;
+  virtual void exitCond_or(DecafParser::Cond_orContext *ctx) = 0;
 
   virtual void enterLiteral(DecafParser::LiteralContext *ctx) = 0;
   virtual void exitLiteral(DecafParser::LiteralContext *ctx) = 0;

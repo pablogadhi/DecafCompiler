@@ -1,0 +1,10 @@
+class Program {
+  void main() {
+    int a;
+    a = c * d + c / d;
+    b = c * (d + c) / d;
+    b = (c * d) + (c / d);
+    d = a || b && c;
+    e = a && b || c;
+  }
+}

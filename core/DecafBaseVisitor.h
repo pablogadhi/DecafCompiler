@@ -1,5 +1,5 @@
 
-// Generated from /home/gadhi/Documents/Compis/Decaf/Decaf.g4 by ANTLR 4.8
+// Generated from Decaf.g4 by ANTLR 4.7.1
 
 #pragma once
 
@@ -77,11 +77,15 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitOp(DecafParser::OpContext *ctx) override {
+  virtual antlrcpp::Any visitArith_op(DecafParser::Arith_opContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitArith_op(DecafParser::Arith_opContext *ctx) override {
+  virtual antlrcpp::Any visitArith_high_precedence(DecafParser::Arith_high_precedenceContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitArith_low_precedence(DecafParser::Arith_low_precedenceContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -93,7 +97,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitCond_op(DecafParser::Cond_opContext *ctx) override {
+  virtual antlrcpp::Any visitCond_and(DecafParser::Cond_andContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitCond_or(DecafParser::Cond_orContext *ctx) override {
     return visitChildren(ctx);
   }
 

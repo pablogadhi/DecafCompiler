@@ -1,5 +1,5 @@
 
-// Generated from /home/gadhi/Documents/Compis/Decaf/Decaf.g4 by ANTLR 4.8
+// Generated from Decaf.g4 by ANTLR 4.7.1
 
 #pragma once
 
@@ -26,9 +26,10 @@ public:
     RuleProgram = 0, RuleDeclaration = 1, RuleVarDeclaration = 2, RuleStructDeclaration = 3, 
     RuleVarType = 4, RuleMethodDeclaration = 5, RuleMethodType = 6, RuleParameter = 7, 
     RuleParameterType = 8, RuleBlock = 9, RuleStatement = 10, RuleLocation = 11, 
-    RuleExpression = 12, RuleMethodCall = 13, RuleArg = 14, RuleOp = 15, 
-    RuleArith_op = 16, RuleRel_op = 17, RuleEq_op = 18, RuleCond_op = 19, 
-    RuleLiteral = 20, RuleInt_literal = 21, RuleChar_literal = 22, RuleBool_literal = 23
+    RuleExpression = 12, RuleMethodCall = 13, RuleArg = 14, RuleArith_op = 15, 
+    RuleArith_high_precedence = 16, RuleArith_low_precedence = 17, RuleRel_op = 18, 
+    RuleEq_op = 19, RuleCond_and = 20, RuleCond_or = 21, RuleLiteral = 22, 
+    RuleInt_literal = 23, RuleChar_literal = 24, RuleBool_literal = 25
   };
 
   DecafParser(antlr4::TokenStream *input);
@@ -56,11 +57,13 @@ public:
   class ExpressionContext;
   class MethodCallContext;
   class ArgContext;
-  class OpContext;
   class Arith_opContext;
+  class Arith_high_precedenceContext;
+  class Arith_low_precedenceContext;
   class Rel_opContext;
   class Eq_opContext;
-  class Cond_opContext;
+  class Cond_andContext;
+  class Cond_orContext;
   class LiteralContext;
   class Int_literalContext;
   class Char_literalContext;
@@ -275,7 +278,12 @@ public:
     LiteralContext *literal();
     std::vector<ExpressionContext *> expression();
     ExpressionContext* expression(size_t i);
-    OpContext *op();
+    Arith_high_precedenceContext *arith_high_precedence();
+    Arith_low_precedenceContext *arith_low_precedence();
+    Rel_opContext *rel_op();
+    Eq_opContext *eq_op();
+    Cond_andContext *cond_and();
+    Cond_orContext *cond_or();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -318,28 +326,12 @@ public:
 
   ArgContext* arg();
 
-  class  OpContext : public antlr4::ParserRuleContext {
-  public:
-    OpContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    Arith_opContext *arith_op();
-    Rel_opContext *rel_op();
-    Eq_opContext *eq_op();
-    Cond_opContext *cond_op();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  OpContext* op();
-
   class  Arith_opContext : public antlr4::ParserRuleContext {
   public:
     Arith_opContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
+    Arith_high_precedenceContext *arith_high_precedence();
+    Arith_low_precedenceContext *arith_low_precedence();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -349,6 +341,34 @@ public:
   };
 
   Arith_opContext* arith_op();
+
+  class  Arith_high_precedenceContext : public antlr4::ParserRuleContext {
+  public:
+    Arith_high_precedenceContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Arith_high_precedenceContext* arith_high_precedence();
+
+  class  Arith_low_precedenceContext : public antlr4::ParserRuleContext {
+  public:
+    Arith_low_precedenceContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Arith_low_precedenceContext* arith_low_precedence();
 
   class  Rel_opContext : public antlr4::ParserRuleContext {
   public:
@@ -378,9 +398,9 @@ public:
 
   Eq_opContext* eq_op();
 
-  class  Cond_opContext : public antlr4::ParserRuleContext {
+  class  Cond_andContext : public antlr4::ParserRuleContext {
   public:
-    Cond_opContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    Cond_andContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -390,7 +410,21 @@ public:
    
   };
 
-  Cond_opContext* cond_op();
+  Cond_andContext* cond_and();
+
+  class  Cond_orContext : public antlr4::ParserRuleContext {
+  public:
+    Cond_orContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Cond_orContext* cond_or();
 
   class  LiteralContext : public antlr4::ParserRuleContext {
   public:
