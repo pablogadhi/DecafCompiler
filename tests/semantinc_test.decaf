@@ -1,0 +1,44 @@
+class Program {
+  char globalVar;
+
+  struct myStruct{
+    int val0;
+    char val1;
+  } instance;
+
+  struct myStruct otherInstance;
+
+  int function(char val, int val2){
+    int outerVar;
+    int intArray[5];
+    char charArray[10];
+
+    struct myStruct{
+      int val;
+    } complexVar;
+    
+    if (val != false){
+      boolean innerVar;
+      int innerVar2;
+    }
+
+    while(true){
+      int innerVar3;
+      if(outerVar == 2){
+        char innerVar4;
+      }
+      outerVar = 1 + 1; 
+    }
+
+    outerVar = 5;
+    return outerVar;
+  }
+
+  void main(){
+    char val;
+    int val2;
+    val = 'c';
+    val2 = 3;
+    function(val, val2);
+  }
+}

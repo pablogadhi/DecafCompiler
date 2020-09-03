@@ -1,0 +1,38 @@
+class Program {
+  struct myStruct{
+    int val;
+    char val;
+  }
+
+  int test;
+  int test;
+  int otherGlob;
+
+  int function(char val){
+    int test2;
+    char test2;
+
+  }
+  int function(int val){
+
+  }
+  char function(char val){
+
+  }
+
+  void otherFunc(){
+    char otherGlob;
+    struct nonExistent sTest;
+    int array[0];
+    char array1[4];
+    struct myStruct structArray[5];
+
+    test = 0;
+    bla = 5;
+
+    nonExistentFunc();
+  }
+
+  void main(){
+  }
+}

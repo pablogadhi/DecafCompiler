@@ -7,6 +7,10 @@
 #include "antlr4-runtime.h"
 
 
+#include "../structs/symb_table.h"
+#include "../structs/error_item.h"
+
+
 namespace decafcore {
 
 
@@ -18,8 +22,8 @@ public:
     T__14 = 15, T__15 = 16, T__16 = 17, T__17 = 18, T__18 = 19, T__19 = 20, 
     T__20 = 21, T__21 = 22, T__22 = 23, T__23 = 24, T__24 = 25, T__25 = 26, 
     T__26 = 27, T__27 = 28, T__28 = 29, T__29 = 30, T__30 = 31, T__31 = 32, 
-    T__32 = 33, T__33 = 34, T__34 = 35, T__35 = 36, T__36 = 37, T__37 = 38, 
-    ID = 39, NUM = 40, CHAR = 41, WS = 42
+    T__32 = 33, T__33 = 34, T__34 = 35, T__35 = 36, T__36 = 37, ID = 38, 
+    NUM = 39, CHAR = 40, WS = 41
   };
 
   enum {
@@ -40,6 +44,10 @@ public:
   virtual const std::vector<std::string>& getTokenNames() const override { return _tokenNames; }; // deprecated: use vocabulary instead.
   virtual const std::vector<std::string>& getRuleNames() const override;
   virtual antlr4::dfa::Vocabulary& getVocabulary() const override;
+
+
+  SymbolTable symbol_table();
+  void set_error_handler(ErrorHandler*);
 
 
   class ProgramContext;
@@ -87,7 +95,9 @@ public:
 
   class  DeclarationContext : public antlr4::ParserRuleContext {
   public:
+    shared_ptr<SymbolTable> table;
     DeclarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    DeclarationContext(antlr4::ParserRuleContext *parent, size_t invokingState, shared_ptr<SymbolTable> table);
     virtual size_t getRuleIndex() const override;
     StructDeclarationContext *structDeclaration();
     VarDeclarationContext *varDeclaration();
@@ -100,11 +110,22 @@ public:
    
   };
 
-  DeclarationContext* declaration();
+  DeclarationContext* declaration(shared_ptr<SymbolTable> table);
 
   class  VarDeclarationContext : public antlr4::ParserRuleContext {
   public:
+    shared_ptr<SymbolTable> table;
+    int * struct_size;
+    string name;
+    string d_type;
+    int size;
+    int line;
+    int pos;
+    DecafParser::VarTypeContext *varTypeContext = nullptr;;
+    antlr4::Token *idToken = nullptr;;
+    antlr4::Token *numToken = nullptr;;
     VarDeclarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    VarDeclarationContext(antlr4::ParserRuleContext *parent, size_t invokingState, shared_ptr<SymbolTable> table, int * struct_size);
     virtual size_t getRuleIndex() const override;
     VarTypeContext *varType();
     antlr4::tree::TerminalNode *ID();
@@ -117,11 +138,18 @@ public:
    
   };
 
-  VarDeclarationContext* varDeclaration();
+  VarDeclarationContext* varDeclaration(shared_ptr<SymbolTable> table,int * struct_size);
 
   class  StructDeclarationContext : public antlr4::ParserRuleContext {
   public:
+    shared_ptr<SymbolTable> table;
+    string d_type;
+    int size;
+    shared_ptr<SymbolTable> new_table;
+    int l_size = 0;
+    antlr4::Token *idToken = nullptr;;
     StructDeclarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    StructDeclarationContext(antlr4::ParserRuleContext *parent, size_t invokingState, shared_ptr<SymbolTable> table);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *ID();
     std::vector<VarDeclarationContext *> varDeclaration();
@@ -134,11 +162,17 @@ public:
    
   };
 
-  StructDeclarationContext* structDeclaration();
+  StructDeclarationContext* structDeclaration(shared_ptr<SymbolTable> table);
 
   class  VarTypeContext : public antlr4::ParserRuleContext {
   public:
+    shared_ptr<SymbolTable> table;
+    string d_type;
+    int size;
+    antlr4::Token *idToken = nullptr;;
+    DecafParser::StructDeclarationContext *structDeclarationContext = nullptr;;
     VarTypeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    VarTypeContext(antlr4::ParserRuleContext *parent, size_t invokingState, shared_ptr<SymbolTable> table);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *ID();
     StructDeclarationContext *structDeclaration();
@@ -150,11 +184,17 @@ public:
    
   };
 
-  VarTypeContext* varType();
+  VarTypeContext* varType(shared_ptr<SymbolTable> table);
 
   class  MethodDeclarationContext : public antlr4::ParserRuleContext {
   public:
+    shared_ptr<SymbolTable> table;
+    vector<string> params;
+    shared_ptr<SymbolTable> new_table;
+    DecafParser::MethodTypeContext *methodTypeContext = nullptr;;
+    antlr4::Token *idToken = nullptr;;
     MethodDeclarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    MethodDeclarationContext(antlr4::ParserRuleContext *parent, size_t invokingState, shared_ptr<SymbolTable> table);
     virtual size_t getRuleIndex() const override;
     MethodTypeContext *methodType();
     antlr4::tree::TerminalNode *ID();
@@ -169,10 +209,11 @@ public:
    
   };
 
-  MethodDeclarationContext* methodDeclaration();
+  MethodDeclarationContext* methodDeclaration(shared_ptr<SymbolTable> table);
 
   class  MethodTypeContext : public antlr4::ParserRuleContext {
   public:
+    string d_type;
     MethodTypeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
 
@@ -187,7 +228,10 @@ public:
 
   class  ParameterContext : public antlr4::ParserRuleContext {
   public:
+    vector<string> * meth_params;
+    DecafParser::ParameterTypeContext *parameterTypeContext = nullptr;;
     ParameterContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    ParameterContext(antlr4::ParserRuleContext *parent, size_t invokingState, vector<string> * meth_params);
     virtual size_t getRuleIndex() const override;
     ParameterTypeContext *parameterType();
     antlr4::tree::TerminalNode *ID();
@@ -199,10 +243,11 @@ public:
    
   };
 
-  ParameterContext* parameter();
+  ParameterContext* parameter(vector<string> * meth_params);
 
   class  ParameterTypeContext : public antlr4::ParserRuleContext {
   public:
+    string d_type;
     ParameterTypeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
 
@@ -217,7 +262,11 @@ public:
 
   class  BlockContext : public antlr4::ParserRuleContext {
   public:
+    shared_ptr<SymbolTable> table;
+    string method_name;
+    shared_ptr<SymbolTable> new_table;
     BlockContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    BlockContext(antlr4::ParserRuleContext *parent, size_t invokingState, shared_ptr<SymbolTable> table, string method_name);
     virtual size_t getRuleIndex() const override;
     std::vector<VarDeclarationContext *> varDeclaration();
     VarDeclarationContext* varDeclaration(size_t i);
@@ -231,11 +280,13 @@ public:
    
   };
 
-  BlockContext* block();
+  BlockContext* block(shared_ptr<SymbolTable> table,string method_name);
 
   class  StatementContext : public antlr4::ParserRuleContext {
   public:
+    shared_ptr<SymbolTable> table;
     StatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    StatementContext(antlr4::ParserRuleContext *parent, size_t invokingState, shared_ptr<SymbolTable> table);
     virtual size_t getRuleIndex() const override;
     ExpressionContext *expression();
     std::vector<BlockContext *> block();
@@ -250,11 +301,15 @@ public:
    
   };
 
-  StatementContext* statement();
+  StatementContext* statement(shared_ptr<SymbolTable> table);
 
   class  LocationContext : public antlr4::ParserRuleContext {
   public:
+    shared_ptr<SymbolTable> table;
+    string d_type;
+    antlr4::Token *idToken = nullptr;;
     LocationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    LocationContext(antlr4::ParserRuleContext *parent, size_t invokingState, shared_ptr<SymbolTable> table);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *ID();
     ExpressionContext *expression();
@@ -267,17 +322,17 @@ public:
    
   };
 
-  LocationContext* location();
+  LocationContext* location(shared_ptr<SymbolTable> table);
 
   class  ExpressionContext : public antlr4::ParserRuleContext {
   public:
+    string d_type;
+    DecafParser::LiteralContext *literalContext = nullptr;;
     ExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    LocationContext *location();
-    MethodCallContext *methodCall();
-    LiteralContext *literal();
     std::vector<ExpressionContext *> expression();
     ExpressionContext* expression(size_t i);
+    LiteralContext *literal();
     Arith_high_precedenceContext *arith_high_precedence();
     Arith_low_precedenceContext *arith_low_precedence();
     Rel_opContext *rel_op();
@@ -296,7 +351,10 @@ public:
   ExpressionContext* expression(int precedence);
   class  MethodCallContext : public antlr4::ParserRuleContext {
   public:
+    shared_ptr<SymbolTable> table;
+    vector<string> arg_types;
     MethodCallContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    MethodCallContext(antlr4::ParserRuleContext *parent, size_t invokingState, shared_ptr<SymbolTable> table);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *ID();
     std::vector<ArgContext *> arg();
@@ -309,11 +367,15 @@ public:
    
   };
 
-  MethodCallContext* methodCall();
+  MethodCallContext* methodCall(shared_ptr<SymbolTable> table);
 
   class  ArgContext : public antlr4::ParserRuleContext {
   public:
+    vector<string> * method_arg_types;
+    shared_ptr<SymbolTable> table;
+    DecafParser::ExpressionContext *expressionContext = nullptr;;
     ArgContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    ArgContext(antlr4::ParserRuleContext *parent, size_t invokingState, vector<string> * method_arg_types, shared_ptr<SymbolTable> table);
     virtual size_t getRuleIndex() const override;
     ExpressionContext *expression();
 
@@ -324,7 +386,7 @@ public:
    
   };
 
-  ArgContext* arg();
+  ArgContext* arg(vector<string> * method_arg_types,shared_ptr<SymbolTable> table);
 
   class  Arith_opContext : public antlr4::ParserRuleContext {
   public:
@@ -428,6 +490,7 @@ public:
 
   class  LiteralContext : public antlr4::ParserRuleContext {
   public:
+    string d_type;
     LiteralContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     Int_literalContext *int_literal();
@@ -502,6 +565,11 @@ private:
   static antlr4::dfa::Vocabulary _vocabulary;
   static antlr4::atn::ATN _atn;
   static std::vector<uint16_t> _serializedATN;
+
+
+  shared_ptr<SymbolTable> table_head = make_shared<SymbolTable>("__global__");
+  ErrorHandler *e_handler;
+  int scope_counter = 0;
 
 
   struct Initializer {

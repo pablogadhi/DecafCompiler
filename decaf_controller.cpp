@@ -5,7 +5,7 @@ DecafController::DecafController() {}
 void DecafController::load_file(string &file_name) {
   file_stream.open(file_name);
   ANTLRInputStream input(file_stream);
-  auto error_listener = CustomErrorListener();
+  auto error_listener = CustomErrorListener(&e_handler);
 
   DecafLexer lexer(&input);
   lexer.removeErrorListeners();
@@ -13,6 +13,7 @@ void DecafController::load_file(string &file_name) {
 
   CommonTokenStream tokens(&lexer);
   DecafParser parser(&tokens);
+  parser.set_error_handler(&e_handler);
 
   auto draw_listener = TreeListener(&parser);
 
@@ -21,15 +22,16 @@ void DecafController::load_file(string &file_name) {
   // parser.addParseListener(&draw_listener);
 
   DecafParser::ProgramContext *tree = parser.program();
+  symb_table = parser.symbol_table();
   ParseTreeWalker::DEFAULT.walk(&draw_listener, tree);
 
   tree_root = draw_listener.get_current();
-  error_list = error_listener.get_errors();
   // std::cout << "Program parsed!" << std::endl;
 }
 
 shared_ptr<DataNode> DecafController::get_parse_root() { return tree_root; }
-vector<ErrorItem> DecafController::get_errors() { return error_list; }
+vector<ErrorItem> DecafController::get_errors() { return e_handler.errors(); }
+SymbolTable DecafController::symbol_table() { return symb_table; }
 
 TreeListener::TreeListener(DecafParser *parser_ptr) {
   parser = parser_ptr;
@@ -79,19 +81,15 @@ void TreeListener::exitEveryRule(antlr4::ParserRuleContext *ctx) {
   }
 }
 
-ErrorItem::ErrorItem(int e_line, int e_row, string e_msg)
-    : line(e_line), row(e_row), msg(e_msg) {}
-ErrorItem::~ErrorItem() {}
-int ErrorItem::get_line() { return line; }
-int ErrorItem::get_row() { return row; }
-string ErrorItem::get_msg() { return msg; }
+CustomErrorListener::CustomErrorListener(ErrorHandler *handler_ptr)
+    : e_handler(handler_ptr) {}
 
 void CustomErrorListener::syntaxError(Recognizer *recognizer,
                                       Token *offendingSymbol, size_t line,
                                       size_t charPositionInLine,
                                       const std::string &msg,
                                       std::exception_ptr e) {
-  error_list.push_back(ErrorItem(line, charPositionInLine, msg));
+  // e_handler->add_error(line, charPositionInLine, msg);
+  e_handler->get_lambda(LEX_SYN, line, charPositionInLine,
+                        vector<string>{msg})();
 }
-
-vector<ErrorItem> CustomErrorListener::get_errors() { return error_list; }

@@ -13,20 +13,26 @@ include_directories(${GTKMM_INCLUDE_DIRS} ${ANTLR4_INCLUDE_DIR})
 link_directories(${GTKMM_LIBRARY_DIRS})
 
 set(DECAF_CORE_FILES
-   ${PROJECT_SOURCE_DIR}/core/DecafLexer.cpp 
-   ${PROJECT_SOURCE_DIR}/core/DecafParser.cpp
-   ${PROJECT_SOURCE_DIR}/core/DecafBaseListener.cpp
-   ${PROJECT_SOURCE_DIR}/core/DecafBaseVisitor.cpp
-   ${PROJECT_SOURCE_DIR}/core/DecafListener.cpp
-   ${PROJECT_SOURCE_DIR}/core/DecafVisitor.cpp
+  ${PROJECT_SOURCE_DIR}/core/DecafLexer.cpp 
+  ${PROJECT_SOURCE_DIR}/core/DecafParser.cpp
+  ${PROJECT_SOURCE_DIR}/core/DecafBaseListener.cpp
+  ${PROJECT_SOURCE_DIR}/core/DecafBaseVisitor.cpp
+  ${PROJECT_SOURCE_DIR}/core/DecafListener.cpp
+  ${PROJECT_SOURCE_DIR}/core/DecafVisitor.cpp
  )
+
+set(DATA_STRUCTURE_FILES
+  ${PROJECT_SOURCE_DIR}/structs/data_tree.cpp
+  ${PROJECT_SOURCE_DIR}/structs/symb_table.cpp
+  ${PROJECT_SOURCE_DIR}/structs/error_item.cpp
+)
  
 set(ALL_SRC_FILES
   ${PROJECT_SOURCE_DIR}/main.cpp
   ${PROJECT_SOURCE_DIR}/decaf_controller.cpp
   ${PROJECT_SOURCE_DIR}/ui_controller.cpp
-  ${PROJECT_SOURCE_DIR}/data_tree.cpp
   ${DECAF_CORE_FILES}
+  ${DATA_STRUCTURE_FILES}
 )
 
 set (extra_flags "-Wno-overloaded-virtual -Wno-attributes")
