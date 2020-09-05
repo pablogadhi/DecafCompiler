@@ -77,15 +77,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitArith_op(DecafParser::Arith_opContext *ctx) override {
+  virtual antlrcpp::Any visitArith_high_op(DecafParser::Arith_high_opContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitArith_high_precedence(DecafParser::Arith_high_precedenceContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitArith_low_precedence(DecafParser::Arith_low_precedenceContext *ctx) override {
+  virtual antlrcpp::Any visitArith_low_op(DecafParser::Arith_low_opContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -94,14 +90,6 @@ public:
   }
 
   virtual antlrcpp::Any visitEq_op(DecafParser::Eq_opContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitCond_and(DecafParser::Cond_andContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitCond_or(DecafParser::Cond_orContext *ctx) override {
     return visitChildren(ctx);
   }
 

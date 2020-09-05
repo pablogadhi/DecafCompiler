@@ -88,6 +88,10 @@ antlrcpp::Any DecafParser::ProgramContext::accept(tree::ParseTreeVisitor *visito
 DecafParser::ProgramContext* DecafParser::program() {
   ProgramContext *_localctx = _tracker.createInstance<ProgramContext>(_ctx, getState());
   enterRule(_localctx, 0, DecafParser::RuleProgram);
+
+  table_head->init_basic_types();
+  table_top = table_head;
+    
   size_t _la = 0;
 
   auto onExit = finally([=] {
@@ -95,14 +99,13 @@ DecafParser::ProgramContext* DecafParser::program() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-     table_head->init_basic_types(); 
-    setState(53);
+    setState(46);
     match(DecafParser::T__0);
-    setState(54);
+    setState(47);
     match(DecafParser::T__1);
-    setState(55);
+    setState(48);
     match(DecafParser::T__2);
-    setState(59);
+    setState(52);
     _errHandler->sync(this);
     _la = _input->LA(1);
     while ((((_la & ~ 0x3fULL) == 0) &&
@@ -111,19 +114,19 @@ DecafParser::ProgramContext* DecafParser::program() {
       | (1ULL << DecafParser::T__9)
       | (1ULL << DecafParser::T__10)
       | (1ULL << DecafParser::T__11))) != 0)) {
-      setState(56);
-      declaration(table_head);
-      setState(61);
+      setState(49);
+      declaration();
+      setState(54);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
-    setState(62);
+    setState(55);
     match(DecafParser::T__3);
    _ctx->stop = _input->LT(-1);
 
     if(!get_where<Method>(table_head->methods(), [](Method& m){return m.name() == "main" && m.param_signature().size() == 0;})){
       e_handler->get_lambda(NO_MAIN, 0, 0)();
-    }
+      }
 
   }
   catch (RecognitionException &e) {
@@ -139,11 +142,6 @@ DecafParser::ProgramContext* DecafParser::program() {
 
 DecafParser::DeclarationContext::DeclarationContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
-}
-
-DecafParser::DeclarationContext::DeclarationContext(ParserRuleContext *parent, size_t invokingState, shared_ptr<SymbolTable> table)
-  : ParserRuleContext(parent, invokingState) {
-  this->table = table;
 }
 
 DecafParser::StructDeclarationContext* DecafParser::DeclarationContext::structDeclaration() {
@@ -183,35 +181,35 @@ antlrcpp::Any DecafParser::DeclarationContext::accept(tree::ParseTreeVisitor *vi
     return visitor->visitChildren(this);
 }
 
-DecafParser::DeclarationContext* DecafParser::declaration(shared_ptr<SymbolTable> table) {
-  DeclarationContext *_localctx = _tracker.createInstance<DeclarationContext>(_ctx, getState(), table);
+DecafParser::DeclarationContext* DecafParser::declaration() {
+  DeclarationContext *_localctx = _tracker.createInstance<DeclarationContext>(_ctx, getState());
   enterRule(_localctx, 2, DecafParser::RuleDeclaration);
 
   auto onExit = finally([=] {
     exitRule();
   });
   try {
-    setState(67);
+    setState(60);
     _errHandler->sync(this);
     switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 1, _ctx)) {
     case 1: {
       enterOuterAlt(_localctx, 1);
-      setState(64);
-      structDeclaration(_localctx->table);
+      setState(57);
+      structDeclaration();
       break;
     }
 
     case 2: {
       enterOuterAlt(_localctx, 2);
-      setState(65);
-      varDeclaration(_localctx->table, nullptr);
+      setState(58);
+      varDeclaration(nullptr);
       break;
     }
 
     case 3: {
       enterOuterAlt(_localctx, 3);
-      setState(66);
-      methodDeclaration(_localctx->table);
+      setState(59);
+      methodDeclaration();
       break;
     }
 
@@ -233,9 +231,8 @@ DecafParser::VarDeclarationContext::VarDeclarationContext(ParserRuleContext *par
   : ParserRuleContext(parent, invokingState) {
 }
 
-DecafParser::VarDeclarationContext::VarDeclarationContext(ParserRuleContext *parent, size_t invokingState, shared_ptr<SymbolTable> table, int * struct_size)
+DecafParser::VarDeclarationContext::VarDeclarationContext(ParserRuleContext *parent, size_t invokingState, int * struct_size)
   : ParserRuleContext(parent, invokingState) {
-  this->table = table;
   this->struct_size = struct_size;
 }
 
@@ -276,24 +273,24 @@ antlrcpp::Any DecafParser::VarDeclarationContext::accept(tree::ParseTreeVisitor 
     return visitor->visitChildren(this);
 }
 
-DecafParser::VarDeclarationContext* DecafParser::varDeclaration(shared_ptr<SymbolTable> table,int * struct_size) {
-  VarDeclarationContext *_localctx = _tracker.createInstance<VarDeclarationContext>(_ctx, getState(), table, struct_size);
+DecafParser::VarDeclarationContext* DecafParser::varDeclaration(int * struct_size) {
+  VarDeclarationContext *_localctx = _tracker.createInstance<VarDeclarationContext>(_ctx, getState(), struct_size);
   enterRule(_localctx, 4, DecafParser::RuleVarDeclaration);
 
   auto onExit = finally([=] {
     exitRule();
   });
   try {
-    setState(82);
+    setState(75);
     _errHandler->sync(this);
     switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 2, _ctx)) {
     case 1: {
       enterOuterAlt(_localctx, 1);
-      setState(69);
-      dynamic_cast<VarDeclarationContext *>(_localctx)->varTypeContext = varType(_localctx->table);
-      setState(70);
+      setState(62);
+      dynamic_cast<VarDeclarationContext *>(_localctx)->varTypeContext = varType();
+      setState(63);
       dynamic_cast<VarDeclarationContext *>(_localctx)->idToken = match(DecafParser::ID);
-      setState(71);
+      setState(64);
       match(DecafParser::T__4);
       dynamic_cast<VarDeclarationContext *>(_localctx)->name =  (dynamic_cast<VarDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<VarDeclarationContext *>(_localctx)->idToken->getText() : ""); dynamic_cast<VarDeclarationContext *>(_localctx)->d_type =  dynamic_cast<VarDeclarationContext *>(_localctx)->varTypeContext->d_type; dynamic_cast<VarDeclarationContext *>(_localctx)->size =  dynamic_cast<VarDeclarationContext *>(_localctx)->varTypeContext->size; dynamic_cast<VarDeclarationContext *>(_localctx)->line =  (dynamic_cast<VarDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<VarDeclarationContext *>(_localctx)->idToken->getLine() : 0); dynamic_cast<VarDeclarationContext *>(_localctx)->pos =  (dynamic_cast<VarDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<VarDeclarationContext *>(_localctx)->idToken->getCharPositionInLine() : 0);
           
@@ -302,17 +299,17 @@ DecafParser::VarDeclarationContext* DecafParser::varDeclaration(shared_ptr<Symbo
 
     case 2: {
       enterOuterAlt(_localctx, 2);
-      setState(74);
-      dynamic_cast<VarDeclarationContext *>(_localctx)->varTypeContext = varType(_localctx->table);
-      setState(75);
+      setState(67);
+      dynamic_cast<VarDeclarationContext *>(_localctx)->varTypeContext = varType();
+      setState(68);
       dynamic_cast<VarDeclarationContext *>(_localctx)->idToken = match(DecafParser::ID);
-      setState(76);
+      setState(69);
       match(DecafParser::T__5);
-      setState(77);
+      setState(70);
       dynamic_cast<VarDeclarationContext *>(_localctx)->numToken = match(DecafParser::NUM);
-      setState(78);
+      setState(71);
       match(DecafParser::T__6);
-      setState(79);
+      setState(72);
       match(DecafParser::T__4);
 
       dynamic_cast<VarDeclarationContext *>(_localctx)->name =  (dynamic_cast<VarDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<VarDeclarationContext *>(_localctx)->idToken->getText() : ""); dynamic_cast<VarDeclarationContext *>(_localctx)->d_type =  dynamic_cast<VarDeclarationContext *>(_localctx)->varTypeContext->d_type; dynamic_cast<VarDeclarationContext *>(_localctx)->size =  dynamic_cast<VarDeclarationContext *>(_localctx)->varTypeContext->size * stoi((dynamic_cast<VarDeclarationContext *>(_localctx)->numToken != nullptr ? dynamic_cast<VarDeclarationContext *>(_localctx)->numToken->getText() : "")); dynamic_cast<VarDeclarationContext *>(_localctx)->line =  (dynamic_cast<VarDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<VarDeclarationContext *>(_localctx)->idToken->getLine() : 0); dynamic_cast<VarDeclarationContext *>(_localctx)->pos =  (dynamic_cast<VarDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<VarDeclarationContext *>(_localctx)->idToken->getCharPositionInLine() : 0);
@@ -328,9 +325,9 @@ DecafParser::VarDeclarationContext* DecafParser::varDeclaration(shared_ptr<Symbo
 
     if(_localctx->struct_size != nullptr){
       *struct_size += _localctx->size;
-      table->add_type(_localctx->name, _localctx->d_type, _localctx->table->id(), _localctx->size, e_handler->get_lambda(IDENT_DEFINED, _localctx->line, _localctx->pos, vector<string>{_localctx->name, _localctx->table->id()}));
+      table_top->add_type(_localctx->name, _localctx->d_type, table_top->name(), _localctx->size, e_handler->get_lambda(IDENT_DEFINED, _localctx->line, _localctx->pos, vector<string>{_localctx->name, table_top->name()}));
     } else {
-      table->add_symbol(_localctx->name, _localctx->d_type, _localctx->table->id(), _localctx->size, e_handler->get_lambda(IDENT_DEFINED, _localctx->line, _localctx->pos, vector<string>{_localctx->name, _localctx->table->id()}));
+      table_top->add_symbol(_localctx->name, _localctx->d_type, table_top->name(), _localctx->size, e_handler->get_lambda(IDENT_DEFINED, _localctx->line, _localctx->pos, vector<string>{_localctx->name, table_top->name()}));
     }
       
   }
@@ -347,11 +344,6 @@ DecafParser::VarDeclarationContext* DecafParser::varDeclaration(shared_ptr<Symbo
 
 DecafParser::StructDeclarationContext::StructDeclarationContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
-}
-
-DecafParser::StructDeclarationContext::StructDeclarationContext(ParserRuleContext *parent, size_t invokingState, shared_ptr<SymbolTable> table)
-  : ParserRuleContext(parent, invokingState) {
-  this->table = table;
 }
 
 tree::TerminalNode* DecafParser::StructDeclarationContext::ID() {
@@ -391,8 +383,8 @@ antlrcpp::Any DecafParser::StructDeclarationContext::accept(tree::ParseTreeVisit
     return visitor->visitChildren(this);
 }
 
-DecafParser::StructDeclarationContext* DecafParser::structDeclaration(shared_ptr<SymbolTable> table) {
-  StructDeclarationContext *_localctx = _tracker.createInstance<StructDeclarationContext>(_ctx, getState(), table);
+DecafParser::StructDeclarationContext* DecafParser::structDeclaration() {
+  StructDeclarationContext *_localctx = _tracker.createInstance<StructDeclarationContext>(_ctx, getState());
   enterRule(_localctx, 6, DecafParser::RuleStructDeclaration);
   size_t _la = 0;
 
@@ -401,16 +393,17 @@ DecafParser::StructDeclarationContext* DecafParser::structDeclaration(shared_ptr
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(84);
+    setState(77);
     match(DecafParser::T__7);
-    setState(85);
+    setState(78);
     dynamic_cast<StructDeclarationContext *>(_localctx)->idToken = match(DecafParser::ID);
 
-    dynamic_cast<StructDeclarationContext *>(_localctx)->new_table =  make_shared<SymbolTable>((dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getText() : ""), _localctx->table);
+    dynamic_cast<StructDeclarationContext *>(_localctx)->new_table =  make_shared<SymbolTable>(Method((dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getText() : ""), "struct", table_top->name()), table_top);
+    table_top = _localctx->new_table;
       
-    setState(87);
+    setState(80);
     match(DecafParser::T__2);
-    setState(91);
+    setState(84);
     _errHandler->sync(this);
     _la = _input->LA(1);
     while ((((_la & ~ 0x3fULL) == 0) &&
@@ -419,17 +412,18 @@ DecafParser::StructDeclarationContext* DecafParser::structDeclaration(shared_ptr
       | (1ULL << DecafParser::T__9)
       | (1ULL << DecafParser::T__10)
       | (1ULL << DecafParser::T__11))) != 0)) {
-      setState(88);
-      varDeclaration(_localctx->new_table, &_localctx->l_size);
-      setState(93);
+      setState(81);
+      varDeclaration(&_localctx->l_size);
+      setState(86);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
-    setState(94);
+    setState(87);
     match(DecafParser::T__3);
 
-    table->add_type((dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getText() : ""), "struct", _localctx->table->id(), _localctx->l_size, e_handler->get_lambda(IDENT_DEFINED, (dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getLine() : 0), (dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getCharPositionInLine() : 0), vector<string>{(dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getText() : ""), _localctx->table->id()}));
-    table->add_child(_localctx->new_table);
+    table_top = table_top->parent();
+    table_top->add_type((dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getText() : ""), "struct", table_top->name(), _localctx->l_size, e_handler->get_lambda(IDENT_DEFINED, (dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getLine() : 0), (dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getCharPositionInLine() : 0), vector<string>{(dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getText() : ""), table_top->name()}));
+    table_top->add_child(_localctx->new_table);
     dynamic_cast<StructDeclarationContext *>(_localctx)->d_type =  (dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getText() : "");
         
    _ctx->stop = _input->LT(-1);
@@ -450,11 +444,6 @@ DecafParser::StructDeclarationContext* DecafParser::structDeclaration(shared_ptr
 
 DecafParser::VarTypeContext::VarTypeContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
-}
-
-DecafParser::VarTypeContext::VarTypeContext(ParserRuleContext *parent, size_t invokingState, shared_ptr<SymbolTable> table)
-  : ParserRuleContext(parent, invokingState) {
-  this->table = table;
 }
 
 tree::TerminalNode* DecafParser::VarTypeContext::ID() {
@@ -490,20 +479,20 @@ antlrcpp::Any DecafParser::VarTypeContext::accept(tree::ParseTreeVisitor *visito
     return visitor->visitChildren(this);
 }
 
-DecafParser::VarTypeContext* DecafParser::varType(shared_ptr<SymbolTable> table) {
-  VarTypeContext *_localctx = _tracker.createInstance<VarTypeContext>(_ctx, getState(), table);
+DecafParser::VarTypeContext* DecafParser::varType() {
+  VarTypeContext *_localctx = _tracker.createInstance<VarTypeContext>(_ctx, getState());
   enterRule(_localctx, 8, DecafParser::RuleVarType);
 
   auto onExit = finally([=] {
     exitRule();
   });
   try {
-    setState(110);
+    setState(104);
     _errHandler->sync(this);
     switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 4, _ctx)) {
     case 1: {
       enterOuterAlt(_localctx, 1);
-      setState(97);
+      setState(90);
       match(DecafParser::T__8);
       dynamic_cast<VarTypeContext *>(_localctx)->d_type =  "int"; dynamic_cast<VarTypeContext *>(_localctx)->size =  4;
       break;
@@ -511,7 +500,7 @@ DecafParser::VarTypeContext* DecafParser::varType(shared_ptr<SymbolTable> table)
 
     case 2: {
       enterOuterAlt(_localctx, 2);
-      setState(99);
+      setState(92);
       match(DecafParser::T__9);
       dynamic_cast<VarTypeContext *>(_localctx)->d_type =  "char"; dynamic_cast<VarTypeContext *>(_localctx)->size =  1;
       break;
@@ -519,7 +508,7 @@ DecafParser::VarTypeContext* DecafParser::varType(shared_ptr<SymbolTable> table)
 
     case 3: {
       enterOuterAlt(_localctx, 3);
-      setState(101);
+      setState(94);
       match(DecafParser::T__10);
       dynamic_cast<VarTypeContext *>(_localctx)->d_type =  "boolean"; dynamic_cast<VarTypeContext *>(_localctx)->size =  1;
       break;
@@ -527,25 +516,25 @@ DecafParser::VarTypeContext* DecafParser::varType(shared_ptr<SymbolTable> table)
 
     case 4: {
       enterOuterAlt(_localctx, 4);
-      setState(103);
+      setState(96);
       match(DecafParser::T__7);
-      setState(104);
+      setState(97);
       dynamic_cast<VarTypeContext *>(_localctx)->idToken = match(DecafParser::ID);
 
       auto struct_name = (dynamic_cast<VarTypeContext *>(_localctx)->idToken != nullptr ? dynamic_cast<VarTypeContext *>(_localctx)->idToken->getText() : "");
       Type type_ctr;
-      if(get_where<Type>(table->types(), [struct_name](Type& t){ return t.name() == struct_name && t.type() == "struct";}, &type_ctr)){
+      if(get_where<Type>(table_top->types(), [struct_name](Type& t){ return t.name() == struct_name && t.type() == "struct";}, &type_ctr)){
         dynamic_cast<VarTypeContext *>(_localctx)->d_type =  type_ctr.name(); dynamic_cast<VarTypeContext *>(_localctx)->size =  type_ctr.size();
       } else {
-        // add_sem_error((dynamic_cast<VarTypeContext *>(_localctx)->idToken != nullptr ? dynamic_cast<VarTypeContext *>(_localctx)->idToken->getLine() : 0), (dynamic_cast<VarTypeContext *>(_localctx)->idToken != nullptr ? dynamic_cast<VarTypeContext *>(_localctx)->idToken->getCharPositionInLine() : 0), "Struct " + (dynamic_cast<VarTypeContext *>(_localctx)->idToken != nullptr ? dynamic_cast<VarTypeContext *>(_localctx)->idToken->getText() : "") + " is undefined!");
+        e_handler->get_lambda(IDENT_NOT_DEFINED, (dynamic_cast<VarTypeContext *>(_localctx)->idToken != nullptr ? dynamic_cast<VarTypeContext *>(_localctx)->idToken->getLine() : 0), (dynamic_cast<VarTypeContext *>(_localctx)->idToken != nullptr ? dynamic_cast<VarTypeContext *>(_localctx)->idToken->getCharPositionInLine() : 0), vector<string>{struct_name});
       }
       break;
     }
 
     case 5: {
       enterOuterAlt(_localctx, 5);
-      setState(106);
-      dynamic_cast<VarTypeContext *>(_localctx)->structDeclarationContext = structDeclaration(_localctx->table);
+      setState(99);
+      dynamic_cast<VarTypeContext *>(_localctx)->structDeclarationContext = structDeclaration();
       dynamic_cast<VarTypeContext *>(_localctx)->d_type =  dynamic_cast<VarTypeContext *>(_localctx)->structDeclarationContext->d_type; dynamic_cast<VarTypeContext *>(_localctx)->size =  dynamic_cast<VarTypeContext *>(_localctx)->structDeclarationContext->size;
           
       break;
@@ -553,8 +542,9 @@ DecafParser::VarTypeContext* DecafParser::varType(shared_ptr<SymbolTable> table)
 
     case 6: {
       enterOuterAlt(_localctx, 6);
-      setState(109);
+      setState(102);
       match(DecafParser::T__11);
+      dynamic_cast<VarTypeContext *>(_localctx)->d_type =  "void"; dynamic_cast<VarTypeContext *>(_localctx)->size =  0;
       break;
     }
 
@@ -574,11 +564,6 @@ DecafParser::VarTypeContext* DecafParser::varType(shared_ptr<SymbolTable> table)
 
 DecafParser::MethodDeclarationContext::MethodDeclarationContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
-}
-
-DecafParser::MethodDeclarationContext::MethodDeclarationContext(ParserRuleContext *parent, size_t invokingState, shared_ptr<SymbolTable> table)
-  : ParserRuleContext(parent, invokingState) {
-  this->table = table;
 }
 
 DecafParser::MethodTypeContext* DecafParser::MethodDeclarationContext::methodType() {
@@ -626,8 +611,8 @@ antlrcpp::Any DecafParser::MethodDeclarationContext::accept(tree::ParseTreeVisit
     return visitor->visitChildren(this);
 }
 
-DecafParser::MethodDeclarationContext* DecafParser::methodDeclaration(shared_ptr<SymbolTable> table) {
-  MethodDeclarationContext *_localctx = _tracker.createInstance<MethodDeclarationContext>(_ctx, getState(), table);
+DecafParser::MethodDeclarationContext* DecafParser::methodDeclaration() {
+  MethodDeclarationContext *_localctx = _tracker.createInstance<MethodDeclarationContext>(_ctx, getState());
   enterRule(_localctx, 10, DecafParser::RuleMethodDeclaration);
   size_t _la = 0;
 
@@ -636,14 +621,13 @@ DecafParser::MethodDeclarationContext* DecafParser::methodDeclaration(shared_ptr
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(112);
+    setState(106);
     dynamic_cast<MethodDeclarationContext *>(_localctx)->methodTypeContext = methodType();
-    setState(113);
+    setState(107);
     dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken = match(DecafParser::ID);
-    dynamic_cast<MethodDeclarationContext *>(_localctx)->new_table =  make_shared<SymbolTable>((dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getText() : ""), _localctx->table);
-    setState(115);
+    setState(108);
     match(DecafParser::T__12);
-    setState(124);
+    setState(117);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
@@ -651,28 +635,33 @@ DecafParser::MethodDeclarationContext* DecafParser::methodDeclaration(shared_ptr
       ((1ULL << _la) & ((1ULL << DecafParser::T__8)
       | (1ULL << DecafParser::T__9)
       | (1ULL << DecafParser::T__10))) != 0)) {
-      setState(116);
+      setState(109);
       parameter(&_localctx->params);
-      setState(121);
+      setState(114);
       _errHandler->sync(this);
       _la = _input->LA(1);
       while (_la == DecafParser::T__13) {
-        setState(117);
+        setState(110);
         match(DecafParser::T__13);
-        setState(118);
+        setState(111);
         parameter(&_localctx->params);
-        setState(123);
+        setState(116);
         _errHandler->sync(this);
         _la = _input->LA(1);
       }
     }
-    setState(126);
+    setState(119);
     match(DecafParser::T__14);
-    setState(127);
-    block(_localctx->new_table, (dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getText() : ""));
 
-    table->add_method((dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getText() : ""), dynamic_cast<MethodDeclarationContext *>(_localctx)->methodTypeContext->d_type, _localctx->table->id(), _localctx->params, e_handler->get_lambda(IDENT_DEFINED, (dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getLine() : 0), (dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getCharPositionInLine() : 0), vector<string>{(dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getText() : ""), _localctx->table->id()}));
-    table->add_child(_localctx->new_table);
+    dynamic_cast<MethodDeclarationContext *>(_localctx)->new_table =  make_shared<SymbolTable>(Method((dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getText() : ""), dynamic_cast<MethodDeclarationContext *>(_localctx)->methodTypeContext->d_type, table_top->name(), _localctx->params), table_top);
+    table_top = _localctx->new_table;
+      
+    setState(121);
+    block((dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getText() : ""));
+
+    table_top = table_top->parent();
+    table_top->add_method((dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getText() : ""), dynamic_cast<MethodDeclarationContext *>(_localctx)->methodTypeContext->d_type, table_top->name(), _localctx->params, e_handler->get_lambda(IDENT_DEFINED, (dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getLine() : 0), (dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getCharPositionInLine() : 0), vector<string>{(dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getText() : ""), table_top->name()}));
+    table_top->add_child(_localctx->new_table);
         
    
   }
@@ -724,12 +713,12 @@ DecafParser::MethodTypeContext* DecafParser::methodType() {
     exitRule();
   });
   try {
-    setState(138);
+    setState(132);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case DecafParser::T__8: {
         enterOuterAlt(_localctx, 1);
-        setState(130);
+        setState(124);
         match(DecafParser::T__8);
         dynamic_cast<MethodTypeContext *>(_localctx)->d_type =  "int";
         break;
@@ -737,7 +726,7 @@ DecafParser::MethodTypeContext* DecafParser::methodType() {
 
       case DecafParser::T__9: {
         enterOuterAlt(_localctx, 2);
-        setState(132);
+        setState(126);
         match(DecafParser::T__9);
         dynamic_cast<MethodTypeContext *>(_localctx)->d_type =  "char";
         break;
@@ -745,7 +734,7 @@ DecafParser::MethodTypeContext* DecafParser::methodType() {
 
       case DecafParser::T__10: {
         enterOuterAlt(_localctx, 3);
-        setState(134);
+        setState(128);
         match(DecafParser::T__10);
         dynamic_cast<MethodTypeContext *>(_localctx)->d_type =  "boolean";
         break;
@@ -753,7 +742,7 @@ DecafParser::MethodTypeContext* DecafParser::methodType() {
 
       case DecafParser::T__11: {
         enterOuterAlt(_localctx, 4);
-        setState(136);
+        setState(130);
         match(DecafParser::T__11);
         dynamic_cast<MethodTypeContext *>(_localctx)->d_type =  "void";
         break;
@@ -825,14 +814,14 @@ DecafParser::ParameterContext* DecafParser::parameter(vector<string> * meth_para
     exitRule();
   });
   try {
-    setState(149);
+    setState(143);
     _errHandler->sync(this);
     switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 8, _ctx)) {
     case 1: {
       enterOuterAlt(_localctx, 1);
-      setState(140);
+      setState(134);
       dynamic_cast<ParameterContext *>(_localctx)->parameterTypeContext = parameterType();
-      setState(141);
+      setState(135);
       match(DecafParser::ID);
       meth_params->push_back(dynamic_cast<ParameterContext *>(_localctx)->parameterTypeContext->d_type);
       break;
@@ -840,13 +829,13 @@ DecafParser::ParameterContext* DecafParser::parameter(vector<string> * meth_para
 
     case 2: {
       enterOuterAlt(_localctx, 2);
-      setState(144);
+      setState(138);
       parameterType();
-      setState(145);
+      setState(139);
       match(DecafParser::ID);
-      setState(146);
+      setState(140);
       match(DecafParser::T__5);
-      setState(147);
+      setState(141);
       match(DecafParser::T__6);
       break;
     }
@@ -902,12 +891,12 @@ DecafParser::ParameterTypeContext* DecafParser::parameterType() {
     exitRule();
   });
   try {
-    setState(157);
+    setState(151);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case DecafParser::T__8: {
         enterOuterAlt(_localctx, 1);
-        setState(151);
+        setState(145);
         match(DecafParser::T__8);
         dynamic_cast<ParameterTypeContext *>(_localctx)->d_type =  "int";
         break;
@@ -915,7 +904,7 @@ DecafParser::ParameterTypeContext* DecafParser::parameterType() {
 
       case DecafParser::T__9: {
         enterOuterAlt(_localctx, 2);
-        setState(153);
+        setState(147);
         match(DecafParser::T__9);
         dynamic_cast<ParameterTypeContext *>(_localctx)->d_type =  "char";
         break;
@@ -923,7 +912,7 @@ DecafParser::ParameterTypeContext* DecafParser::parameterType() {
 
       case DecafParser::T__10: {
         enterOuterAlt(_localctx, 3);
-        setState(155);
+        setState(149);
         match(DecafParser::T__10);
         dynamic_cast<ParameterTypeContext *>(_localctx)->d_type =  "boolean";
         break;
@@ -949,9 +938,8 @@ DecafParser::BlockContext::BlockContext(ParserRuleContext *parent, size_t invoki
   : ParserRuleContext(parent, invokingState) {
 }
 
-DecafParser::BlockContext::BlockContext(ParserRuleContext *parent, size_t invokingState, shared_ptr<SymbolTable> table, string method_name)
+DecafParser::BlockContext::BlockContext(ParserRuleContext *parent, size_t invokingState, string method_name)
   : ParserRuleContext(parent, invokingState) {
-  this->table = table;
   this->method_name = method_name;
 }
 
@@ -996,9 +984,18 @@ antlrcpp::Any DecafParser::BlockContext::accept(tree::ParseTreeVisitor *visitor)
     return visitor->visitChildren(this);
 }
 
-DecafParser::BlockContext* DecafParser::block(shared_ptr<SymbolTable> table,string method_name) {
-  BlockContext *_localctx = _tracker.createInstance<BlockContext>(_ctx, getState(), table, method_name);
+DecafParser::BlockContext* DecafParser::block(string method_name) {
+  BlockContext *_localctx = _tracker.createInstance<BlockContext>(_ctx, getState(), method_name);
   enterRule(_localctx, 18, DecafParser::RuleBlock);
+
+  if(method_name == ""){
+    dynamic_cast<BlockContext *>(_localctx)->new_table =  make_shared<SymbolTable>(Method(table_top->name() + "_" + to_string(scope_counter), "", table_top->name()), table_top);
+    scope_counter++;
+    table_top->add_method(_localctx->new_table->name(), "void", table_top->name(), vector<string>{});
+    table_top->add_child(_localctx->new_table);
+    table_top = _localctx->new_table;
+  }
+    
   size_t _la = 0;
 
   auto onExit = finally([=] {
@@ -1006,19 +1003,9 @@ DecafParser::BlockContext* DecafParser::block(shared_ptr<SymbolTable> table,stri
   });
   try {
     enterOuterAlt(_localctx, 1);
-
-    if(method_name == ""){
-      dynamic_cast<BlockContext *>(_localctx)->new_table =  make_shared<SymbolTable>(_localctx->table->id() + "_" + to_string(scope_counter), _localctx->table);
-      scope_counter++;
-      table->add_method(_localctx->new_table->id(), "void", _localctx->table->id(), vector<string>{});
-      table->add_child(_localctx->new_table);
-    } else {
-      dynamic_cast<BlockContext *>(_localctx)->new_table =  _localctx->table;
-    }
-      
-    setState(160);
+    setState(153);
     match(DecafParser::T__2);
-    setState(164);
+    setState(157);
     _errHandler->sync(this);
     _la = _input->LA(1);
     while ((((_la & ~ 0x3fULL) == 0) &&
@@ -1027,13 +1014,13 @@ DecafParser::BlockContext* DecafParser::block(shared_ptr<SymbolTable> table,stri
       | (1ULL << DecafParser::T__9)
       | (1ULL << DecafParser::T__10)
       | (1ULL << DecafParser::T__11))) != 0)) {
-      setState(161);
-      varDeclaration(_localctx->new_table, nullptr);
-      setState(166);
+      setState(154);
+      varDeclaration(nullptr);
+      setState(159);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
-    setState(170);
+    setState(163);
     _errHandler->sync(this);
     _la = _input->LA(1);
     while ((((_la & ~ 0x3fULL) == 0) &&
@@ -1050,15 +1037,20 @@ DecafParser::BlockContext* DecafParser::block(shared_ptr<SymbolTable> table,stri
       | (1ULL << DecafParser::ID)
       | (1ULL << DecafParser::NUM)
       | (1ULL << DecafParser::CHAR))) != 0)) {
-      setState(167);
-      statement(_localctx->new_table);
-      setState(172);
+      setState(160);
+      statement();
+      setState(165);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
-    setState(173);
+    setState(166);
     match(DecafParser::T__3);
-   
+   _ctx->stop = _input->LT(-1);
+
+    if(method_name == ""){
+      table_top = table_top->parent();
+    }
+      
   }
   catch (RecognitionException &e) {
     _errHandler->reportError(this, e);
@@ -1073,11 +1065,6 @@ DecafParser::BlockContext* DecafParser::block(shared_ptr<SymbolTable> table,stri
 
 DecafParser::StatementContext::StatementContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
-}
-
-DecafParser::StatementContext::StatementContext(ParserRuleContext *parent, size_t invokingState, shared_ptr<SymbolTable> table)
-  : ParserRuleContext(parent, invokingState) {
-  this->table = table;
 }
 
 DecafParser::ExpressionContext* DecafParser::StatementContext::expression() {
@@ -1125,8 +1112,8 @@ antlrcpp::Any DecafParser::StatementContext::accept(tree::ParseTreeVisitor *visi
     return visitor->visitChildren(this);
 }
 
-DecafParser::StatementContext* DecafParser::statement(shared_ptr<SymbolTable> table) {
-  StatementContext *_localctx = _tracker.createInstance<StatementContext>(_ctx, getState(), table);
+DecafParser::StatementContext* DecafParser::statement() {
+  StatementContext *_localctx = _tracker.createInstance<StatementContext>(_ctx, getState());
   enterRule(_localctx, 20, DecafParser::RuleStatement);
   size_t _la = 0;
 
@@ -1134,54 +1121,54 @@ DecafParser::StatementContext* DecafParser::statement(shared_ptr<SymbolTable> ta
     exitRule();
   });
   try {
-    setState(207);
+    setState(202);
     _errHandler->sync(this);
     switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 15, _ctx)) {
     case 1: {
       enterOuterAlt(_localctx, 1);
-      setState(175);
+      setState(168);
       match(DecafParser::T__15);
-      setState(176);
+      setState(169);
       match(DecafParser::T__12);
-      setState(177);
+      setState(170);
       expression(0);
-      setState(178);
+      setState(171);
       match(DecafParser::T__14);
-      setState(179);
-      block(_localctx->table, "");
-      setState(182);
+      setState(172);
+      block("");
+      setState(175);
       _errHandler->sync(this);
 
       _la = _input->LA(1);
       if (_la == DecafParser::T__16) {
-        setState(180);
+        setState(173);
         match(DecafParser::T__16);
-        setState(181);
-        block(_localctx->table, "");
+        setState(174);
+        block("");
       }
       break;
     }
 
     case 2: {
       enterOuterAlt(_localctx, 2);
-      setState(184);
+      setState(177);
       match(DecafParser::T__17);
-      setState(185);
+      setState(178);
       match(DecafParser::T__12);
-      setState(186);
+      setState(179);
       expression(0);
-      setState(187);
+      setState(180);
       match(DecafParser::T__14);
-      setState(188);
-      block(_localctx->table, "");
+      setState(181);
+      block("");
       break;
     }
 
     case 3: {
       enterOuterAlt(_localctx, 3);
-      setState(190);
-      match(DecafParser::T__18);
-      setState(192);
+      setState(183);
+      dynamic_cast<StatementContext *>(_localctx)->r = match(DecafParser::T__18);
+      setState(187);
       _errHandler->sync(this);
 
       _la = _input->LA(1);
@@ -1191,46 +1178,52 @@ DecafParser::StatementContext* DecafParser::statement(shared_ptr<SymbolTable> ta
         | (1ULL << DecafParser::T__22)
         | (1ULL << DecafParser::T__35)
         | (1ULL << DecafParser::T__36)
+        | (1ULL << DecafParser::ID)
         | (1ULL << DecafParser::NUM)
         | (1ULL << DecafParser::CHAR))) != 0)) {
-        setState(191);
-        expression(0);
+        setState(184);
+        dynamic_cast<StatementContext *>(_localctx)->expressionContext = expression(0);
+
+        if(dynamic_cast<StatementContext *>(_localctx)->expressionContext->d_type != table_top->id().type()){
+          e_handler->get_lambda(WRONG_RETURN_TYPE, (dynamic_cast<StatementContext *>(_localctx)->r != nullptr ? dynamic_cast<StatementContext *>(_localctx)->r->getLine() : 0), (dynamic_cast<StatementContext *>(_localctx)->r != nullptr ? dynamic_cast<StatementContext *>(_localctx)->r->getCharPositionInLine() : 0), vector<string>{table_top->name(), table_top->id().type(), dynamic_cast<StatementContext *>(_localctx)->expressionContext->d_type})();
+        }
+          
       }
-      setState(194);
+      setState(189);
       match(DecafParser::T__4);
       break;
     }
 
     case 4: {
       enterOuterAlt(_localctx, 4);
-      setState(195);
-      methodCall(_localctx->table);
-      setState(196);
+      setState(190);
+      methodCall();
+      setState(191);
       match(DecafParser::T__4);
       break;
     }
 
     case 5: {
       enterOuterAlt(_localctx, 5);
-      setState(198);
-      block(_localctx->table, "");
+      setState(193);
+      block("");
       break;
     }
 
     case 6: {
       enterOuterAlt(_localctx, 6);
-      setState(199);
-      location(_localctx->table);
-      setState(200);
+      setState(194);
+      location();
+      setState(195);
       match(DecafParser::T__19);
-      setState(201);
+      setState(196);
       expression(0);
       break;
     }
 
     case 7: {
       enterOuterAlt(_localctx, 7);
-      setState(204);
+      setState(199);
       _errHandler->sync(this);
 
       _la = _input->LA(1);
@@ -1240,12 +1233,13 @@ DecafParser::StatementContext* DecafParser::statement(shared_ptr<SymbolTable> ta
         | (1ULL << DecafParser::T__22)
         | (1ULL << DecafParser::T__35)
         | (1ULL << DecafParser::T__36)
+        | (1ULL << DecafParser::ID)
         | (1ULL << DecafParser::NUM)
         | (1ULL << DecafParser::CHAR))) != 0)) {
-        setState(203);
+        setState(198);
         expression(0);
       }
-      setState(206);
+      setState(201);
       match(DecafParser::T__4);
       break;
     }
@@ -1266,11 +1260,6 @@ DecafParser::StatementContext* DecafParser::statement(shared_ptr<SymbolTable> ta
 
 DecafParser::LocationContext::LocationContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
-}
-
-DecafParser::LocationContext::LocationContext(ParserRuleContext *parent, size_t invokingState, shared_ptr<SymbolTable> table)
-  : ParserRuleContext(parent, invokingState) {
-  this->table = table;
 }
 
 tree::TerminalNode* DecafParser::LocationContext::ID() {
@@ -1310,55 +1299,59 @@ antlrcpp::Any DecafParser::LocationContext::accept(tree::ParseTreeVisitor *visit
     return visitor->visitChildren(this);
 }
 
-DecafParser::LocationContext* DecafParser::location(shared_ptr<SymbolTable> table) {
-  LocationContext *_localctx = _tracker.createInstance<LocationContext>(_ctx, getState(), table);
+DecafParser::LocationContext* DecafParser::location() {
+  LocationContext *_localctx = _tracker.createInstance<LocationContext>(_ctx, getState());
   enterRule(_localctx, 22, DecafParser::RuleLocation);
-  size_t _la = 0;
 
   auto onExit = finally([=] {
     exitRule();
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(215);
+    setState(211);
     _errHandler->sync(this);
     switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 16, _ctx)) {
     case 1: {
-      setState(209);
+      setState(204);
       dynamic_cast<LocationContext *>(_localctx)->idToken = match(DecafParser::ID);
       break;
     }
 
     case 2: {
-      setState(210);
+      setState(205);
       dynamic_cast<LocationContext *>(_localctx)->idToken = match(DecafParser::ID);
-      setState(211);
+      setState(206);
       match(DecafParser::T__5);
-      setState(212);
+      setState(207);
       expression(0);
-      setState(213);
+      setState(208);
       match(DecafParser::T__6);
+      dynamic_cast<LocationContext *>(_localctx)->array_check =  true;
       break;
     }
 
     }
 
     Symbol out;
-    if(recursive_lookup<Symbol>(_localctx->table, [&](shared_ptr<SymbolTable> t){return t->symbols();}, [&](Symbol &s){return s.name() == (dynamic_cast<LocationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<LocationContext *>(_localctx)->idToken->getText() : "");}, &out)){
+    if(recursive_lookup<Symbol>(table_top, [&](shared_ptr<SymbolTable> t){return t->symbols();}, [&](Symbol &s){return s.name() == (dynamic_cast<LocationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<LocationContext *>(_localctx)->idToken->getText() : "");}, &out)){
       dynamic_cast<LocationContext *>(_localctx)->d_type =  out.type();
     } else {
       e_handler->get_lambda(IDENT_NOT_DEFINED, (dynamic_cast<LocationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<LocationContext *>(_localctx)->idToken->getLine() : 0), (dynamic_cast<LocationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<LocationContext *>(_localctx)->idToken->getCharPositionInLine() : 0), vector<string>{(dynamic_cast<LocationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<LocationContext *>(_localctx)->idToken->getText() : "")})();
     }
       
-    setState(220);
+    setState(218);
     _errHandler->sync(this);
 
-    _la = _input->LA(1);
-    if (_la == DecafParser::T__20) {
-      setState(218);
+    switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 17, _ctx)) {
+    case 1: {
+      setState(214);
       match(DecafParser::T__20);
-      setState(219);
-      location(_localctx->table);
+      setState(215);
+      dynamic_cast<LocationContext *>(_localctx)->locationContext = location();
+      dynamic_cast<LocationContext *>(_localctx)->d_type =  dynamic_cast<LocationContext *>(_localctx)->locationContext->d_type;
+      break;
+    }
+
     }
    
   }
@@ -1377,6 +1370,18 @@ DecafParser::ExpressionContext::ExpressionContext(ParserRuleContext *parent, siz
   : ParserRuleContext(parent, invokingState) {
 }
 
+DecafParser::LocationContext* DecafParser::ExpressionContext::location() {
+  return getRuleContext<DecafParser::LocationContext>(0);
+}
+
+DecafParser::MethodCallContext* DecafParser::ExpressionContext::methodCall() {
+  return getRuleContext<DecafParser::MethodCallContext>(0);
+}
+
+DecafParser::LiteralContext* DecafParser::ExpressionContext::literal() {
+  return getRuleContext<DecafParser::LiteralContext>(0);
+}
+
 std::vector<DecafParser::ExpressionContext *> DecafParser::ExpressionContext::expression() {
   return getRuleContexts<DecafParser::ExpressionContext>();
 }
@@ -1385,16 +1390,12 @@ DecafParser::ExpressionContext* DecafParser::ExpressionContext::expression(size_
   return getRuleContext<DecafParser::ExpressionContext>(i);
 }
 
-DecafParser::LiteralContext* DecafParser::ExpressionContext::literal() {
-  return getRuleContext<DecafParser::LiteralContext>(0);
+DecafParser::Arith_high_opContext* DecafParser::ExpressionContext::arith_high_op() {
+  return getRuleContext<DecafParser::Arith_high_opContext>(0);
 }
 
-DecafParser::Arith_high_precedenceContext* DecafParser::ExpressionContext::arith_high_precedence() {
-  return getRuleContext<DecafParser::Arith_high_precedenceContext>(0);
-}
-
-DecafParser::Arith_low_precedenceContext* DecafParser::ExpressionContext::arith_low_precedence() {
-  return getRuleContext<DecafParser::Arith_low_precedenceContext>(0);
+DecafParser::Arith_low_opContext* DecafParser::ExpressionContext::arith_low_op() {
+  return getRuleContext<DecafParser::Arith_low_opContext>(0);
 }
 
 DecafParser::Rel_opContext* DecafParser::ExpressionContext::rel_op() {
@@ -1403,14 +1404,6 @@ DecafParser::Rel_opContext* DecafParser::ExpressionContext::rel_op() {
 
 DecafParser::Eq_opContext* DecafParser::ExpressionContext::eq_op() {
   return getRuleContext<DecafParser::Eq_opContext>(0);
-}
-
-DecafParser::Cond_andContext* DecafParser::ExpressionContext::cond_and() {
-  return getRuleContext<DecafParser::Cond_andContext>(0);
-}
-
-DecafParser::Cond_orContext* DecafParser::ExpressionContext::cond_or() {
-  return getRuleContext<DecafParser::Cond_orContext>(0);
 }
 
 
@@ -1459,50 +1452,63 @@ DecafParser::ExpressionContext* DecafParser::expression(int precedence) {
   try {
     size_t alt;
     enterOuterAlt(_localctx, 1);
-    setState(234);
+    setState(238);
     _errHandler->sync(this);
-    switch (_input->LA(1)) {
-      case DecafParser::T__12: {
-        setState(223);
-        match(DecafParser::T__12);
-        setState(224);
-        expression(0);
-        setState(225);
-        match(DecafParser::T__14);
-        break;
-      }
+    switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 18, _ctx)) {
+    case 1: {
+      setState(221);
+      dynamic_cast<ExpressionContext *>(_localctx)->locationContext = location();
+      dynamic_cast<ExpressionContext *>(_localctx)->d_type =  dynamic_cast<ExpressionContext *>(_localctx)->locationContext->d_type;
+      break;
+    }
 
-      case DecafParser::T__21: {
-        setState(227);
-        match(DecafParser::T__21);
-        setState(228);
-        expression(9);
-        break;
-      }
+    case 2: {
+      setState(224);
+      dynamic_cast<ExpressionContext *>(_localctx)->methodCallContext = methodCall();
 
-      case DecafParser::T__22: {
-        setState(229);
-        match(DecafParser::T__22);
-        setState(230);
-        expression(8);
-        break;
+      if(dynamic_cast<ExpressionContext *>(_localctx)->methodCallContext->d_type == "void"){
+        e_handler->get_lambda(NO_RETURN_IN_EXPR, dynamic_cast<ExpressionContext *>(_localctx)->methodCallContext->line, dynamic_cast<ExpressionContext *>(_localctx)->methodCallContext->pos, vector<string>{(dynamic_cast<ExpressionContext *>(_localctx)->methodCallContext != nullptr ? _input->getText(dynamic_cast<ExpressionContext *>(_localctx)->methodCallContext->start, dynamic_cast<ExpressionContext *>(_localctx)->methodCallContext->stop) : nullptr)})();
       }
+        
+      break;
+    }
 
-      case DecafParser::T__35:
-      case DecafParser::T__36:
-      case DecafParser::NUM:
-      case DecafParser::CHAR: {
-        setState(231);
-        dynamic_cast<ExpressionContext *>(_localctx)->literalContext = literal();
-        dynamic_cast<ExpressionContext *>(_localctx)->d_type =  dynamic_cast<ExpressionContext *>(_localctx)->literalContext->d_type;
-        break;
-      }
+    case 3: {
+      setState(227);
+      dynamic_cast<ExpressionContext *>(_localctx)->literalContext = literal();
+      dynamic_cast<ExpressionContext *>(_localctx)->d_type =  dynamic_cast<ExpressionContext *>(_localctx)->literalContext->d_type;
+      break;
+    }
 
-    default:
-      throw NoViableAltException(this);
+    case 4: {
+      setState(230);
+      match(DecafParser::T__12);
+      setState(231);
+      expression(0);
+      setState(232);
+      match(DecafParser::T__14);
+      break;
+    }
+
+    case 5: {
+      setState(234);
+      match(DecafParser::T__21);
+      setState(235);
+      expression(8);
+      break;
+    }
+
+    case 6: {
+      setState(236);
+      match(DecafParser::T__22);
+      setState(237);
+      expression(7);
+      break;
+    }
+
     }
     _ctx->stop = _input->LT(-1);
-    setState(262);
+    setState(264);
     _errHandler->sync(this);
     alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 20, _ctx);
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
@@ -1510,90 +1516,90 @@ DecafParser::ExpressionContext* DecafParser::expression(int precedence) {
         if (!_parseListeners.empty())
           triggerExitRuleEvent();
         previousContext = _localctx;
-        setState(260);
+        setState(262);
         _errHandler->sync(this);
         switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 19, _ctx)) {
         case 1: {
-          _localctx = _tracker.createInstance<ExpressionContext>(parentContext, parentState);
-          pushNewRecursionContext(_localctx, startState, RuleExpression);
-          setState(236);
-
-          if (!(precpred(_ctx, 7))) throw FailedPredicateException(this, "precpred(_ctx, 7)");
-          setState(237);
-          arith_high_precedence();
-          setState(238);
-          expression(8);
-          break;
-        }
-
-        case 2: {
           _localctx = _tracker.createInstance<ExpressionContext>(parentContext, parentState);
           pushNewRecursionContext(_localctx, startState, RuleExpression);
           setState(240);
 
           if (!(precpred(_ctx, 6))) throw FailedPredicateException(this, "precpred(_ctx, 6)");
           setState(241);
-          arith_low_precedence();
+          arith_high_op();
           setState(242);
           expression(7);
           break;
         }
 
-        case 3: {
+        case 2: {
           _localctx = _tracker.createInstance<ExpressionContext>(parentContext, parentState);
           pushNewRecursionContext(_localctx, startState, RuleExpression);
           setState(244);
 
           if (!(precpred(_ctx, 5))) throw FailedPredicateException(this, "precpred(_ctx, 5)");
           setState(245);
-          rel_op();
+          arith_low_op();
           setState(246);
           expression(6);
           break;
         }
 
-        case 4: {
+        case 3: {
           _localctx = _tracker.createInstance<ExpressionContext>(parentContext, parentState);
           pushNewRecursionContext(_localctx, startState, RuleExpression);
           setState(248);
 
           if (!(precpred(_ctx, 4))) throw FailedPredicateException(this, "precpred(_ctx, 4)");
           setState(249);
-          eq_op();
+          rel_op();
           setState(250);
           expression(5);
           break;
         }
 
-        case 5: {
+        case 4: {
           _localctx = _tracker.createInstance<ExpressionContext>(parentContext, parentState);
           pushNewRecursionContext(_localctx, startState, RuleExpression);
           setState(252);
 
           if (!(precpred(_ctx, 3))) throw FailedPredicateException(this, "precpred(_ctx, 3)");
           setState(253);
-          cond_and();
+          eq_op();
           setState(254);
           expression(4);
           break;
         }
 
-        case 6: {
+        case 5: {
           _localctx = _tracker.createInstance<ExpressionContext>(parentContext, parentState);
           pushNewRecursionContext(_localctx, startState, RuleExpression);
           setState(256);
 
           if (!(precpred(_ctx, 2))) throw FailedPredicateException(this, "precpred(_ctx, 2)");
           setState(257);
-          cond_or();
+          match(DecafParser::T__23);
           setState(258);
           expression(3);
           break;
         }
 
+        case 6: {
+          _localctx = _tracker.createInstance<ExpressionContext>(parentContext, parentState);
+          pushNewRecursionContext(_localctx, startState, RuleExpression);
+          setState(259);
+
+          if (!(precpred(_ctx, 1))) throw FailedPredicateException(this, "precpred(_ctx, 1)");
+          setState(260);
+          match(DecafParser::T__24);
+          setState(261);
+          expression(2);
+          break;
+        }
+
         } 
       }
-      setState(264);
+      setState(266);
       _errHandler->sync(this);
       alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 20, _ctx);
     }
@@ -1610,11 +1616,6 @@ DecafParser::ExpressionContext* DecafParser::expression(int precedence) {
 
 DecafParser::MethodCallContext::MethodCallContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
-}
-
-DecafParser::MethodCallContext::MethodCallContext(ParserRuleContext *parent, size_t invokingState, shared_ptr<SymbolTable> table)
-  : ParserRuleContext(parent, invokingState) {
-  this->table = table;
 }
 
 tree::TerminalNode* DecafParser::MethodCallContext::ID() {
@@ -1654,8 +1655,8 @@ antlrcpp::Any DecafParser::MethodCallContext::accept(tree::ParseTreeVisitor *vis
     return visitor->visitChildren(this);
 }
 
-DecafParser::MethodCallContext* DecafParser::methodCall(shared_ptr<SymbolTable> table) {
-  MethodCallContext *_localctx = _tracker.createInstance<MethodCallContext>(_ctx, getState(), table);
+DecafParser::MethodCallContext* DecafParser::methodCall() {
+  MethodCallContext *_localctx = _tracker.createInstance<MethodCallContext>(_ctx, getState());
   enterRule(_localctx, 26, DecafParser::RuleMethodCall);
   size_t _la = 0;
 
@@ -1664,11 +1665,11 @@ DecafParser::MethodCallContext* DecafParser::methodCall(shared_ptr<SymbolTable> 
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(265);
-    match(DecafParser::ID);
-    setState(266);
+    setState(267);
+    dynamic_cast<MethodCallContext *>(_localctx)->idToken = match(DecafParser::ID);
+    setState(268);
     match(DecafParser::T__12);
-    setState(275);
+    setState(277);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
@@ -1678,25 +1679,36 @@ DecafParser::MethodCallContext* DecafParser::methodCall(shared_ptr<SymbolTable> 
       | (1ULL << DecafParser::T__22)
       | (1ULL << DecafParser::T__35)
       | (1ULL << DecafParser::T__36)
+      | (1ULL << DecafParser::ID)
       | (1ULL << DecafParser::NUM)
       | (1ULL << DecafParser::CHAR))) != 0)) {
-      setState(267);
-      arg(&_localctx->arg_types, _localctx->table);
-      setState(272);
+      setState(269);
+      arg(&_localctx->arg_types);
+      setState(274);
       _errHandler->sync(this);
       _la = _input->LA(1);
       while (_la == DecafParser::T__13) {
-        setState(268);
+        setState(270);
         match(DecafParser::T__13);
-        setState(269);
-        arg(&_localctx->arg_types, _localctx->table);
-        setState(274);
+        setState(271);
+        arg(&_localctx->arg_types);
+        setState(276);
         _errHandler->sync(this);
         _la = _input->LA(1);
       }
     }
-    setState(277);
+    setState(279);
     match(DecafParser::T__14);
+
+    Method out;
+    if(!get_where<Method>(table_head->methods(), [&](Method &m){return m.name() == (dynamic_cast<MethodCallContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodCallContext *>(_localctx)->idToken->getText() : "") && m.param_signature() == _localctx->arg_types;}, &out)){
+      auto msg_parts = vector<string>{(dynamic_cast<MethodCallContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodCallContext *>(_localctx)->idToken->getText() : "")};
+      msg_parts.insert(msg_parts.end(), _localctx->arg_types.begin(), _localctx->arg_types.end());
+      e_handler->get_lambda(NO_METHOD_WITH_SIGN, (dynamic_cast<MethodCallContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodCallContext *>(_localctx)->idToken->getLine() : 0), (dynamic_cast<MethodCallContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodCallContext *>(_localctx)->idToken->getCharPositionInLine() : 0), msg_parts)();
+    }else{
+      dynamic_cast<MethodCallContext *>(_localctx)->d_type =  out.type(); dynamic_cast<MethodCallContext *>(_localctx)->line =  (dynamic_cast<MethodCallContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodCallContext *>(_localctx)->idToken->getLine() : 0); dynamic_cast<MethodCallContext *>(_localctx)->pos =  (dynamic_cast<MethodCallContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodCallContext *>(_localctx)->idToken->getCharPositionInLine() : 0);
+    }
+      
    
   }
   catch (RecognitionException &e) {
@@ -1714,10 +1726,9 @@ DecafParser::ArgContext::ArgContext(ParserRuleContext *parent, size_t invokingSt
   : ParserRuleContext(parent, invokingState) {
 }
 
-DecafParser::ArgContext::ArgContext(ParserRuleContext *parent, size_t invokingState, vector<string> * method_arg_types, shared_ptr<SymbolTable> table)
+DecafParser::ArgContext::ArgContext(ParserRuleContext *parent, size_t invokingState, vector<string> * method_arg_types)
   : ParserRuleContext(parent, invokingState) {
   this->method_arg_types = method_arg_types;
-  this->table = table;
 }
 
 DecafParser::ExpressionContext* DecafParser::ArgContext::expression() {
@@ -1749,8 +1760,8 @@ antlrcpp::Any DecafParser::ArgContext::accept(tree::ParseTreeVisitor *visitor) {
     return visitor->visitChildren(this);
 }
 
-DecafParser::ArgContext* DecafParser::arg(vector<string> * method_arg_types,shared_ptr<SymbolTable> table) {
-  ArgContext *_localctx = _tracker.createInstance<ArgContext>(_ctx, getState(), method_arg_types, table);
+DecafParser::ArgContext* DecafParser::arg(vector<string> * method_arg_types) {
+  ArgContext *_localctx = _tracker.createInstance<ArgContext>(_ctx, getState(), method_arg_types);
   enterRule(_localctx, 28, DecafParser::RuleArg);
 
   auto onExit = finally([=] {
@@ -1758,7 +1769,7 @@ DecafParser::ArgContext* DecafParser::arg(vector<string> * method_arg_types,shar
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(279);
+    setState(282);
     dynamic_cast<ArgContext *>(_localctx)->expressionContext = expression(0);
     method_arg_types->push_back(dynamic_cast<ArgContext *>(_localctx)->expressionContext->d_type);
    
@@ -1772,121 +1783,40 @@ DecafParser::ArgContext* DecafParser::arg(vector<string> * method_arg_types,shar
   return _localctx;
 }
 
-//----------------- Arith_opContext ------------------------------------------------------------------
+//----------------- Arith_high_opContext ------------------------------------------------------------------
 
-DecafParser::Arith_opContext::Arith_opContext(ParserRuleContext *parent, size_t invokingState)
-  : ParserRuleContext(parent, invokingState) {
-}
-
-DecafParser::Arith_high_precedenceContext* DecafParser::Arith_opContext::arith_high_precedence() {
-  return getRuleContext<DecafParser::Arith_high_precedenceContext>(0);
-}
-
-DecafParser::Arith_low_precedenceContext* DecafParser::Arith_opContext::arith_low_precedence() {
-  return getRuleContext<DecafParser::Arith_low_precedenceContext>(0);
-}
-
-
-size_t DecafParser::Arith_opContext::getRuleIndex() const {
-  return DecafParser::RuleArith_op;
-}
-
-void DecafParser::Arith_opContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<DecafListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterArith_op(this);
-}
-
-void DecafParser::Arith_opContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<DecafListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitArith_op(this);
-}
-
-
-antlrcpp::Any DecafParser::Arith_opContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<DecafVisitor*>(visitor))
-    return parserVisitor->visitArith_op(this);
-  else
-    return visitor->visitChildren(this);
-}
-
-DecafParser::Arith_opContext* DecafParser::arith_op() {
-  Arith_opContext *_localctx = _tracker.createInstance<Arith_opContext>(_ctx, getState());
-  enterRule(_localctx, 30, DecafParser::RuleArith_op);
-
-  auto onExit = finally([=] {
-    exitRule();
-  });
-  try {
-    setState(284);
-    _errHandler->sync(this);
-    switch (_input->LA(1)) {
-      case DecafParser::T__23:
-      case DecafParser::T__24:
-      case DecafParser::T__25: {
-        enterOuterAlt(_localctx, 1);
-        setState(282);
-        arith_high_precedence();
-        break;
-      }
-
-      case DecafParser::T__22:
-      case DecafParser::T__26: {
-        enterOuterAlt(_localctx, 2);
-        setState(283);
-        arith_low_precedence();
-        break;
-      }
-
-    default:
-      throw NoViableAltException(this);
-    }
-   
-  }
-  catch (RecognitionException &e) {
-    _errHandler->reportError(this, e);
-    _localctx->exception = std::current_exception();
-    _errHandler->recover(this, _localctx->exception);
-  }
-
-  return _localctx;
-}
-
-//----------------- Arith_high_precedenceContext ------------------------------------------------------------------
-
-DecafParser::Arith_high_precedenceContext::Arith_high_precedenceContext(ParserRuleContext *parent, size_t invokingState)
+DecafParser::Arith_high_opContext::Arith_high_opContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
 
-size_t DecafParser::Arith_high_precedenceContext::getRuleIndex() const {
-  return DecafParser::RuleArith_high_precedence;
+size_t DecafParser::Arith_high_opContext::getRuleIndex() const {
+  return DecafParser::RuleArith_high_op;
 }
 
-void DecafParser::Arith_high_precedenceContext::enterRule(tree::ParseTreeListener *listener) {
+void DecafParser::Arith_high_opContext::enterRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<DecafListener *>(listener);
   if (parserListener != nullptr)
-    parserListener->enterArith_high_precedence(this);
+    parserListener->enterArith_high_op(this);
 }
 
-void DecafParser::Arith_high_precedenceContext::exitRule(tree::ParseTreeListener *listener) {
+void DecafParser::Arith_high_opContext::exitRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<DecafListener *>(listener);
   if (parserListener != nullptr)
-    parserListener->exitArith_high_precedence(this);
+    parserListener->exitArith_high_op(this);
 }
 
 
-antlrcpp::Any DecafParser::Arith_high_precedenceContext::accept(tree::ParseTreeVisitor *visitor) {
+antlrcpp::Any DecafParser::Arith_high_opContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<DecafVisitor*>(visitor))
-    return parserVisitor->visitArith_high_precedence(this);
+    return parserVisitor->visitArith_high_op(this);
   else
     return visitor->visitChildren(this);
 }
 
-DecafParser::Arith_high_precedenceContext* DecafParser::arith_high_precedence() {
-  Arith_high_precedenceContext *_localctx = _tracker.createInstance<Arith_high_precedenceContext>(_ctx, getState());
-  enterRule(_localctx, 32, DecafParser::RuleArith_high_precedence);
+DecafParser::Arith_high_opContext* DecafParser::arith_high_op() {
+  Arith_high_opContext *_localctx = _tracker.createInstance<Arith_high_opContext>(_ctx, getState());
+  enterRule(_localctx, 30, DecafParser::RuleArith_high_op);
   size_t _la = 0;
 
   auto onExit = finally([=] {
@@ -1894,12 +1824,12 @@ DecafParser::Arith_high_precedenceContext* DecafParser::arith_high_precedence() 
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(286);
+    setState(285);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << DecafParser::T__23)
-      | (1ULL << DecafParser::T__24)
-      | (1ULL << DecafParser::T__25))) != 0))) {
+      ((1ULL << _la) & ((1ULL << DecafParser::T__25)
+      | (1ULL << DecafParser::T__26)
+      | (1ULL << DecafParser::T__27))) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -1917,40 +1847,40 @@ DecafParser::Arith_high_precedenceContext* DecafParser::arith_high_precedence() 
   return _localctx;
 }
 
-//----------------- Arith_low_precedenceContext ------------------------------------------------------------------
+//----------------- Arith_low_opContext ------------------------------------------------------------------
 
-DecafParser::Arith_low_precedenceContext::Arith_low_precedenceContext(ParserRuleContext *parent, size_t invokingState)
+DecafParser::Arith_low_opContext::Arith_low_opContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
 
-size_t DecafParser::Arith_low_precedenceContext::getRuleIndex() const {
-  return DecafParser::RuleArith_low_precedence;
+size_t DecafParser::Arith_low_opContext::getRuleIndex() const {
+  return DecafParser::RuleArith_low_op;
 }
 
-void DecafParser::Arith_low_precedenceContext::enterRule(tree::ParseTreeListener *listener) {
+void DecafParser::Arith_low_opContext::enterRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<DecafListener *>(listener);
   if (parserListener != nullptr)
-    parserListener->enterArith_low_precedence(this);
+    parserListener->enterArith_low_op(this);
 }
 
-void DecafParser::Arith_low_precedenceContext::exitRule(tree::ParseTreeListener *listener) {
+void DecafParser::Arith_low_opContext::exitRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<DecafListener *>(listener);
   if (parserListener != nullptr)
-    parserListener->exitArith_low_precedence(this);
+    parserListener->exitArith_low_op(this);
 }
 
 
-antlrcpp::Any DecafParser::Arith_low_precedenceContext::accept(tree::ParseTreeVisitor *visitor) {
+antlrcpp::Any DecafParser::Arith_low_opContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<DecafVisitor*>(visitor))
-    return parserVisitor->visitArith_low_precedence(this);
+    return parserVisitor->visitArith_low_op(this);
   else
     return visitor->visitChildren(this);
 }
 
-DecafParser::Arith_low_precedenceContext* DecafParser::arith_low_precedence() {
-  Arith_low_precedenceContext *_localctx = _tracker.createInstance<Arith_low_precedenceContext>(_ctx, getState());
-  enterRule(_localctx, 34, DecafParser::RuleArith_low_precedence);
+DecafParser::Arith_low_opContext* DecafParser::arith_low_op() {
+  Arith_low_opContext *_localctx = _tracker.createInstance<Arith_low_opContext>(_ctx, getState());
+  enterRule(_localctx, 32, DecafParser::RuleArith_low_op);
   size_t _la = 0;
 
   auto onExit = finally([=] {
@@ -1958,11 +1888,11 @@ DecafParser::Arith_low_precedenceContext* DecafParser::arith_low_precedence() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(288);
+    setState(287);
     _la = _input->LA(1);
     if (!(_la == DecafParser::T__22
 
-    || _la == DecafParser::T__26)) {
+    || _la == DecafParser::T__28)) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -2013,7 +1943,7 @@ antlrcpp::Any DecafParser::Rel_opContext::accept(tree::ParseTreeVisitor *visitor
 
 DecafParser::Rel_opContext* DecafParser::rel_op() {
   Rel_opContext *_localctx = _tracker.createInstance<Rel_opContext>(_ctx, getState());
-  enterRule(_localctx, 36, DecafParser::RuleRel_op);
+  enterRule(_localctx, 34, DecafParser::RuleRel_op);
   size_t _la = 0;
 
   auto onExit = finally([=] {
@@ -2021,13 +1951,13 @@ DecafParser::Rel_opContext* DecafParser::rel_op() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(290);
+    setState(289);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << DecafParser::T__27)
-      | (1ULL << DecafParser::T__28)
-      | (1ULL << DecafParser::T__29)
-      | (1ULL << DecafParser::T__30))) != 0))) {
+      ((1ULL << _la) & ((1ULL << DecafParser::T__29)
+      | (1ULL << DecafParser::T__30)
+      | (1ULL << DecafParser::T__31)
+      | (1ULL << DecafParser::T__32))) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -2078,7 +2008,7 @@ antlrcpp::Any DecafParser::Eq_opContext::accept(tree::ParseTreeVisitor *visitor)
 
 DecafParser::Eq_opContext* DecafParser::eq_op() {
   Eq_opContext *_localctx = _tracker.createInstance<Eq_opContext>(_ctx, getState());
-  enterRule(_localctx, 38, DecafParser::RuleEq_op);
+  enterRule(_localctx, 36, DecafParser::RuleEq_op);
   size_t _la = 0;
 
   auto onExit = finally([=] {
@@ -2086,123 +2016,17 @@ DecafParser::Eq_opContext* DecafParser::eq_op() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(292);
+    setState(291);
     _la = _input->LA(1);
-    if (!(_la == DecafParser::T__31
+    if (!(_la == DecafParser::T__33
 
-    || _la == DecafParser::T__32)) {
+    || _la == DecafParser::T__34)) {
     _errHandler->recoverInline(this);
     }
     else {
       _errHandler->reportMatch(this);
       consume();
     }
-   
-  }
-  catch (RecognitionException &e) {
-    _errHandler->reportError(this, e);
-    _localctx->exception = std::current_exception();
-    _errHandler->recover(this, _localctx->exception);
-  }
-
-  return _localctx;
-}
-
-//----------------- Cond_andContext ------------------------------------------------------------------
-
-DecafParser::Cond_andContext::Cond_andContext(ParserRuleContext *parent, size_t invokingState)
-  : ParserRuleContext(parent, invokingState) {
-}
-
-
-size_t DecafParser::Cond_andContext::getRuleIndex() const {
-  return DecafParser::RuleCond_and;
-}
-
-void DecafParser::Cond_andContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<DecafListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterCond_and(this);
-}
-
-void DecafParser::Cond_andContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<DecafListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitCond_and(this);
-}
-
-
-antlrcpp::Any DecafParser::Cond_andContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<DecafVisitor*>(visitor))
-    return parserVisitor->visitCond_and(this);
-  else
-    return visitor->visitChildren(this);
-}
-
-DecafParser::Cond_andContext* DecafParser::cond_and() {
-  Cond_andContext *_localctx = _tracker.createInstance<Cond_andContext>(_ctx, getState());
-  enterRule(_localctx, 40, DecafParser::RuleCond_and);
-
-  auto onExit = finally([=] {
-    exitRule();
-  });
-  try {
-    enterOuterAlt(_localctx, 1);
-    setState(294);
-    match(DecafParser::T__33);
-   
-  }
-  catch (RecognitionException &e) {
-    _errHandler->reportError(this, e);
-    _localctx->exception = std::current_exception();
-    _errHandler->recover(this, _localctx->exception);
-  }
-
-  return _localctx;
-}
-
-//----------------- Cond_orContext ------------------------------------------------------------------
-
-DecafParser::Cond_orContext::Cond_orContext(ParserRuleContext *parent, size_t invokingState)
-  : ParserRuleContext(parent, invokingState) {
-}
-
-
-size_t DecafParser::Cond_orContext::getRuleIndex() const {
-  return DecafParser::RuleCond_or;
-}
-
-void DecafParser::Cond_orContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<DecafListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterCond_or(this);
-}
-
-void DecafParser::Cond_orContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<DecafListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitCond_or(this);
-}
-
-
-antlrcpp::Any DecafParser::Cond_orContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<DecafVisitor*>(visitor))
-    return parserVisitor->visitCond_or(this);
-  else
-    return visitor->visitChildren(this);
-}
-
-DecafParser::Cond_orContext* DecafParser::cond_or() {
-  Cond_orContext *_localctx = _tracker.createInstance<Cond_orContext>(_ctx, getState());
-  enterRule(_localctx, 42, DecafParser::RuleCond_or);
-
-  auto onExit = finally([=] {
-    exitRule();
-  });
-  try {
-    enterOuterAlt(_localctx, 1);
-    setState(296);
-    match(DecafParser::T__34);
    
   }
   catch (RecognitionException &e) {
@@ -2259,18 +2083,18 @@ antlrcpp::Any DecafParser::LiteralContext::accept(tree::ParseTreeVisitor *visito
 
 DecafParser::LiteralContext* DecafParser::literal() {
   LiteralContext *_localctx = _tracker.createInstance<LiteralContext>(_ctx, getState());
-  enterRule(_localctx, 44, DecafParser::RuleLiteral);
+  enterRule(_localctx, 38, DecafParser::RuleLiteral);
 
   auto onExit = finally([=] {
     exitRule();
   });
   try {
-    setState(307);
+    setState(302);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case DecafParser::NUM: {
         enterOuterAlt(_localctx, 1);
-        setState(298);
+        setState(293);
         int_literal();
         dynamic_cast<LiteralContext *>(_localctx)->d_type =  "int";
         break;
@@ -2278,7 +2102,7 @@ DecafParser::LiteralContext* DecafParser::literal() {
 
       case DecafParser::CHAR: {
         enterOuterAlt(_localctx, 2);
-        setState(301);
+        setState(296);
         char_literal();
         dynamic_cast<LiteralContext *>(_localctx)->d_type =  "char";
         break;
@@ -2287,7 +2111,7 @@ DecafParser::LiteralContext* DecafParser::literal() {
       case DecafParser::T__35:
       case DecafParser::T__36: {
         enterOuterAlt(_localctx, 3);
-        setState(304);
+        setState(299);
         bool_literal();
         dynamic_cast<LiteralContext *>(_localctx)->d_type =  "boolean";
         break;
@@ -2344,14 +2168,14 @@ antlrcpp::Any DecafParser::Int_literalContext::accept(tree::ParseTreeVisitor *vi
 
 DecafParser::Int_literalContext* DecafParser::int_literal() {
   Int_literalContext *_localctx = _tracker.createInstance<Int_literalContext>(_ctx, getState());
-  enterRule(_localctx, 46, DecafParser::RuleInt_literal);
+  enterRule(_localctx, 40, DecafParser::RuleInt_literal);
 
   auto onExit = finally([=] {
     exitRule();
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(309);
+    setState(304);
     match(DecafParser::NUM);
    
   }
@@ -2401,14 +2225,14 @@ antlrcpp::Any DecafParser::Char_literalContext::accept(tree::ParseTreeVisitor *v
 
 DecafParser::Char_literalContext* DecafParser::char_literal() {
   Char_literalContext *_localctx = _tracker.createInstance<Char_literalContext>(_ctx, getState());
-  enterRule(_localctx, 48, DecafParser::RuleChar_literal);
+  enterRule(_localctx, 42, DecafParser::RuleChar_literal);
 
   auto onExit = finally([=] {
     exitRule();
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(311);
+    setState(306);
     match(DecafParser::CHAR);
    
   }
@@ -2454,7 +2278,7 @@ antlrcpp::Any DecafParser::Bool_literalContext::accept(tree::ParseTreeVisitor *v
 
 DecafParser::Bool_literalContext* DecafParser::bool_literal() {
   Bool_literalContext *_localctx = _tracker.createInstance<Bool_literalContext>(_ctx, getState());
-  enterRule(_localctx, 50, DecafParser::RuleBool_literal);
+  enterRule(_localctx, 44, DecafParser::RuleBool_literal);
   size_t _la = 0;
 
   auto onExit = finally([=] {
@@ -2462,7 +2286,7 @@ DecafParser::Bool_literalContext* DecafParser::bool_literal() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(313);
+    setState(308);
     _la = _input->LA(1);
     if (!(_la == DecafParser::T__35
 
@@ -2496,12 +2320,12 @@ bool DecafParser::sempred(RuleContext *context, size_t ruleIndex, size_t predica
 
 bool DecafParser::expressionSempred(ExpressionContext *_localctx, size_t predicateIndex) {
   switch (predicateIndex) {
-    case 0: return precpred(_ctx, 7);
-    case 1: return precpred(_ctx, 6);
-    case 2: return precpred(_ctx, 5);
-    case 3: return precpred(_ctx, 4);
-    case 4: return precpred(_ctx, 3);
-    case 5: return precpred(_ctx, 2);
+    case 0: return precpred(_ctx, 6);
+    case 1: return precpred(_ctx, 5);
+    case 2: return precpred(_ctx, 4);
+    case 3: return precpred(_ctx, 3);
+    case 4: return precpred(_ctx, 2);
+    case 5: return precpred(_ctx, 1);
 
   default:
     break;
@@ -2520,16 +2344,16 @@ std::vector<uint16_t> DecafParser::_serializedATN;
 std::vector<std::string> DecafParser::_ruleNames = {
   "program", "declaration", "varDeclaration", "structDeclaration", "varType", 
   "methodDeclaration", "methodType", "parameter", "parameterType", "block", 
-  "statement", "location", "expression", "methodCall", "arg", "arith_op", 
-  "arith_high_precedence", "arith_low_precedence", "rel_op", "eq_op", "cond_and", 
-  "cond_or", "literal", "int_literal", "char_literal", "bool_literal"
+  "statement", "location", "expression", "methodCall", "arg", "arith_high_op", 
+  "arith_low_op", "rel_op", "eq_op", "literal", "int_literal", "char_literal", 
+  "bool_literal"
 };
 
 std::vector<std::string> DecafParser::_literalNames = {
   "", "'class'", "'Program'", "'{'", "'}'", "';'", "'['", "']'", "'struct'", 
   "'int'", "'char'", "'boolean'", "'void'", "'('", "','", "')'", "'if'", 
-  "'else'", "'while'", "'return'", "'='", "'.'", "'!'", "'-'", "'*'", "'/'", 
-  "'%'", "'+'", "'<'", "'<='", "'>'", "'>='", "'=='", "'!='", "'&&'", "'||'", 
+  "'else'", "'while'", "'return'", "'='", "'.'", "'!'", "'-'", "'&&'", "'||'", 
+  "'*'", "'/'", "'%'", "'+'", "'<'", "'<='", "'>'", "'>='", "'=='", "'!='", 
   "'true'", "'false'"
 };
 
@@ -2559,218 +2383,216 @@ DecafParser::Initializer::Initializer() {
 
   _serializedATN = {
     0x3, 0x608b, 0xa72a, 0x8133, 0xb9ed, 0x417c, 0x3be7, 0x7786, 0x5964, 
-    0x3, 0x2b, 0x13e, 0x4, 0x2, 0x9, 0x2, 0x4, 0x3, 0x9, 0x3, 0x4, 0x4, 
+    0x3, 0x2b, 0x139, 0x4, 0x2, 0x9, 0x2, 0x4, 0x3, 0x9, 0x3, 0x4, 0x4, 
     0x9, 0x4, 0x4, 0x5, 0x9, 0x5, 0x4, 0x6, 0x9, 0x6, 0x4, 0x7, 0x9, 0x7, 
     0x4, 0x8, 0x9, 0x8, 0x4, 0x9, 0x9, 0x9, 0x4, 0xa, 0x9, 0xa, 0x4, 0xb, 
     0x9, 0xb, 0x4, 0xc, 0x9, 0xc, 0x4, 0xd, 0x9, 0xd, 0x4, 0xe, 0x9, 0xe, 
     0x4, 0xf, 0x9, 0xf, 0x4, 0x10, 0x9, 0x10, 0x4, 0x11, 0x9, 0x11, 0x4, 
     0x12, 0x9, 0x12, 0x4, 0x13, 0x9, 0x13, 0x4, 0x14, 0x9, 0x14, 0x4, 0x15, 
     0x9, 0x15, 0x4, 0x16, 0x9, 0x16, 0x4, 0x17, 0x9, 0x17, 0x4, 0x18, 0x9, 
-    0x18, 0x4, 0x19, 0x9, 0x19, 0x4, 0x1a, 0x9, 0x1a, 0x4, 0x1b, 0x9, 0x1b, 
-    0x3, 0x2, 0x3, 0x2, 0x3, 0x2, 0x3, 0x2, 0x3, 0x2, 0x7, 0x2, 0x3c, 0xa, 
-    0x2, 0xc, 0x2, 0xe, 0x2, 0x3f, 0xb, 0x2, 0x3, 0x2, 0x3, 0x2, 0x3, 0x3, 
-    0x3, 0x3, 0x3, 0x3, 0x5, 0x3, 0x46, 0xa, 0x3, 0x3, 0x4, 0x3, 0x4, 0x3, 
-    0x4, 0x3, 0x4, 0x3, 0x4, 0x3, 0x4, 0x3, 0x4, 0x3, 0x4, 0x3, 0x4, 0x3, 
-    0x4, 0x3, 0x4, 0x3, 0x4, 0x3, 0x4, 0x5, 0x4, 0x55, 0xa, 0x4, 0x3, 0x5, 
-    0x3, 0x5, 0x3, 0x5, 0x3, 0x5, 0x3, 0x5, 0x7, 0x5, 0x5c, 0xa, 0x5, 0xc, 
-    0x5, 0xe, 0x5, 0x5f, 0xb, 0x5, 0x3, 0x5, 0x3, 0x5, 0x3, 0x5, 0x3, 0x6, 
-    0x3, 0x6, 0x3, 0x6, 0x3, 0x6, 0x3, 0x6, 0x3, 0x6, 0x3, 0x6, 0x3, 0x6, 
-    0x3, 0x6, 0x3, 0x6, 0x3, 0x6, 0x3, 0x6, 0x3, 0x6, 0x5, 0x6, 0x71, 0xa, 
-    0x6, 0x3, 0x7, 0x3, 0x7, 0x3, 0x7, 0x3, 0x7, 0x3, 0x7, 0x3, 0x7, 0x3, 
-    0x7, 0x7, 0x7, 0x7a, 0xa, 0x7, 0xc, 0x7, 0xe, 0x7, 0x7d, 0xb, 0x7, 0x5, 
-    0x7, 0x7f, 0xa, 0x7, 0x3, 0x7, 0x3, 0x7, 0x3, 0x7, 0x3, 0x7, 0x3, 0x8, 
-    0x3, 0x8, 0x3, 0x8, 0x3, 0x8, 0x3, 0x8, 0x3, 0x8, 0x3, 0x8, 0x3, 0x8, 
-    0x5, 0x8, 0x8d, 0xa, 0x8, 0x3, 0x9, 0x3, 0x9, 0x3, 0x9, 0x3, 0x9, 0x3, 
-    0x9, 0x3, 0x9, 0x3, 0x9, 0x3, 0x9, 0x3, 0x9, 0x5, 0x9, 0x98, 0xa, 0x9, 
-    0x3, 0xa, 0x3, 0xa, 0x3, 0xa, 0x3, 0xa, 0x3, 0xa, 0x3, 0xa, 0x5, 0xa, 
-    0xa0, 0xa, 0xa, 0x3, 0xb, 0x3, 0xb, 0x3, 0xb, 0x7, 0xb, 0xa5, 0xa, 0xb, 
-    0xc, 0xb, 0xe, 0xb, 0xa8, 0xb, 0xb, 0x3, 0xb, 0x7, 0xb, 0xab, 0xa, 0xb, 
-    0xc, 0xb, 0xe, 0xb, 0xae, 0xb, 0xb, 0x3, 0xb, 0x3, 0xb, 0x3, 0xc, 0x3, 
-    0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 0x5, 0xc, 0xb9, 
-    0xa, 0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 
-    0x3, 0xc, 0x3, 0xc, 0x5, 0xc, 0xc3, 0xa, 0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 
+    0x18, 0x3, 0x2, 0x3, 0x2, 0x3, 0x2, 0x3, 0x2, 0x7, 0x2, 0x35, 0xa, 0x2, 
+    0xc, 0x2, 0xe, 0x2, 0x38, 0xb, 0x2, 0x3, 0x2, 0x3, 0x2, 0x3, 0x3, 0x3, 
+    0x3, 0x3, 0x3, 0x5, 0x3, 0x3f, 0xa, 0x3, 0x3, 0x4, 0x3, 0x4, 0x3, 0x4, 
+    0x3, 0x4, 0x3, 0x4, 0x3, 0x4, 0x3, 0x4, 0x3, 0x4, 0x3, 0x4, 0x3, 0x4, 
+    0x3, 0x4, 0x3, 0x4, 0x3, 0x4, 0x5, 0x4, 0x4e, 0xa, 0x4, 0x3, 0x5, 0x3, 
+    0x5, 0x3, 0x5, 0x3, 0x5, 0x3, 0x5, 0x7, 0x5, 0x55, 0xa, 0x5, 0xc, 0x5, 
+    0xe, 0x5, 0x58, 0xb, 0x5, 0x3, 0x5, 0x3, 0x5, 0x3, 0x5, 0x3, 0x6, 0x3, 
+    0x6, 0x3, 0x6, 0x3, 0x6, 0x3, 0x6, 0x3, 0x6, 0x3, 0x6, 0x3, 0x6, 0x3, 
+    0x6, 0x3, 0x6, 0x3, 0x6, 0x3, 0x6, 0x3, 0x6, 0x3, 0x6, 0x5, 0x6, 0x6b, 
+    0xa, 0x6, 0x3, 0x7, 0x3, 0x7, 0x3, 0x7, 0x3, 0x7, 0x3, 0x7, 0x3, 0x7, 
+    0x7, 0x7, 0x73, 0xa, 0x7, 0xc, 0x7, 0xe, 0x7, 0x76, 0xb, 0x7, 0x5, 0x7, 
+    0x78, 0xa, 0x7, 0x3, 0x7, 0x3, 0x7, 0x3, 0x7, 0x3, 0x7, 0x3, 0x7, 0x3, 
+    0x8, 0x3, 0x8, 0x3, 0x8, 0x3, 0x8, 0x3, 0x8, 0x3, 0x8, 0x3, 0x8, 0x3, 
+    0x8, 0x5, 0x8, 0x87, 0xa, 0x8, 0x3, 0x9, 0x3, 0x9, 0x3, 0x9, 0x3, 0x9, 
+    0x3, 0x9, 0x3, 0x9, 0x3, 0x9, 0x3, 0x9, 0x3, 0x9, 0x5, 0x9, 0x92, 0xa, 
+    0x9, 0x3, 0xa, 0x3, 0xa, 0x3, 0xa, 0x3, 0xa, 0x3, 0xa, 0x3, 0xa, 0x5, 
+    0xa, 0x9a, 0xa, 0xa, 0x3, 0xb, 0x3, 0xb, 0x7, 0xb, 0x9e, 0xa, 0xb, 0xc, 
+    0xb, 0xe, 0xb, 0xa1, 0xb, 0xb, 0x3, 0xb, 0x7, 0xb, 0xa4, 0xa, 0xb, 0xc, 
+    0xb, 0xe, 0xb, 0xa7, 0xb, 0xb, 0x3, 0xb, 0x3, 0xb, 0x3, 0xc, 0x3, 0xc, 
+    0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 0x5, 0xc, 0xb2, 0xa, 
     0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 
-    0xc, 0x5, 0xc, 0xcf, 0xa, 0xc, 0x3, 0xc, 0x5, 0xc, 0xd2, 0xa, 0xc, 0x3, 
-    0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 0xd, 0x5, 0xd, 0xda, 
-    0xa, 0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 0xd, 0x5, 0xd, 0xdf, 0xa, 0xd, 0x3, 
+    0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 0x5, 0xc, 0xbe, 0xa, 0xc, 0x3, 0xc, 
+    0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 
+    0x3, 0xc, 0x3, 0xc, 0x5, 0xc, 0xca, 0xa, 0xc, 0x3, 0xc, 0x5, 0xc, 0xcd, 
+    0xa, 0xc, 0x3, 0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 0xd, 
+    0x3, 0xd, 0x5, 0xd, 0xd6, 0xa, 0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 
+    0xd, 0x3, 0xd, 0x5, 0xd, 0xdd, 0xa, 0xd, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 
+    0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 
+    0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 
+    0x3, 0xe, 0x5, 0xe, 0xf1, 0xa, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 
     0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 
-    0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x5, 0xe, 0xed, 0xa, 0xe, 
-    0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 
-    0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 
-    0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 
-    0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x7, 0xe, 0x107, 0xa, 0xe, 0xc, 0xe, 0xe, 
-    0xe, 0x10a, 0xb, 0xe, 0x3, 0xf, 0x3, 0xf, 0x3, 0xf, 0x3, 0xf, 0x3, 0xf, 
-    0x7, 0xf, 0x111, 0xa, 0xf, 0xc, 0xf, 0xe, 0xf, 0x114, 0xb, 0xf, 0x5, 
-    0xf, 0x116, 0xa, 0xf, 0x3, 0xf, 0x3, 0xf, 0x3, 0x10, 0x3, 0x10, 0x3, 
-    0x10, 0x3, 0x11, 0x3, 0x11, 0x5, 0x11, 0x11f, 0xa, 0x11, 0x3, 0x12, 
-    0x3, 0x12, 0x3, 0x13, 0x3, 0x13, 0x3, 0x14, 0x3, 0x14, 0x3, 0x15, 0x3, 
-    0x15, 0x3, 0x16, 0x3, 0x16, 0x3, 0x17, 0x3, 0x17, 0x3, 0x18, 0x3, 0x18, 
-    0x3, 0x18, 0x3, 0x18, 0x3, 0x18, 0x3, 0x18, 0x3, 0x18, 0x3, 0x18, 0x3, 
-    0x18, 0x5, 0x18, 0x136, 0xa, 0x18, 0x3, 0x19, 0x3, 0x19, 0x3, 0x1a, 
-    0x3, 0x1a, 0x3, 0x1b, 0x3, 0x1b, 0x3, 0x1b, 0x2, 0x3, 0x1a, 0x1c, 0x2, 
-    0x4, 0x6, 0x8, 0xa, 0xc, 0xe, 0x10, 0x12, 0x14, 0x16, 0x18, 0x1a, 0x1c, 
-    0x1e, 0x20, 0x22, 0x24, 0x26, 0x28, 0x2a, 0x2c, 0x2e, 0x30, 0x32, 0x34, 
-    0x2, 0x7, 0x3, 0x2, 0x1a, 0x1c, 0x4, 0x2, 0x19, 0x19, 0x1d, 0x1d, 0x3, 
-    0x2, 0x1e, 0x21, 0x3, 0x2, 0x22, 0x23, 0x3, 0x2, 0x26, 0x27, 0x2, 0x150, 
-    0x2, 0x36, 0x3, 0x2, 0x2, 0x2, 0x4, 0x45, 0x3, 0x2, 0x2, 0x2, 0x6, 0x54, 
-    0x3, 0x2, 0x2, 0x2, 0x8, 0x56, 0x3, 0x2, 0x2, 0x2, 0xa, 0x70, 0x3, 0x2, 
-    0x2, 0x2, 0xc, 0x72, 0x3, 0x2, 0x2, 0x2, 0xe, 0x8c, 0x3, 0x2, 0x2, 0x2, 
-    0x10, 0x97, 0x3, 0x2, 0x2, 0x2, 0x12, 0x9f, 0x3, 0x2, 0x2, 0x2, 0x14, 
-    0xa1, 0x3, 0x2, 0x2, 0x2, 0x16, 0xd1, 0x3, 0x2, 0x2, 0x2, 0x18, 0xd9, 
-    0x3, 0x2, 0x2, 0x2, 0x1a, 0xec, 0x3, 0x2, 0x2, 0x2, 0x1c, 0x10b, 0x3, 
-    0x2, 0x2, 0x2, 0x1e, 0x119, 0x3, 0x2, 0x2, 0x2, 0x20, 0x11e, 0x3, 0x2, 
-    0x2, 0x2, 0x22, 0x120, 0x3, 0x2, 0x2, 0x2, 0x24, 0x122, 0x3, 0x2, 0x2, 
-    0x2, 0x26, 0x124, 0x3, 0x2, 0x2, 0x2, 0x28, 0x126, 0x3, 0x2, 0x2, 0x2, 
-    0x2a, 0x128, 0x3, 0x2, 0x2, 0x2, 0x2c, 0x12a, 0x3, 0x2, 0x2, 0x2, 0x2e, 
-    0x135, 0x3, 0x2, 0x2, 0x2, 0x30, 0x137, 0x3, 0x2, 0x2, 0x2, 0x32, 0x139, 
-    0x3, 0x2, 0x2, 0x2, 0x34, 0x13b, 0x3, 0x2, 0x2, 0x2, 0x36, 0x37, 0x8, 
-    0x2, 0x1, 0x2, 0x37, 0x38, 0x7, 0x3, 0x2, 0x2, 0x38, 0x39, 0x7, 0x4, 
-    0x2, 0x2, 0x39, 0x3d, 0x7, 0x5, 0x2, 0x2, 0x3a, 0x3c, 0x5, 0x4, 0x3, 
-    0x2, 0x3b, 0x3a, 0x3, 0x2, 0x2, 0x2, 0x3c, 0x3f, 0x3, 0x2, 0x2, 0x2, 
-    0x3d, 0x3b, 0x3, 0x2, 0x2, 0x2, 0x3d, 0x3e, 0x3, 0x2, 0x2, 0x2, 0x3e, 
-    0x40, 0x3, 0x2, 0x2, 0x2, 0x3f, 0x3d, 0x3, 0x2, 0x2, 0x2, 0x40, 0x41, 
-    0x7, 0x6, 0x2, 0x2, 0x41, 0x3, 0x3, 0x2, 0x2, 0x2, 0x42, 0x46, 0x5, 
-    0x8, 0x5, 0x2, 0x43, 0x46, 0x5, 0x6, 0x4, 0x2, 0x44, 0x46, 0x5, 0xc, 
-    0x7, 0x2, 0x45, 0x42, 0x3, 0x2, 0x2, 0x2, 0x45, 0x43, 0x3, 0x2, 0x2, 
-    0x2, 0x45, 0x44, 0x3, 0x2, 0x2, 0x2, 0x46, 0x5, 0x3, 0x2, 0x2, 0x2, 
-    0x47, 0x48, 0x5, 0xa, 0x6, 0x2, 0x48, 0x49, 0x7, 0x28, 0x2, 0x2, 0x49, 
-    0x4a, 0x7, 0x7, 0x2, 0x2, 0x4a, 0x4b, 0x8, 0x4, 0x1, 0x2, 0x4b, 0x55, 
-    0x3, 0x2, 0x2, 0x2, 0x4c, 0x4d, 0x5, 0xa, 0x6, 0x2, 0x4d, 0x4e, 0x7, 
-    0x28, 0x2, 0x2, 0x4e, 0x4f, 0x7, 0x8, 0x2, 0x2, 0x4f, 0x50, 0x7, 0x29, 
-    0x2, 0x2, 0x50, 0x51, 0x7, 0x9, 0x2, 0x2, 0x51, 0x52, 0x7, 0x7, 0x2, 
-    0x2, 0x52, 0x53, 0x8, 0x4, 0x1, 0x2, 0x53, 0x55, 0x3, 0x2, 0x2, 0x2, 
-    0x54, 0x47, 0x3, 0x2, 0x2, 0x2, 0x54, 0x4c, 0x3, 0x2, 0x2, 0x2, 0x55, 
-    0x7, 0x3, 0x2, 0x2, 0x2, 0x56, 0x57, 0x7, 0xa, 0x2, 0x2, 0x57, 0x58, 
-    0x7, 0x28, 0x2, 0x2, 0x58, 0x59, 0x8, 0x5, 0x1, 0x2, 0x59, 0x5d, 0x7, 
-    0x5, 0x2, 0x2, 0x5a, 0x5c, 0x5, 0x6, 0x4, 0x2, 0x5b, 0x5a, 0x3, 0x2, 
-    0x2, 0x2, 0x5c, 0x5f, 0x3, 0x2, 0x2, 0x2, 0x5d, 0x5b, 0x3, 0x2, 0x2, 
-    0x2, 0x5d, 0x5e, 0x3, 0x2, 0x2, 0x2, 0x5e, 0x60, 0x3, 0x2, 0x2, 0x2, 
-    0x5f, 0x5d, 0x3, 0x2, 0x2, 0x2, 0x60, 0x61, 0x7, 0x6, 0x2, 0x2, 0x61, 
-    0x62, 0x8, 0x5, 0x1, 0x2, 0x62, 0x9, 0x3, 0x2, 0x2, 0x2, 0x63, 0x64, 
-    0x7, 0xb, 0x2, 0x2, 0x64, 0x71, 0x8, 0x6, 0x1, 0x2, 0x65, 0x66, 0x7, 
-    0xc, 0x2, 0x2, 0x66, 0x71, 0x8, 0x6, 0x1, 0x2, 0x67, 0x68, 0x7, 0xd, 
-    0x2, 0x2, 0x68, 0x71, 0x8, 0x6, 0x1, 0x2, 0x69, 0x6a, 0x7, 0xa, 0x2, 
-    0x2, 0x6a, 0x6b, 0x7, 0x28, 0x2, 0x2, 0x6b, 0x71, 0x8, 0x6, 0x1, 0x2, 
-    0x6c, 0x6d, 0x5, 0x8, 0x5, 0x2, 0x6d, 0x6e, 0x8, 0x6, 0x1, 0x2, 0x6e, 
-    0x71, 0x3, 0x2, 0x2, 0x2, 0x6f, 0x71, 0x7, 0xe, 0x2, 0x2, 0x70, 0x63, 
-    0x3, 0x2, 0x2, 0x2, 0x70, 0x65, 0x3, 0x2, 0x2, 0x2, 0x70, 0x67, 0x3, 
-    0x2, 0x2, 0x2, 0x70, 0x69, 0x3, 0x2, 0x2, 0x2, 0x70, 0x6c, 0x3, 0x2, 
-    0x2, 0x2, 0x70, 0x6f, 0x3, 0x2, 0x2, 0x2, 0x71, 0xb, 0x3, 0x2, 0x2, 
-    0x2, 0x72, 0x73, 0x5, 0xe, 0x8, 0x2, 0x73, 0x74, 0x7, 0x28, 0x2, 0x2, 
-    0x74, 0x75, 0x8, 0x7, 0x1, 0x2, 0x75, 0x7e, 0x7, 0xf, 0x2, 0x2, 0x76, 
-    0x7b, 0x5, 0x10, 0x9, 0x2, 0x77, 0x78, 0x7, 0x10, 0x2, 0x2, 0x78, 0x7a, 
-    0x5, 0x10, 0x9, 0x2, 0x79, 0x77, 0x3, 0x2, 0x2, 0x2, 0x7a, 0x7d, 0x3, 
-    0x2, 0x2, 0x2, 0x7b, 0x79, 0x3, 0x2, 0x2, 0x2, 0x7b, 0x7c, 0x3, 0x2, 
-    0x2, 0x2, 0x7c, 0x7f, 0x3, 0x2, 0x2, 0x2, 0x7d, 0x7b, 0x3, 0x2, 0x2, 
-    0x2, 0x7e, 0x76, 0x3, 0x2, 0x2, 0x2, 0x7e, 0x7f, 0x3, 0x2, 0x2, 0x2, 
-    0x7f, 0x80, 0x3, 0x2, 0x2, 0x2, 0x80, 0x81, 0x7, 0x11, 0x2, 0x2, 0x81, 
-    0x82, 0x5, 0x14, 0xb, 0x2, 0x82, 0x83, 0x8, 0x7, 0x1, 0x2, 0x83, 0xd, 
-    0x3, 0x2, 0x2, 0x2, 0x84, 0x85, 0x7, 0xb, 0x2, 0x2, 0x85, 0x8d, 0x8, 
-    0x8, 0x1, 0x2, 0x86, 0x87, 0x7, 0xc, 0x2, 0x2, 0x87, 0x8d, 0x8, 0x8, 
-    0x1, 0x2, 0x88, 0x89, 0x7, 0xd, 0x2, 0x2, 0x89, 0x8d, 0x8, 0x8, 0x1, 
-    0x2, 0x8a, 0x8b, 0x7, 0xe, 0x2, 0x2, 0x8b, 0x8d, 0x8, 0x8, 0x1, 0x2, 
-    0x8c, 0x84, 0x3, 0x2, 0x2, 0x2, 0x8c, 0x86, 0x3, 0x2, 0x2, 0x2, 0x8c, 
-    0x88, 0x3, 0x2, 0x2, 0x2, 0x8c, 0x8a, 0x3, 0x2, 0x2, 0x2, 0x8d, 0xf, 
-    0x3, 0x2, 0x2, 0x2, 0x8e, 0x8f, 0x5, 0x12, 0xa, 0x2, 0x8f, 0x90, 0x7, 
-    0x28, 0x2, 0x2, 0x90, 0x91, 0x8, 0x9, 0x1, 0x2, 0x91, 0x98, 0x3, 0x2, 
-    0x2, 0x2, 0x92, 0x93, 0x5, 0x12, 0xa, 0x2, 0x93, 0x94, 0x7, 0x28, 0x2, 
-    0x2, 0x94, 0x95, 0x7, 0x8, 0x2, 0x2, 0x95, 0x96, 0x7, 0x9, 0x2, 0x2, 
-    0x96, 0x98, 0x3, 0x2, 0x2, 0x2, 0x97, 0x8e, 0x3, 0x2, 0x2, 0x2, 0x97, 
-    0x92, 0x3, 0x2, 0x2, 0x2, 0x98, 0x11, 0x3, 0x2, 0x2, 0x2, 0x99, 0x9a, 
-    0x7, 0xb, 0x2, 0x2, 0x9a, 0xa0, 0x8, 0xa, 0x1, 0x2, 0x9b, 0x9c, 0x7, 
-    0xc, 0x2, 0x2, 0x9c, 0xa0, 0x8, 0xa, 0x1, 0x2, 0x9d, 0x9e, 0x7, 0xd, 
-    0x2, 0x2, 0x9e, 0xa0, 0x8, 0xa, 0x1, 0x2, 0x9f, 0x99, 0x3, 0x2, 0x2, 
-    0x2, 0x9f, 0x9b, 0x3, 0x2, 0x2, 0x2, 0x9f, 0x9d, 0x3, 0x2, 0x2, 0x2, 
-    0xa0, 0x13, 0x3, 0x2, 0x2, 0x2, 0xa1, 0xa2, 0x8, 0xb, 0x1, 0x2, 0xa2, 
-    0xa6, 0x7, 0x5, 0x2, 0x2, 0xa3, 0xa5, 0x5, 0x6, 0x4, 0x2, 0xa4, 0xa3, 
-    0x3, 0x2, 0x2, 0x2, 0xa5, 0xa8, 0x3, 0x2, 0x2, 0x2, 0xa6, 0xa4, 0x3, 
-    0x2, 0x2, 0x2, 0xa6, 0xa7, 0x3, 0x2, 0x2, 0x2, 0xa7, 0xac, 0x3, 0x2, 
-    0x2, 0x2, 0xa8, 0xa6, 0x3, 0x2, 0x2, 0x2, 0xa9, 0xab, 0x5, 0x16, 0xc, 
-    0x2, 0xaa, 0xa9, 0x3, 0x2, 0x2, 0x2, 0xab, 0xae, 0x3, 0x2, 0x2, 0x2, 
-    0xac, 0xaa, 0x3, 0x2, 0x2, 0x2, 0xac, 0xad, 0x3, 0x2, 0x2, 0x2, 0xad, 
-    0xaf, 0x3, 0x2, 0x2, 0x2, 0xae, 0xac, 0x3, 0x2, 0x2, 0x2, 0xaf, 0xb0, 
-    0x7, 0x6, 0x2, 0x2, 0xb0, 0x15, 0x3, 0x2, 0x2, 0x2, 0xb1, 0xb2, 0x7, 
-    0x12, 0x2, 0x2, 0xb2, 0xb3, 0x7, 0xf, 0x2, 0x2, 0xb3, 0xb4, 0x5, 0x1a, 
-    0xe, 0x2, 0xb4, 0xb5, 0x7, 0x11, 0x2, 0x2, 0xb5, 0xb8, 0x5, 0x14, 0xb, 
-    0x2, 0xb6, 0xb7, 0x7, 0x13, 0x2, 0x2, 0xb7, 0xb9, 0x5, 0x14, 0xb, 0x2, 
-    0xb8, 0xb6, 0x3, 0x2, 0x2, 0x2, 0xb8, 0xb9, 0x3, 0x2, 0x2, 0x2, 0xb9, 
-    0xd2, 0x3, 0x2, 0x2, 0x2, 0xba, 0xbb, 0x7, 0x14, 0x2, 0x2, 0xbb, 0xbc, 
-    0x7, 0xf, 0x2, 0x2, 0xbc, 0xbd, 0x5, 0x1a, 0xe, 0x2, 0xbd, 0xbe, 0x7, 
-    0x11, 0x2, 0x2, 0xbe, 0xbf, 0x5, 0x14, 0xb, 0x2, 0xbf, 0xd2, 0x3, 0x2, 
-    0x2, 0x2, 0xc0, 0xc2, 0x7, 0x15, 0x2, 0x2, 0xc1, 0xc3, 0x5, 0x1a, 0xe, 
-    0x2, 0xc2, 0xc1, 0x3, 0x2, 0x2, 0x2, 0xc2, 0xc3, 0x3, 0x2, 0x2, 0x2, 
-    0xc3, 0xc4, 0x3, 0x2, 0x2, 0x2, 0xc4, 0xd2, 0x7, 0x7, 0x2, 0x2, 0xc5, 
-    0xc6, 0x5, 0x1c, 0xf, 0x2, 0xc6, 0xc7, 0x7, 0x7, 0x2, 0x2, 0xc7, 0xd2, 
-    0x3, 0x2, 0x2, 0x2, 0xc8, 0xd2, 0x5, 0x14, 0xb, 0x2, 0xc9, 0xca, 0x5, 
-    0x18, 0xd, 0x2, 0xca, 0xcb, 0x7, 0x16, 0x2, 0x2, 0xcb, 0xcc, 0x5, 0x1a, 
-    0xe, 0x2, 0xcc, 0xd2, 0x3, 0x2, 0x2, 0x2, 0xcd, 0xcf, 0x5, 0x1a, 0xe, 
-    0x2, 0xce, 0xcd, 0x3, 0x2, 0x2, 0x2, 0xce, 0xcf, 0x3, 0x2, 0x2, 0x2, 
-    0xcf, 0xd0, 0x3, 0x2, 0x2, 0x2, 0xd0, 0xd2, 0x7, 0x7, 0x2, 0x2, 0xd1, 
-    0xb1, 0x3, 0x2, 0x2, 0x2, 0xd1, 0xba, 0x3, 0x2, 0x2, 0x2, 0xd1, 0xc0, 
-    0x3, 0x2, 0x2, 0x2, 0xd1, 0xc5, 0x3, 0x2, 0x2, 0x2, 0xd1, 0xc8, 0x3, 
-    0x2, 0x2, 0x2, 0xd1, 0xc9, 0x3, 0x2, 0x2, 0x2, 0xd1, 0xce, 0x3, 0x2, 
-    0x2, 0x2, 0xd2, 0x17, 0x3, 0x2, 0x2, 0x2, 0xd3, 0xda, 0x7, 0x28, 0x2, 
-    0x2, 0xd4, 0xd5, 0x7, 0x28, 0x2, 0x2, 0xd5, 0xd6, 0x7, 0x8, 0x2, 0x2, 
-    0xd6, 0xd7, 0x5, 0x1a, 0xe, 0x2, 0xd7, 0xd8, 0x7, 0x9, 0x2, 0x2, 0xd8, 
-    0xda, 0x3, 0x2, 0x2, 0x2, 0xd9, 0xd3, 0x3, 0x2, 0x2, 0x2, 0xd9, 0xd4, 
-    0x3, 0x2, 0x2, 0x2, 0xda, 0xdb, 0x3, 0x2, 0x2, 0x2, 0xdb, 0xde, 0x8, 
-    0xd, 0x1, 0x2, 0xdc, 0xdd, 0x7, 0x17, 0x2, 0x2, 0xdd, 0xdf, 0x5, 0x18, 
-    0xd, 0x2, 0xde, 0xdc, 0x3, 0x2, 0x2, 0x2, 0xde, 0xdf, 0x3, 0x2, 0x2, 
-    0x2, 0xdf, 0x19, 0x3, 0x2, 0x2, 0x2, 0xe0, 0xe1, 0x8, 0xe, 0x1, 0x2, 
-    0xe1, 0xe2, 0x7, 0xf, 0x2, 0x2, 0xe2, 0xe3, 0x5, 0x1a, 0xe, 0x2, 0xe3, 
-    0xe4, 0x7, 0x11, 0x2, 0x2, 0xe4, 0xed, 0x3, 0x2, 0x2, 0x2, 0xe5, 0xe6, 
-    0x7, 0x18, 0x2, 0x2, 0xe6, 0xed, 0x5, 0x1a, 0xe, 0xb, 0xe7, 0xe8, 0x7, 
-    0x19, 0x2, 0x2, 0xe8, 0xed, 0x5, 0x1a, 0xe, 0xa, 0xe9, 0xea, 0x5, 0x2e, 
-    0x18, 0x2, 0xea, 0xeb, 0x8, 0xe, 0x1, 0x2, 0xeb, 0xed, 0x3, 0x2, 0x2, 
-    0x2, 0xec, 0xe0, 0x3, 0x2, 0x2, 0x2, 0xec, 0xe5, 0x3, 0x2, 0x2, 0x2, 
-    0xec, 0xe7, 0x3, 0x2, 0x2, 0x2, 0xec, 0xe9, 0x3, 0x2, 0x2, 0x2, 0xed, 
-    0x108, 0x3, 0x2, 0x2, 0x2, 0xee, 0xef, 0xc, 0x9, 0x2, 0x2, 0xef, 0xf0, 
-    0x5, 0x22, 0x12, 0x2, 0xf0, 0xf1, 0x5, 0x1a, 0xe, 0xa, 0xf1, 0x107, 
-    0x3, 0x2, 0x2, 0x2, 0xf2, 0xf3, 0xc, 0x8, 0x2, 0x2, 0xf3, 0xf4, 0x5, 
-    0x24, 0x13, 0x2, 0xf4, 0xf5, 0x5, 0x1a, 0xe, 0x9, 0xf5, 0x107, 0x3, 
-    0x2, 0x2, 0x2, 0xf6, 0xf7, 0xc, 0x7, 0x2, 0x2, 0xf7, 0xf8, 0x5, 0x26, 
-    0x14, 0x2, 0xf8, 0xf9, 0x5, 0x1a, 0xe, 0x8, 0xf9, 0x107, 0x3, 0x2, 0x2, 
-    0x2, 0xfa, 0xfb, 0xc, 0x6, 0x2, 0x2, 0xfb, 0xfc, 0x5, 0x28, 0x15, 0x2, 
-    0xfc, 0xfd, 0x5, 0x1a, 0xe, 0x7, 0xfd, 0x107, 0x3, 0x2, 0x2, 0x2, 0xfe, 
-    0xff, 0xc, 0x5, 0x2, 0x2, 0xff, 0x100, 0x5, 0x2a, 0x16, 0x2, 0x100, 
-    0x101, 0x5, 0x1a, 0xe, 0x6, 0x101, 0x107, 0x3, 0x2, 0x2, 0x2, 0x102, 
-    0x103, 0xc, 0x4, 0x2, 0x2, 0x103, 0x104, 0x5, 0x2c, 0x17, 0x2, 0x104, 
-    0x105, 0x5, 0x1a, 0xe, 0x5, 0x105, 0x107, 0x3, 0x2, 0x2, 0x2, 0x106, 
-    0xee, 0x3, 0x2, 0x2, 0x2, 0x106, 0xf2, 0x3, 0x2, 0x2, 0x2, 0x106, 0xf6, 
-    0x3, 0x2, 0x2, 0x2, 0x106, 0xfa, 0x3, 0x2, 0x2, 0x2, 0x106, 0xfe, 0x3, 
-    0x2, 0x2, 0x2, 0x106, 0x102, 0x3, 0x2, 0x2, 0x2, 0x107, 0x10a, 0x3, 
-    0x2, 0x2, 0x2, 0x108, 0x106, 0x3, 0x2, 0x2, 0x2, 0x108, 0x109, 0x3, 
-    0x2, 0x2, 0x2, 0x109, 0x1b, 0x3, 0x2, 0x2, 0x2, 0x10a, 0x108, 0x3, 0x2, 
-    0x2, 0x2, 0x10b, 0x10c, 0x7, 0x28, 0x2, 0x2, 0x10c, 0x115, 0x7, 0xf, 
-    0x2, 0x2, 0x10d, 0x112, 0x5, 0x1e, 0x10, 0x2, 0x10e, 0x10f, 0x7, 0x10, 
-    0x2, 0x2, 0x10f, 0x111, 0x5, 0x1e, 0x10, 0x2, 0x110, 0x10e, 0x3, 0x2, 
-    0x2, 0x2, 0x111, 0x114, 0x3, 0x2, 0x2, 0x2, 0x112, 0x110, 0x3, 0x2, 
-    0x2, 0x2, 0x112, 0x113, 0x3, 0x2, 0x2, 0x2, 0x113, 0x116, 0x3, 0x2, 
-    0x2, 0x2, 0x114, 0x112, 0x3, 0x2, 0x2, 0x2, 0x115, 0x10d, 0x3, 0x2, 
-    0x2, 0x2, 0x115, 0x116, 0x3, 0x2, 0x2, 0x2, 0x116, 0x117, 0x3, 0x2, 
-    0x2, 0x2, 0x117, 0x118, 0x7, 0x11, 0x2, 0x2, 0x118, 0x1d, 0x3, 0x2, 
-    0x2, 0x2, 0x119, 0x11a, 0x5, 0x1a, 0xe, 0x2, 0x11a, 0x11b, 0x8, 0x10, 
-    0x1, 0x2, 0x11b, 0x1f, 0x3, 0x2, 0x2, 0x2, 0x11c, 0x11f, 0x5, 0x22, 
-    0x12, 0x2, 0x11d, 0x11f, 0x5, 0x24, 0x13, 0x2, 0x11e, 0x11c, 0x3, 0x2, 
-    0x2, 0x2, 0x11e, 0x11d, 0x3, 0x2, 0x2, 0x2, 0x11f, 0x21, 0x3, 0x2, 0x2, 
-    0x2, 0x120, 0x121, 0x9, 0x2, 0x2, 0x2, 0x121, 0x23, 0x3, 0x2, 0x2, 0x2, 
-    0x122, 0x123, 0x9, 0x3, 0x2, 0x2, 0x123, 0x25, 0x3, 0x2, 0x2, 0x2, 0x124, 
-    0x125, 0x9, 0x4, 0x2, 0x2, 0x125, 0x27, 0x3, 0x2, 0x2, 0x2, 0x126, 0x127, 
-    0x9, 0x5, 0x2, 0x2, 0x127, 0x29, 0x3, 0x2, 0x2, 0x2, 0x128, 0x129, 0x7, 
-    0x24, 0x2, 0x2, 0x129, 0x2b, 0x3, 0x2, 0x2, 0x2, 0x12a, 0x12b, 0x7, 
-    0x25, 0x2, 0x2, 0x12b, 0x2d, 0x3, 0x2, 0x2, 0x2, 0x12c, 0x12d, 0x5, 
-    0x30, 0x19, 0x2, 0x12d, 0x12e, 0x8, 0x18, 0x1, 0x2, 0x12e, 0x136, 0x3, 
-    0x2, 0x2, 0x2, 0x12f, 0x130, 0x5, 0x32, 0x1a, 0x2, 0x130, 0x131, 0x8, 
-    0x18, 0x1, 0x2, 0x131, 0x136, 0x3, 0x2, 0x2, 0x2, 0x132, 0x133, 0x5, 
-    0x34, 0x1b, 0x2, 0x133, 0x134, 0x8, 0x18, 0x1, 0x2, 0x134, 0x136, 0x3, 
-    0x2, 0x2, 0x2, 0x135, 0x12c, 0x3, 0x2, 0x2, 0x2, 0x135, 0x12f, 0x3, 
-    0x2, 0x2, 0x2, 0x135, 0x132, 0x3, 0x2, 0x2, 0x2, 0x136, 0x2f, 0x3, 0x2, 
-    0x2, 0x2, 0x137, 0x138, 0x7, 0x29, 0x2, 0x2, 0x138, 0x31, 0x3, 0x2, 
-    0x2, 0x2, 0x139, 0x13a, 0x7, 0x2a, 0x2, 0x2, 0x13a, 0x33, 0x3, 0x2, 
-    0x2, 0x2, 0x13b, 0x13c, 0x9, 0x6, 0x2, 0x2, 0x13c, 0x35, 0x3, 0x2, 0x2, 
-    0x2, 0x1b, 0x3d, 0x45, 0x54, 0x5d, 0x70, 0x7b, 0x7e, 0x8c, 0x97, 0x9f, 
-    0xa6, 0xac, 0xb8, 0xc2, 0xce, 0xd1, 0xd9, 0xde, 0xec, 0x106, 0x108, 
-    0x112, 0x115, 0x11e, 0x135, 
+    0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 
+    0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x7, 0xe, 0x109, 0xa, 0xe, 
+    0xc, 0xe, 0xe, 0xe, 0x10c, 0xb, 0xe, 0x3, 0xf, 0x3, 0xf, 0x3, 0xf, 0x3, 
+    0xf, 0x3, 0xf, 0x7, 0xf, 0x113, 0xa, 0xf, 0xc, 0xf, 0xe, 0xf, 0x116, 
+    0xb, 0xf, 0x5, 0xf, 0x118, 0xa, 0xf, 0x3, 0xf, 0x3, 0xf, 0x3, 0xf, 0x3, 
+    0x10, 0x3, 0x10, 0x3, 0x10, 0x3, 0x11, 0x3, 0x11, 0x3, 0x12, 0x3, 0x12, 
+    0x3, 0x13, 0x3, 0x13, 0x3, 0x14, 0x3, 0x14, 0x3, 0x15, 0x3, 0x15, 0x3, 
+    0x15, 0x3, 0x15, 0x3, 0x15, 0x3, 0x15, 0x3, 0x15, 0x3, 0x15, 0x3, 0x15, 
+    0x5, 0x15, 0x131, 0xa, 0x15, 0x3, 0x16, 0x3, 0x16, 0x3, 0x17, 0x3, 0x17, 
+    0x3, 0x18, 0x3, 0x18, 0x3, 0x18, 0x2, 0x3, 0x1a, 0x19, 0x2, 0x4, 0x6, 
+    0x8, 0xa, 0xc, 0xe, 0x10, 0x12, 0x14, 0x16, 0x18, 0x1a, 0x1c, 0x1e, 
+    0x20, 0x22, 0x24, 0x26, 0x28, 0x2a, 0x2c, 0x2e, 0x2, 0x7, 0x3, 0x2, 
+    0x1c, 0x1e, 0x4, 0x2, 0x19, 0x19, 0x1f, 0x1f, 0x3, 0x2, 0x20, 0x23, 
+    0x3, 0x2, 0x24, 0x25, 0x3, 0x2, 0x26, 0x27, 0x2, 0x14f, 0x2, 0x30, 0x3, 
+    0x2, 0x2, 0x2, 0x4, 0x3e, 0x3, 0x2, 0x2, 0x2, 0x6, 0x4d, 0x3, 0x2, 0x2, 
+    0x2, 0x8, 0x4f, 0x3, 0x2, 0x2, 0x2, 0xa, 0x6a, 0x3, 0x2, 0x2, 0x2, 0xc, 
+    0x6c, 0x3, 0x2, 0x2, 0x2, 0xe, 0x86, 0x3, 0x2, 0x2, 0x2, 0x10, 0x91, 
+    0x3, 0x2, 0x2, 0x2, 0x12, 0x99, 0x3, 0x2, 0x2, 0x2, 0x14, 0x9b, 0x3, 
+    0x2, 0x2, 0x2, 0x16, 0xcc, 0x3, 0x2, 0x2, 0x2, 0x18, 0xd5, 0x3, 0x2, 
+    0x2, 0x2, 0x1a, 0xf0, 0x3, 0x2, 0x2, 0x2, 0x1c, 0x10d, 0x3, 0x2, 0x2, 
+    0x2, 0x1e, 0x11c, 0x3, 0x2, 0x2, 0x2, 0x20, 0x11f, 0x3, 0x2, 0x2, 0x2, 
+    0x22, 0x121, 0x3, 0x2, 0x2, 0x2, 0x24, 0x123, 0x3, 0x2, 0x2, 0x2, 0x26, 
+    0x125, 0x3, 0x2, 0x2, 0x2, 0x28, 0x130, 0x3, 0x2, 0x2, 0x2, 0x2a, 0x132, 
+    0x3, 0x2, 0x2, 0x2, 0x2c, 0x134, 0x3, 0x2, 0x2, 0x2, 0x2e, 0x136, 0x3, 
+    0x2, 0x2, 0x2, 0x30, 0x31, 0x7, 0x3, 0x2, 0x2, 0x31, 0x32, 0x7, 0x4, 
+    0x2, 0x2, 0x32, 0x36, 0x7, 0x5, 0x2, 0x2, 0x33, 0x35, 0x5, 0x4, 0x3, 
+    0x2, 0x34, 0x33, 0x3, 0x2, 0x2, 0x2, 0x35, 0x38, 0x3, 0x2, 0x2, 0x2, 
+    0x36, 0x34, 0x3, 0x2, 0x2, 0x2, 0x36, 0x37, 0x3, 0x2, 0x2, 0x2, 0x37, 
+    0x39, 0x3, 0x2, 0x2, 0x2, 0x38, 0x36, 0x3, 0x2, 0x2, 0x2, 0x39, 0x3a, 
+    0x7, 0x6, 0x2, 0x2, 0x3a, 0x3, 0x3, 0x2, 0x2, 0x2, 0x3b, 0x3f, 0x5, 
+    0x8, 0x5, 0x2, 0x3c, 0x3f, 0x5, 0x6, 0x4, 0x2, 0x3d, 0x3f, 0x5, 0xc, 
+    0x7, 0x2, 0x3e, 0x3b, 0x3, 0x2, 0x2, 0x2, 0x3e, 0x3c, 0x3, 0x2, 0x2, 
+    0x2, 0x3e, 0x3d, 0x3, 0x2, 0x2, 0x2, 0x3f, 0x5, 0x3, 0x2, 0x2, 0x2, 
+    0x40, 0x41, 0x5, 0xa, 0x6, 0x2, 0x41, 0x42, 0x7, 0x28, 0x2, 0x2, 0x42, 
+    0x43, 0x7, 0x7, 0x2, 0x2, 0x43, 0x44, 0x8, 0x4, 0x1, 0x2, 0x44, 0x4e, 
+    0x3, 0x2, 0x2, 0x2, 0x45, 0x46, 0x5, 0xa, 0x6, 0x2, 0x46, 0x47, 0x7, 
+    0x28, 0x2, 0x2, 0x47, 0x48, 0x7, 0x8, 0x2, 0x2, 0x48, 0x49, 0x7, 0x29, 
+    0x2, 0x2, 0x49, 0x4a, 0x7, 0x9, 0x2, 0x2, 0x4a, 0x4b, 0x7, 0x7, 0x2, 
+    0x2, 0x4b, 0x4c, 0x8, 0x4, 0x1, 0x2, 0x4c, 0x4e, 0x3, 0x2, 0x2, 0x2, 
+    0x4d, 0x40, 0x3, 0x2, 0x2, 0x2, 0x4d, 0x45, 0x3, 0x2, 0x2, 0x2, 0x4e, 
+    0x7, 0x3, 0x2, 0x2, 0x2, 0x4f, 0x50, 0x7, 0xa, 0x2, 0x2, 0x50, 0x51, 
+    0x7, 0x28, 0x2, 0x2, 0x51, 0x52, 0x8, 0x5, 0x1, 0x2, 0x52, 0x56, 0x7, 
+    0x5, 0x2, 0x2, 0x53, 0x55, 0x5, 0x6, 0x4, 0x2, 0x54, 0x53, 0x3, 0x2, 
+    0x2, 0x2, 0x55, 0x58, 0x3, 0x2, 0x2, 0x2, 0x56, 0x54, 0x3, 0x2, 0x2, 
+    0x2, 0x56, 0x57, 0x3, 0x2, 0x2, 0x2, 0x57, 0x59, 0x3, 0x2, 0x2, 0x2, 
+    0x58, 0x56, 0x3, 0x2, 0x2, 0x2, 0x59, 0x5a, 0x7, 0x6, 0x2, 0x2, 0x5a, 
+    0x5b, 0x8, 0x5, 0x1, 0x2, 0x5b, 0x9, 0x3, 0x2, 0x2, 0x2, 0x5c, 0x5d, 
+    0x7, 0xb, 0x2, 0x2, 0x5d, 0x6b, 0x8, 0x6, 0x1, 0x2, 0x5e, 0x5f, 0x7, 
+    0xc, 0x2, 0x2, 0x5f, 0x6b, 0x8, 0x6, 0x1, 0x2, 0x60, 0x61, 0x7, 0xd, 
+    0x2, 0x2, 0x61, 0x6b, 0x8, 0x6, 0x1, 0x2, 0x62, 0x63, 0x7, 0xa, 0x2, 
+    0x2, 0x63, 0x64, 0x7, 0x28, 0x2, 0x2, 0x64, 0x6b, 0x8, 0x6, 0x1, 0x2, 
+    0x65, 0x66, 0x5, 0x8, 0x5, 0x2, 0x66, 0x67, 0x8, 0x6, 0x1, 0x2, 0x67, 
+    0x6b, 0x3, 0x2, 0x2, 0x2, 0x68, 0x69, 0x7, 0xe, 0x2, 0x2, 0x69, 0x6b, 
+    0x8, 0x6, 0x1, 0x2, 0x6a, 0x5c, 0x3, 0x2, 0x2, 0x2, 0x6a, 0x5e, 0x3, 
+    0x2, 0x2, 0x2, 0x6a, 0x60, 0x3, 0x2, 0x2, 0x2, 0x6a, 0x62, 0x3, 0x2, 
+    0x2, 0x2, 0x6a, 0x65, 0x3, 0x2, 0x2, 0x2, 0x6a, 0x68, 0x3, 0x2, 0x2, 
+    0x2, 0x6b, 0xb, 0x3, 0x2, 0x2, 0x2, 0x6c, 0x6d, 0x5, 0xe, 0x8, 0x2, 
+    0x6d, 0x6e, 0x7, 0x28, 0x2, 0x2, 0x6e, 0x77, 0x7, 0xf, 0x2, 0x2, 0x6f, 
+    0x74, 0x5, 0x10, 0x9, 0x2, 0x70, 0x71, 0x7, 0x10, 0x2, 0x2, 0x71, 0x73, 
+    0x5, 0x10, 0x9, 0x2, 0x72, 0x70, 0x3, 0x2, 0x2, 0x2, 0x73, 0x76, 0x3, 
+    0x2, 0x2, 0x2, 0x74, 0x72, 0x3, 0x2, 0x2, 0x2, 0x74, 0x75, 0x3, 0x2, 
+    0x2, 0x2, 0x75, 0x78, 0x3, 0x2, 0x2, 0x2, 0x76, 0x74, 0x3, 0x2, 0x2, 
+    0x2, 0x77, 0x6f, 0x3, 0x2, 0x2, 0x2, 0x77, 0x78, 0x3, 0x2, 0x2, 0x2, 
+    0x78, 0x79, 0x3, 0x2, 0x2, 0x2, 0x79, 0x7a, 0x7, 0x11, 0x2, 0x2, 0x7a, 
+    0x7b, 0x8, 0x7, 0x1, 0x2, 0x7b, 0x7c, 0x5, 0x14, 0xb, 0x2, 0x7c, 0x7d, 
+    0x8, 0x7, 0x1, 0x2, 0x7d, 0xd, 0x3, 0x2, 0x2, 0x2, 0x7e, 0x7f, 0x7, 
+    0xb, 0x2, 0x2, 0x7f, 0x87, 0x8, 0x8, 0x1, 0x2, 0x80, 0x81, 0x7, 0xc, 
+    0x2, 0x2, 0x81, 0x87, 0x8, 0x8, 0x1, 0x2, 0x82, 0x83, 0x7, 0xd, 0x2, 
+    0x2, 0x83, 0x87, 0x8, 0x8, 0x1, 0x2, 0x84, 0x85, 0x7, 0xe, 0x2, 0x2, 
+    0x85, 0x87, 0x8, 0x8, 0x1, 0x2, 0x86, 0x7e, 0x3, 0x2, 0x2, 0x2, 0x86, 
+    0x80, 0x3, 0x2, 0x2, 0x2, 0x86, 0x82, 0x3, 0x2, 0x2, 0x2, 0x86, 0x84, 
+    0x3, 0x2, 0x2, 0x2, 0x87, 0xf, 0x3, 0x2, 0x2, 0x2, 0x88, 0x89, 0x5, 
+    0x12, 0xa, 0x2, 0x89, 0x8a, 0x7, 0x28, 0x2, 0x2, 0x8a, 0x8b, 0x8, 0x9, 
+    0x1, 0x2, 0x8b, 0x92, 0x3, 0x2, 0x2, 0x2, 0x8c, 0x8d, 0x5, 0x12, 0xa, 
+    0x2, 0x8d, 0x8e, 0x7, 0x28, 0x2, 0x2, 0x8e, 0x8f, 0x7, 0x8, 0x2, 0x2, 
+    0x8f, 0x90, 0x7, 0x9, 0x2, 0x2, 0x90, 0x92, 0x3, 0x2, 0x2, 0x2, 0x91, 
+    0x88, 0x3, 0x2, 0x2, 0x2, 0x91, 0x8c, 0x3, 0x2, 0x2, 0x2, 0x92, 0x11, 
+    0x3, 0x2, 0x2, 0x2, 0x93, 0x94, 0x7, 0xb, 0x2, 0x2, 0x94, 0x9a, 0x8, 
+    0xa, 0x1, 0x2, 0x95, 0x96, 0x7, 0xc, 0x2, 0x2, 0x96, 0x9a, 0x8, 0xa, 
+    0x1, 0x2, 0x97, 0x98, 0x7, 0xd, 0x2, 0x2, 0x98, 0x9a, 0x8, 0xa, 0x1, 
+    0x2, 0x99, 0x93, 0x3, 0x2, 0x2, 0x2, 0x99, 0x95, 0x3, 0x2, 0x2, 0x2, 
+    0x99, 0x97, 0x3, 0x2, 0x2, 0x2, 0x9a, 0x13, 0x3, 0x2, 0x2, 0x2, 0x9b, 
+    0x9f, 0x7, 0x5, 0x2, 0x2, 0x9c, 0x9e, 0x5, 0x6, 0x4, 0x2, 0x9d, 0x9c, 
+    0x3, 0x2, 0x2, 0x2, 0x9e, 0xa1, 0x3, 0x2, 0x2, 0x2, 0x9f, 0x9d, 0x3, 
+    0x2, 0x2, 0x2, 0x9f, 0xa0, 0x3, 0x2, 0x2, 0x2, 0xa0, 0xa5, 0x3, 0x2, 
+    0x2, 0x2, 0xa1, 0x9f, 0x3, 0x2, 0x2, 0x2, 0xa2, 0xa4, 0x5, 0x16, 0xc, 
+    0x2, 0xa3, 0xa2, 0x3, 0x2, 0x2, 0x2, 0xa4, 0xa7, 0x3, 0x2, 0x2, 0x2, 
+    0xa5, 0xa3, 0x3, 0x2, 0x2, 0x2, 0xa5, 0xa6, 0x3, 0x2, 0x2, 0x2, 0xa6, 
+    0xa8, 0x3, 0x2, 0x2, 0x2, 0xa7, 0xa5, 0x3, 0x2, 0x2, 0x2, 0xa8, 0xa9, 
+    0x7, 0x6, 0x2, 0x2, 0xa9, 0x15, 0x3, 0x2, 0x2, 0x2, 0xaa, 0xab, 0x7, 
+    0x12, 0x2, 0x2, 0xab, 0xac, 0x7, 0xf, 0x2, 0x2, 0xac, 0xad, 0x5, 0x1a, 
+    0xe, 0x2, 0xad, 0xae, 0x7, 0x11, 0x2, 0x2, 0xae, 0xb1, 0x5, 0x14, 0xb, 
+    0x2, 0xaf, 0xb0, 0x7, 0x13, 0x2, 0x2, 0xb0, 0xb2, 0x5, 0x14, 0xb, 0x2, 
+    0xb1, 0xaf, 0x3, 0x2, 0x2, 0x2, 0xb1, 0xb2, 0x3, 0x2, 0x2, 0x2, 0xb2, 
+    0xcd, 0x3, 0x2, 0x2, 0x2, 0xb3, 0xb4, 0x7, 0x14, 0x2, 0x2, 0xb4, 0xb5, 
+    0x7, 0xf, 0x2, 0x2, 0xb5, 0xb6, 0x5, 0x1a, 0xe, 0x2, 0xb6, 0xb7, 0x7, 
+    0x11, 0x2, 0x2, 0xb7, 0xb8, 0x5, 0x14, 0xb, 0x2, 0xb8, 0xcd, 0x3, 0x2, 
+    0x2, 0x2, 0xb9, 0xbd, 0x7, 0x15, 0x2, 0x2, 0xba, 0xbb, 0x5, 0x1a, 0xe, 
+    0x2, 0xbb, 0xbc, 0x8, 0xc, 0x1, 0x2, 0xbc, 0xbe, 0x3, 0x2, 0x2, 0x2, 
+    0xbd, 0xba, 0x3, 0x2, 0x2, 0x2, 0xbd, 0xbe, 0x3, 0x2, 0x2, 0x2, 0xbe, 
+    0xbf, 0x3, 0x2, 0x2, 0x2, 0xbf, 0xcd, 0x7, 0x7, 0x2, 0x2, 0xc0, 0xc1, 
+    0x5, 0x1c, 0xf, 0x2, 0xc1, 0xc2, 0x7, 0x7, 0x2, 0x2, 0xc2, 0xcd, 0x3, 
+    0x2, 0x2, 0x2, 0xc3, 0xcd, 0x5, 0x14, 0xb, 0x2, 0xc4, 0xc5, 0x5, 0x18, 
+    0xd, 0x2, 0xc5, 0xc6, 0x7, 0x16, 0x2, 0x2, 0xc6, 0xc7, 0x5, 0x1a, 0xe, 
+    0x2, 0xc7, 0xcd, 0x3, 0x2, 0x2, 0x2, 0xc8, 0xca, 0x5, 0x1a, 0xe, 0x2, 
+    0xc9, 0xc8, 0x3, 0x2, 0x2, 0x2, 0xc9, 0xca, 0x3, 0x2, 0x2, 0x2, 0xca, 
+    0xcb, 0x3, 0x2, 0x2, 0x2, 0xcb, 0xcd, 0x7, 0x7, 0x2, 0x2, 0xcc, 0xaa, 
+    0x3, 0x2, 0x2, 0x2, 0xcc, 0xb3, 0x3, 0x2, 0x2, 0x2, 0xcc, 0xb9, 0x3, 
+    0x2, 0x2, 0x2, 0xcc, 0xc0, 0x3, 0x2, 0x2, 0x2, 0xcc, 0xc3, 0x3, 0x2, 
+    0x2, 0x2, 0xcc, 0xc4, 0x3, 0x2, 0x2, 0x2, 0xcc, 0xc9, 0x3, 0x2, 0x2, 
+    0x2, 0xcd, 0x17, 0x3, 0x2, 0x2, 0x2, 0xce, 0xd6, 0x7, 0x28, 0x2, 0x2, 
+    0xcf, 0xd0, 0x7, 0x28, 0x2, 0x2, 0xd0, 0xd1, 0x7, 0x8, 0x2, 0x2, 0xd1, 
+    0xd2, 0x5, 0x1a, 0xe, 0x2, 0xd2, 0xd3, 0x7, 0x9, 0x2, 0x2, 0xd3, 0xd4, 
+    0x8, 0xd, 0x1, 0x2, 0xd4, 0xd6, 0x3, 0x2, 0x2, 0x2, 0xd5, 0xce, 0x3, 
+    0x2, 0x2, 0x2, 0xd5, 0xcf, 0x3, 0x2, 0x2, 0x2, 0xd6, 0xd7, 0x3, 0x2, 
+    0x2, 0x2, 0xd7, 0xdc, 0x8, 0xd, 0x1, 0x2, 0xd8, 0xd9, 0x7, 0x17, 0x2, 
+    0x2, 0xd9, 0xda, 0x5, 0x18, 0xd, 0x2, 0xda, 0xdb, 0x8, 0xd, 0x1, 0x2, 
+    0xdb, 0xdd, 0x3, 0x2, 0x2, 0x2, 0xdc, 0xd8, 0x3, 0x2, 0x2, 0x2, 0xdc, 
+    0xdd, 0x3, 0x2, 0x2, 0x2, 0xdd, 0x19, 0x3, 0x2, 0x2, 0x2, 0xde, 0xdf, 
+    0x8, 0xe, 0x1, 0x2, 0xdf, 0xe0, 0x5, 0x18, 0xd, 0x2, 0xe0, 0xe1, 0x8, 
+    0xe, 0x1, 0x2, 0xe1, 0xf1, 0x3, 0x2, 0x2, 0x2, 0xe2, 0xe3, 0x5, 0x1c, 
+    0xf, 0x2, 0xe3, 0xe4, 0x8, 0xe, 0x1, 0x2, 0xe4, 0xf1, 0x3, 0x2, 0x2, 
+    0x2, 0xe5, 0xe6, 0x5, 0x28, 0x15, 0x2, 0xe6, 0xe7, 0x8, 0xe, 0x1, 0x2, 
+    0xe7, 0xf1, 0x3, 0x2, 0x2, 0x2, 0xe8, 0xe9, 0x7, 0xf, 0x2, 0x2, 0xe9, 
+    0xea, 0x5, 0x1a, 0xe, 0x2, 0xea, 0xeb, 0x7, 0x11, 0x2, 0x2, 0xeb, 0xf1, 
+    0x3, 0x2, 0x2, 0x2, 0xec, 0xed, 0x7, 0x18, 0x2, 0x2, 0xed, 0xf1, 0x5, 
+    0x1a, 0xe, 0xa, 0xee, 0xef, 0x7, 0x19, 0x2, 0x2, 0xef, 0xf1, 0x5, 0x1a, 
+    0xe, 0x9, 0xf0, 0xde, 0x3, 0x2, 0x2, 0x2, 0xf0, 0xe2, 0x3, 0x2, 0x2, 
+    0x2, 0xf0, 0xe5, 0x3, 0x2, 0x2, 0x2, 0xf0, 0xe8, 0x3, 0x2, 0x2, 0x2, 
+    0xf0, 0xec, 0x3, 0x2, 0x2, 0x2, 0xf0, 0xee, 0x3, 0x2, 0x2, 0x2, 0xf1, 
+    0x10a, 0x3, 0x2, 0x2, 0x2, 0xf2, 0xf3, 0xc, 0x8, 0x2, 0x2, 0xf3, 0xf4, 
+    0x5, 0x20, 0x11, 0x2, 0xf4, 0xf5, 0x5, 0x1a, 0xe, 0x9, 0xf5, 0x109, 
+    0x3, 0x2, 0x2, 0x2, 0xf6, 0xf7, 0xc, 0x7, 0x2, 0x2, 0xf7, 0xf8, 0x5, 
+    0x22, 0x12, 0x2, 0xf8, 0xf9, 0x5, 0x1a, 0xe, 0x8, 0xf9, 0x109, 0x3, 
+    0x2, 0x2, 0x2, 0xfa, 0xfb, 0xc, 0x6, 0x2, 0x2, 0xfb, 0xfc, 0x5, 0x24, 
+    0x13, 0x2, 0xfc, 0xfd, 0x5, 0x1a, 0xe, 0x7, 0xfd, 0x109, 0x3, 0x2, 0x2, 
+    0x2, 0xfe, 0xff, 0xc, 0x5, 0x2, 0x2, 0xff, 0x100, 0x5, 0x26, 0x14, 0x2, 
+    0x100, 0x101, 0x5, 0x1a, 0xe, 0x6, 0x101, 0x109, 0x3, 0x2, 0x2, 0x2, 
+    0x102, 0x103, 0xc, 0x4, 0x2, 0x2, 0x103, 0x104, 0x7, 0x1a, 0x2, 0x2, 
+    0x104, 0x109, 0x5, 0x1a, 0xe, 0x5, 0x105, 0x106, 0xc, 0x3, 0x2, 0x2, 
+    0x106, 0x107, 0x7, 0x1b, 0x2, 0x2, 0x107, 0x109, 0x5, 0x1a, 0xe, 0x4, 
+    0x108, 0xf2, 0x3, 0x2, 0x2, 0x2, 0x108, 0xf6, 0x3, 0x2, 0x2, 0x2, 0x108, 
+    0xfa, 0x3, 0x2, 0x2, 0x2, 0x108, 0xfe, 0x3, 0x2, 0x2, 0x2, 0x108, 0x102, 
+    0x3, 0x2, 0x2, 0x2, 0x108, 0x105, 0x3, 0x2, 0x2, 0x2, 0x109, 0x10c, 
+    0x3, 0x2, 0x2, 0x2, 0x10a, 0x108, 0x3, 0x2, 0x2, 0x2, 0x10a, 0x10b, 
+    0x3, 0x2, 0x2, 0x2, 0x10b, 0x1b, 0x3, 0x2, 0x2, 0x2, 0x10c, 0x10a, 0x3, 
+    0x2, 0x2, 0x2, 0x10d, 0x10e, 0x7, 0x28, 0x2, 0x2, 0x10e, 0x117, 0x7, 
+    0xf, 0x2, 0x2, 0x10f, 0x114, 0x5, 0x1e, 0x10, 0x2, 0x110, 0x111, 0x7, 
+    0x10, 0x2, 0x2, 0x111, 0x113, 0x5, 0x1e, 0x10, 0x2, 0x112, 0x110, 0x3, 
+    0x2, 0x2, 0x2, 0x113, 0x116, 0x3, 0x2, 0x2, 0x2, 0x114, 0x112, 0x3, 
+    0x2, 0x2, 0x2, 0x114, 0x115, 0x3, 0x2, 0x2, 0x2, 0x115, 0x118, 0x3, 
+    0x2, 0x2, 0x2, 0x116, 0x114, 0x3, 0x2, 0x2, 0x2, 0x117, 0x10f, 0x3, 
+    0x2, 0x2, 0x2, 0x117, 0x118, 0x3, 0x2, 0x2, 0x2, 0x118, 0x119, 0x3, 
+    0x2, 0x2, 0x2, 0x119, 0x11a, 0x7, 0x11, 0x2, 0x2, 0x11a, 0x11b, 0x8, 
+    0xf, 0x1, 0x2, 0x11b, 0x1d, 0x3, 0x2, 0x2, 0x2, 0x11c, 0x11d, 0x5, 0x1a, 
+    0xe, 0x2, 0x11d, 0x11e, 0x8, 0x10, 0x1, 0x2, 0x11e, 0x1f, 0x3, 0x2, 
+    0x2, 0x2, 0x11f, 0x120, 0x9, 0x2, 0x2, 0x2, 0x120, 0x21, 0x3, 0x2, 0x2, 
+    0x2, 0x121, 0x122, 0x9, 0x3, 0x2, 0x2, 0x122, 0x23, 0x3, 0x2, 0x2, 0x2, 
+    0x123, 0x124, 0x9, 0x4, 0x2, 0x2, 0x124, 0x25, 0x3, 0x2, 0x2, 0x2, 0x125, 
+    0x126, 0x9, 0x5, 0x2, 0x2, 0x126, 0x27, 0x3, 0x2, 0x2, 0x2, 0x127, 0x128, 
+    0x5, 0x2a, 0x16, 0x2, 0x128, 0x129, 0x8, 0x15, 0x1, 0x2, 0x129, 0x131, 
+    0x3, 0x2, 0x2, 0x2, 0x12a, 0x12b, 0x5, 0x2c, 0x17, 0x2, 0x12b, 0x12c, 
+    0x8, 0x15, 0x1, 0x2, 0x12c, 0x131, 0x3, 0x2, 0x2, 0x2, 0x12d, 0x12e, 
+    0x5, 0x2e, 0x18, 0x2, 0x12e, 0x12f, 0x8, 0x15, 0x1, 0x2, 0x12f, 0x131, 
+    0x3, 0x2, 0x2, 0x2, 0x130, 0x127, 0x3, 0x2, 0x2, 0x2, 0x130, 0x12a, 
+    0x3, 0x2, 0x2, 0x2, 0x130, 0x12d, 0x3, 0x2, 0x2, 0x2, 0x131, 0x29, 0x3, 
+    0x2, 0x2, 0x2, 0x132, 0x133, 0x7, 0x29, 0x2, 0x2, 0x133, 0x2b, 0x3, 
+    0x2, 0x2, 0x2, 0x134, 0x135, 0x7, 0x2a, 0x2, 0x2, 0x135, 0x2d, 0x3, 
+    0x2, 0x2, 0x2, 0x136, 0x137, 0x9, 0x6, 0x2, 0x2, 0x137, 0x2f, 0x3, 0x2, 
+    0x2, 0x2, 0x1a, 0x36, 0x3e, 0x4d, 0x56, 0x6a, 0x74, 0x77, 0x86, 0x91, 
+    0x99, 0x9f, 0xa5, 0xb1, 0xbd, 0xc9, 0xcc, 0xd5, 0xdc, 0xf0, 0x108, 0x10a, 
+    0x114, 0x117, 0x130, 
   };
 
   atn::ATNDeserializer deserializer;

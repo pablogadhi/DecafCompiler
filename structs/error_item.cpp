@@ -34,6 +34,23 @@ function<void()> ErrorHandler::get_lambda(ErrorType e_type, int line, int pos,
     error_msg = "Ilegal use of array size definition, use an integer number "
                 "greater than 0 instead";
     break;
+  case NO_METHOD_WITH_SIGN: {
+    string signature = "(";
+    for (int i = 1; i < msg_parts.size(); i++) {
+      signature += msg_parts[i] + ", ";
+    }
+    signature += ")";
+
+    error_msg =
+        "Method " + msg_parts[0] + " was defined with signature " + signature;
+  }
+  case WRONG_RETURN_TYPE:
+    error_msg = "Wrong return type of method" + msg_parts[0] + ", " +
+                msg_parts[1] + " expected, " + msg_parts[2] + " found";
+    break;
+  case NO_RETURN_IN_EXPR:
+    error_msg = "Method " + msg_parts[0] + " does not return any value";
+    break;
   default:
     break;
   }

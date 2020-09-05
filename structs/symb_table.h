@@ -54,15 +54,16 @@ private:
   vector<string> m_param_signature;
 
 public:
-  Method(string, string, string, vector<string>);
+  Method(string, string, string,
+         vector<string> param_signature = vector<string>{});
   Method();
   ~Method();
   vector<string> &param_signature();
 };
 
-class SymbolTable {
+class SymbolTable : public enable_shared_from_this<SymbolTable> {
 private:
-  string t_id = "";
+  Method t_id;
 
   vector<Symbol> t_symbols;
   vector<Type> t_types;
@@ -73,11 +74,12 @@ private:
 
 public:
   SymbolTable();
-  SymbolTable(string);
-  SymbolTable(string, shared_ptr<SymbolTable>);
+  SymbolTable(Method);
+  SymbolTable(Method, shared_ptr<SymbolTable>);
   ~SymbolTable();
   void init_basic_types();
-  string id();
+  Method &id();
+  string name();
   vector<Symbol> &symbols();
   vector<Type> &types();
   vector<Method> &methods();

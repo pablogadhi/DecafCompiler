@@ -30,8 +30,8 @@ Method::~Method() {}
 vector<string> &Method::param_signature() { return m_param_signature; }
 
 SymbolTable::SymbolTable() {}
-SymbolTable::SymbolTable(string id) : t_id(id) {}
-SymbolTable::SymbolTable(string id, shared_ptr<SymbolTable> parent)
+SymbolTable::SymbolTable(Method id) : t_id(id) {}
+SymbolTable::SymbolTable(Method id, shared_ptr<SymbolTable> parent)
     : t_id(id), t_parent(parent) {}
 SymbolTable::~SymbolTable() {}
 
@@ -41,7 +41,8 @@ void SymbolTable::init_basic_types() {
   t_types.push_back(Type("int", "basic", "__global__", 4));
 }
 
-string SymbolTable::id() { return t_id; }
+Method &SymbolTable::id() { return t_id; }
+string SymbolTable::name() { return t_id.name(); }
 vector<Symbol> &SymbolTable::symbols() { return t_symbols; }
 vector<Type> &SymbolTable::types() { return t_types; }
 vector<Method> &SymbolTable::methods() { return t_methods; }
@@ -65,12 +66,14 @@ void SymbolTable::add_symbol(string name, string type, string env, int size,
     get_where<Type>(
         t_types, [&](Type &t) { return t.name() == type; }, &type_ctr);
     if (type_ctr.type() == "struct") {
+      auto struct_table = make_shared<SymbolTable>(
+          Method(name, type, this->name()), shared_from_this());
       auto struct_members = get_all_where<Type>(
           t_types, [&](Type &t) { return t.env() == type; });
       for (auto &memb : struct_members) {
-        t_symbols.push_back(Symbol(memb.name(), memb.type(), name, memb.size(),
-                                   next_symbol_offset()));
+        struct_table->add_symbol(memb.name(), memb.type(), name, memb.size());
       }
+      this->add_child(struct_table);
     }
   } else {
     error_func();
@@ -100,7 +103,7 @@ void SymbolTable::add_method(string name, string r_type, string env,
 
 shared_ptr<SymbolTable> SymbolTable::parent() { return t_parent; }
 void SymbolTable::add_child(shared_ptr<SymbolTable> child) {
-  t_children[child->id()] = child;
+  t_children[child->id().name()] = child;
 }
 map<string, shared_ptr<SymbolTable>> &SymbolTable::children() {
   return t_children;

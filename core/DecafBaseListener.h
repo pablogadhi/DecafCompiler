@@ -63,26 +63,17 @@ public:
   virtual void enterArg(DecafParser::ArgContext * /*ctx*/) override { }
   virtual void exitArg(DecafParser::ArgContext * /*ctx*/) override { }
 
-  virtual void enterArith_op(DecafParser::Arith_opContext * /*ctx*/) override { }
-  virtual void exitArith_op(DecafParser::Arith_opContext * /*ctx*/) override { }
+  virtual void enterArith_high_op(DecafParser::Arith_high_opContext * /*ctx*/) override { }
+  virtual void exitArith_high_op(DecafParser::Arith_high_opContext * /*ctx*/) override { }
 
-  virtual void enterArith_high_precedence(DecafParser::Arith_high_precedenceContext * /*ctx*/) override { }
-  virtual void exitArith_high_precedence(DecafParser::Arith_high_precedenceContext * /*ctx*/) override { }
-
-  virtual void enterArith_low_precedence(DecafParser::Arith_low_precedenceContext * /*ctx*/) override { }
-  virtual void exitArith_low_precedence(DecafParser::Arith_low_precedenceContext * /*ctx*/) override { }
+  virtual void enterArith_low_op(DecafParser::Arith_low_opContext * /*ctx*/) override { }
+  virtual void exitArith_low_op(DecafParser::Arith_low_opContext * /*ctx*/) override { }
 
   virtual void enterRel_op(DecafParser::Rel_opContext * /*ctx*/) override { }
   virtual void exitRel_op(DecafParser::Rel_opContext * /*ctx*/) override { }
 
   virtual void enterEq_op(DecafParser::Eq_opContext * /*ctx*/) override { }
   virtual void exitEq_op(DecafParser::Eq_opContext * /*ctx*/) override { }
-
-  virtual void enterCond_and(DecafParser::Cond_andContext * /*ctx*/) override { }
-  virtual void exitCond_and(DecafParser::Cond_andContext * /*ctx*/) override { }
-
-  virtual void enterCond_or(DecafParser::Cond_orContext * /*ctx*/) override { }
-  virtual void exitCond_or(DecafParser::Cond_orContext * /*ctx*/) override { }
 
   virtual void enterLiteral(DecafParser::LiteralContext * /*ctx*/) override { }
   virtual void exitLiteral(DecafParser::LiteralContext * /*ctx*/) override { }
