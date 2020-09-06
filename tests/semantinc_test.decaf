@@ -17,7 +17,7 @@ class Program {
       int val;
     } complexVar;
     
-    if (outerVar != false){
+    if (outerVar != 3){
       boolean innerVar;
       int innerVar2;
     }

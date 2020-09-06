@@ -64,7 +64,7 @@ if($struct_size != nullptr){
 	varType ID ';' {$name = $ID.text; $d_type = $varType.d_type; $size = $varType.size; $line = $ID.line; $pos = $ID.pos;
     }
 	| varType ID '[' NUM ']' ';' {
-$name = $ID.text; $d_type = $varType.d_type; $size = $varType.size * stoi($NUM.text); $line = $ID.line; $pos = $ID.pos;
+$name = $ID.text; $d_type = "__array(" + $varType.d_type + ")__"; $size = $varType.size * stoi($NUM.text); $line = $ID.line; $pos = $ID.pos;
 if(stoi($NUM.text) <= 0){
   e_handler->get_lambda(WRONG_NUM_ARRAY, $NUM.line, $NUM.pos)();
 }
@@ -152,8 +152,16 @@ if(method_name == ""){
   }: '{' (varDeclaration[nullptr])* (statement)* '}';
 
 statement:
-	'if' '(' expression ')' block[""] ('else' block[""])?
-	| 'while' '(' expression ')' block[""]
+	'if' '(' expression {
+if($expression.d_type != "boolean"){
+  e_handler->get_lambda(EXPR_TYPE_ERROR, $expression.start->getLine(), $expression.start->getCharPositionInLine()+ 1, vector<string>{$expression.d_type, "boolean"})();
+}
+  } ')' block[""] ('else' block[""])?
+	| 'while' '(' expression {
+if($expression.d_type != "boolean"){
+  e_handler->get_lambda(EXPR_TYPE_ERROR, $expression.start->getLine(), $expression.start->getCharPositionInLine(), vector<string>{$expression.d_type, "boolean"})();
+}
+  } ')' block[""]
 	| r = 'return' (
 		expression {
 if($expression.d_type != table_top->id().type()){
@@ -163,7 +171,11 @@ if($expression.d_type != table_top->id().type()){
 	)? ';'
 	| methodCall ';'
 	| block[""]
-	| location '=' expression
+	| location '=' expression {
+if($location.d_type != $expression.d_type){
+	e_handler->get_lambda(EXPR_TYPE_ERROR, $expression.start->getLine(), $expression.start->getCharPositionInLine(), vector<string>{$expression.d_type, $location.d_type})();
+}
+	}
 	| (expression)? ';';
 
 location
@@ -175,10 +187,23 @@ location
 Symbol out;
 if(recursive_lookup<Symbol>(table_top, [&](shared_ptr<SymbolTable> t){return t->symbols();}, [&](Symbol &s){return s.name() == $ID.text;}, &out)){
   $d_type = out.type();
+  if($array_check){
+    if(out.type().substr(0, 7) != "__array"){
+      e_handler->get_lambda(IDENT_NOT_ARRAY, $ID.line, $ID.pos, vector<string>{$ID.text})();
+    }
+    if($expression.d_type != "int"){
+      e_handler->get_lambda(INDEX_NOT_INT, $ID.line, $ID.pos, vector<string>{$ID.text})();
+    }
+  }
 } else {
   e_handler->get_lambda(IDENT_NOT_DEFINED, $ID.line, $ID.pos, vector<string>{$ID.text})();
 }
-  } ('.' location {$d_type = $location.d_type;})?;
+  } (
+		'.' {table_top = table_top->children()[Method($ID.text, "struct")];} location {
+$d_type = $location.d_type;
+table_top = table_top->parent();
+			}
+	)?;
 
 expression
 	returns[string d_type]:
@@ -186,19 +211,61 @@ expression
 	| methodCall {
 if($methodCall.d_type == "void"){
   e_handler->get_lambda(NO_RETURN_IN_EXPR, $methodCall.line, $methodCall.pos, vector<string>{$methodCall.text})();
+}else{
+  $d_type = $methodCall.d_type;
 }
   }
 	| literal {$d_type = $literal.d_type;}
-	| '(' expression ')'
-	| '!' expression
-	| '-' expression
+	| '(' expression ')' {$d_type = $expression.d_type;}
+	| '!' expression {
+if($expression.d_type != "boolean"){
+  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $expression.start->getLine(), $expression.start->getCharPositionInLine(), vector<string>{"boolean"})();
+}
+$d_type = $expression.d_type;
+}
+	| '-' expression {$d_type = $expression.d_type;}
 	// | low_arith_expr | eq_expr
-	| expression arith_high_op expression
-	| expression arith_low_op expression
-	| expression rel_op expression
-	| expression eq_op expression
-	| expression '&&' expression
-	| expression '||' expression;
+	| lexpr = expression arith_high_op rexpr = expression {
+if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
+  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
+}
+$d_type = $lexpr.d_type;
+  }
+	| lexpr = expression arith_low_op rexpr = expression {
+if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
+  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
+}
+$d_type = $lexpr.d_type;
+  }
+	| lexpr = expression rel_op rexpr = expression {
+if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
+  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
+}
+$d_type = "boolean";
+  }
+	| lexpr = expression op = eq_op rexpr = expression {
+auto valid_types = vector<string>{"int", "char", "boolean"};
+if($lexpr.d_type != $rexpr.d_type){
+  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{$lexpr.d_type})();
+}else if(find(valid_types.begin(), valid_types.end(), $lexpr.d_type) == valid_types.end()){
+  e_handler->get_lambda(CAN_NOT_USER_OPERATOR, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{$lexpr.d_type})();
+}else if(find(valid_types.begin(), valid_types.end(), $rexpr.d_type) == valid_types.end()){
+  e_handler->get_lambda(CAN_NOT_USER_OPERATOR, $rexpr.start->getLine(), $rexpr.start->getCharPositionInLine(), vector<string>{$rexpr.d_type})();
+}
+$d_type = "boolean";
+  }
+	| lexpr = expression '&&' rexpr = expression {
+if($lexpr.d_type != "boolean" || $rexpr.d_type != "boolean"){
+  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"boolean"})();
+}
+$d_type = "boolean";
+	}
+	| lexpr = expression '||' rexpr = expression {
+if($lexpr.d_type != "boolean" || $rexpr.d_type != "boolean"){
+  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"boolean"})();
+}
+$d_type = "boolean";
+	};
 
 // low_arith_expr[shared_ptr<SymbolTable> table] returns[string d_type]: high_arith_expr[$table] (
 // arith_low_op high_arith_expr[$table] )*;

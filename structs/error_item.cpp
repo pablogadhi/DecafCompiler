@@ -51,6 +51,23 @@ function<void()> ErrorHandler::get_lambda(ErrorType e_type, int line, int pos,
   case NO_RETURN_IN_EXPR:
     error_msg = "Method " + msg_parts[0] + " does not return any value";
     break;
+  case IDENT_NOT_ARRAY:
+    error_msg = "Identifier " + msg_parts[0] + " is not an array";
+    break;
+  case INDEX_NOT_INT:
+    error_msg = "Expression used to access an item in array " + msg_parts[0] +
+                " must be of type int";
+  case EXPR_TYPE_ERROR:
+    error_msg = "Wrong type " + msg_parts[0] + " found in expression, " +
+                msg_parts[1] + " was expected";
+    break;
+  case OPERAND_TYPE_MISSMATCH:
+    error_msg = "Operands type missmatch, both must be of type " + msg_parts[0];
+    break;
+  case CAN_NOT_USER_OPERATOR:
+    error_msg =
+        "Can't use operator " + msg_parts[0] + " on type " + msg_parts[1];
+    break;
   default:
     break;
   }

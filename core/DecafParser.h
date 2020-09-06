@@ -1,5 +1,5 @@
 
-// Generated from /home/gadhi/Documents/Compis/Decaf/Decaf.g4 by ANTLR 4.8
+// Generated from Decaf.g4 by ANTLR 4.7.1
 
 #pragma once
 
@@ -270,8 +270,9 @@ public:
 
   class  StatementContext : public antlr4::ParserRuleContext {
   public:
-    antlr4::Token *r = nullptr;;
     DecafParser::ExpressionContext *expressionContext = nullptr;;
+    antlr4::Token *r = nullptr;;
+    DecafParser::LocationContext *locationContext = nullptr;;
     StatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     ExpressionContext *expression();
@@ -294,6 +295,7 @@ public:
     string d_type;
     bool array_check = false;
     antlr4::Token *idToken = nullptr;;
+    DecafParser::ExpressionContext *expressionContext = nullptr;;
     DecafParser::LocationContext *locationContext = nullptr;;
     LocationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
@@ -313,9 +315,13 @@ public:
   class  ExpressionContext : public antlr4::ParserRuleContext {
   public:
     string d_type;
+    DecafParser::ExpressionContext *lexpr = nullptr;;
     DecafParser::LocationContext *locationContext = nullptr;;
     DecafParser::MethodCallContext *methodCallContext = nullptr;;
     DecafParser::LiteralContext *literalContext = nullptr;;
+    DecafParser::ExpressionContext *expressionContext = nullptr;;
+    DecafParser::ExpressionContext *rexpr = nullptr;;
+    DecafParser::Eq_opContext *op = nullptr;;
     ExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     LocationContext *location();
