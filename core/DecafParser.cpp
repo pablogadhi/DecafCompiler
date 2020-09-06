@@ -1,5 +1,5 @@
 
-// Generated from Decaf.g4 by ANTLR 4.7.1
+// Generated from /home/gadhi/Documents/Compis/Decaf/Decaf.g4 by ANTLR 4.8
 
 
 #include "DecafListener.h"
@@ -37,7 +37,7 @@ dfa::Vocabulary& DecafParser::getVocabulary() const {
 }
 
 
-SymbolTable DecafParser::symbol_table() {
+pair<SymbolTable, vector<vector<string>>> DecafParser::symbol_table() {
   return table_head->flatten();
 }
 
@@ -325,9 +325,9 @@ DecafParser::VarDeclarationContext* DecafParser::varDeclaration(int * struct_siz
 
     if(_localctx->struct_size != nullptr){
       *struct_size += _localctx->size;
-      table_top->add_type(_localctx->name, _localctx->d_type, table_top->name(), _localctx->size, e_handler->get_lambda(IDENT_DEFINED, _localctx->line, _localctx->pos, vector<string>{_localctx->name, table_top->name()}));
+      table_top->add_type(_localctx->name, _localctx->d_type, _localctx->size, e_handler->get_lambda(IDENT_DEFINED, _localctx->line, _localctx->pos, vector<string>{_localctx->name, table_top->name()}));
     } else {
-      table_top->add_symbol(_localctx->name, _localctx->d_type, table_top->name(), _localctx->size, e_handler->get_lambda(IDENT_DEFINED, _localctx->line, _localctx->pos, vector<string>{_localctx->name, table_top->name()}));
+      table_top->add_symbol(_localctx->name, _localctx->d_type, _localctx->size, e_handler->get_lambda(IDENT_DEFINED, _localctx->line, _localctx->pos, vector<string>{_localctx->name, table_top->name()}));
     }
       
   }
@@ -398,7 +398,7 @@ DecafParser::StructDeclarationContext* DecafParser::structDeclaration() {
     setState(78);
     dynamic_cast<StructDeclarationContext *>(_localctx)->idToken = match(DecafParser::ID);
 
-    dynamic_cast<StructDeclarationContext *>(_localctx)->new_table =  make_shared<SymbolTable>(Method((dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getText() : ""), "struct", table_top->name()), table_top);
+    dynamic_cast<StructDeclarationContext *>(_localctx)->new_table =  make_shared<SymbolTable>(Method((dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getText() : ""), "struct"), table_top);
     table_top = _localctx->new_table;
       
     setState(80);
@@ -422,7 +422,7 @@ DecafParser::StructDeclarationContext* DecafParser::structDeclaration() {
     match(DecafParser::T__3);
 
     table_top = table_top->parent();
-    table_top->add_type((dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getText() : ""), "struct", table_top->name(), _localctx->l_size, e_handler->get_lambda(IDENT_DEFINED, (dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getLine() : 0), (dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getCharPositionInLine() : 0), vector<string>{(dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getText() : ""), table_top->name()}));
+    table_top->add_type((dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getText() : ""), "struct", _localctx->l_size, e_handler->get_lambda(IDENT_DEFINED, (dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getLine() : 0), (dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getCharPositionInLine() : 0), vector<string>{(dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getText() : ""), table_top->name()}));
     table_top->add_child(_localctx->new_table);
     dynamic_cast<StructDeclarationContext *>(_localctx)->d_type =  (dynamic_cast<StructDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<StructDeclarationContext *>(_localctx)->idToken->getText() : "");
         
@@ -653,14 +653,14 @@ DecafParser::MethodDeclarationContext* DecafParser::methodDeclaration() {
     setState(119);
     match(DecafParser::T__14);
 
-    dynamic_cast<MethodDeclarationContext *>(_localctx)->new_table =  make_shared<SymbolTable>(Method((dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getText() : ""), dynamic_cast<MethodDeclarationContext *>(_localctx)->methodTypeContext->d_type, table_top->name(), _localctx->params), table_top);
+    dynamic_cast<MethodDeclarationContext *>(_localctx)->new_table =  make_shared<SymbolTable>(Method((dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getText() : ""), dynamic_cast<MethodDeclarationContext *>(_localctx)->methodTypeContext->d_type, _localctx->params), table_top);
     table_top = _localctx->new_table;
       
     setState(121);
     block((dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getText() : ""));
 
     table_top = table_top->parent();
-    table_top->add_method((dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getText() : ""), dynamic_cast<MethodDeclarationContext *>(_localctx)->methodTypeContext->d_type, table_top->name(), _localctx->params, e_handler->get_lambda(IDENT_DEFINED, (dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getLine() : 0), (dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getCharPositionInLine() : 0), vector<string>{(dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getText() : ""), table_top->name()}));
+    table_top->add_method((dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getText() : ""), dynamic_cast<MethodDeclarationContext *>(_localctx)->methodTypeContext->d_type, _localctx->params, e_handler->get_lambda(IDENT_DEFINED, (dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getLine() : 0), (dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getCharPositionInLine() : 0), vector<string>{(dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken != nullptr ? dynamic_cast<MethodDeclarationContext *>(_localctx)->idToken->getText() : ""), table_top->name()}));
     table_top->add_child(_localctx->new_table);
         
    
@@ -989,9 +989,9 @@ DecafParser::BlockContext* DecafParser::block(string method_name) {
   enterRule(_localctx, 18, DecafParser::RuleBlock);
 
   if(method_name == ""){
-    dynamic_cast<BlockContext *>(_localctx)->new_table =  make_shared<SymbolTable>(Method(table_top->name() + "_" + to_string(scope_counter), "", table_top->name()), table_top);
+    dynamic_cast<BlockContext *>(_localctx)->new_table =  make_shared<SymbolTable>(Method(table_top->name() + "_" + to_string(scope_counter), ""), table_top);
     scope_counter++;
-    table_top->add_method(_localctx->new_table->name(), "void", table_top->name(), vector<string>{});
+    table_top->add_method(_localctx->new_table->name(), "void", vector<string>{});
     table_top->add_child(_localctx->new_table);
     table_top = _localctx->new_table;
   }
@@ -1441,6 +1441,7 @@ DecafParser::ExpressionContext* DecafParser::expression(int precedence) {
   size_t parentState = getState();
   DecafParser::ExpressionContext *_localctx = _tracker.createInstance<ExpressionContext>(_ctx, parentState);
   DecafParser::ExpressionContext *previousContext = _localctx;
+  (void)previousContext; // Silence compiler, in case the context is not used by generated code.
   size_t startState = 24;
   enterRecursionRule(_localctx, 24, DecafParser::RuleExpression, precedence);
 

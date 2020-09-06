@@ -1,5 +1,5 @@
 
-// Generated from Decaf.g4 by ANTLR 4.7.1
+// Generated from /home/gadhi/Documents/Compis/Decaf/Decaf.g4 by ANTLR 4.8
 
 #pragma once
 
@@ -45,7 +45,7 @@ public:
   virtual antlr4::dfa::Vocabulary& getVocabulary() const override;
 
 
-  SymbolTable symbol_table();
+  pair<SymbolTable, vector<vector<string>>> symbol_table();
   void set_error_handler(ErrorHandler*);
 
 
@@ -512,7 +512,7 @@ private:
   static std::vector<uint16_t> _serializedATN;
 
 
-  shared_ptr<SymbolTable> table_head = make_shared<SymbolTable>(Method("__global__", "", ""));
+  shared_ptr<SymbolTable> table_head = make_shared<SymbolTable>(Method("__global__", ""));
   shared_ptr<SymbolTable> table_top;
   ErrorHandler *e_handler;
   int scope_counter = 0;

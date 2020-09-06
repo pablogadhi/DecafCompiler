@@ -6,19 +6,19 @@ grammar Decaf;
 }
 
 @parser::declarations {
-shared_ptr<SymbolTable> table_head = make_shared<SymbolTable>(Method("__global__", "", ""));
+shared_ptr<SymbolTable> table_head = make_shared<SymbolTable>(Method("__global__", ""));
 shared_ptr<SymbolTable> table_top;
 ErrorHandler *e_handler;
 int scope_counter = 0;
 }
 
 @parser::members {
-SymbolTable symbol_table();
+pair<SymbolTable, vector<vector<string>>> symbol_table();
 void set_error_handler(ErrorHandler*);
 }
 
 @parser::definitions {
-SymbolTable DecafParser::symbol_table() {
+pair<SymbolTable, vector<vector<string>>> DecafParser::symbol_table() {
   return table_head->flatten();
 }
 
@@ -56,9 +56,9 @@ varDeclaration[int *struct_size]
 	@after {
 if($struct_size != nullptr){
   *struct_size += $size;
-  table_top->add_type($name, $d_type, table_top->name(), $size, e_handler->get_lambda(IDENT_DEFINED, $line, $pos, vector<string>{$name, table_top->name()}));
+  table_top->add_type($name, $d_type, $size, e_handler->get_lambda(IDENT_DEFINED, $line, $pos, vector<string>{$name, table_top->name()}));
 } else {
-  table_top->add_symbol($name, $d_type, table_top->name(), $size, e_handler->get_lambda(IDENT_DEFINED, $line, $pos, vector<string>{$name, table_top->name()}));
+  table_top->add_symbol($name, $d_type, $size, e_handler->get_lambda(IDENT_DEFINED, $line, $pos, vector<string>{$name, table_top->name()}));
 }
   }:
 	varType ID ';' {$name = $ID.text; $d_type = $varType.d_type; $size = $varType.size; $line = $ID.line; $pos = $ID.pos;
@@ -77,11 +77,11 @@ structDeclaration
     $size = $l_size;
   }:
 	'struct' ID {
-$new_table = make_shared<SymbolTable>(Method($ID.text, "struct", table_top->name()), table_top);
+$new_table = make_shared<SymbolTable>(Method($ID.text, "struct"), table_top);
 table_top = $new_table;
   } '{' (varDeclaration[&$l_size])* '}' {
 table_top = table_top->parent();
-table_top->add_type($ID.text, "struct", table_top->name(), $l_size, e_handler->get_lambda(IDENT_DEFINED, $ID.line, $ID.pos, vector<string>{$ID.text, table_top->name()}));
+table_top->add_type($ID.text, "struct", $l_size, e_handler->get_lambda(IDENT_DEFINED, $ID.line, $ID.pos, vector<string>{$ID.text, table_top->name()}));
 table_top->add_child($new_table);
 $d_type = $ID.text;
     };
@@ -108,11 +108,11 @@ methodDeclaration
 	methodType ID '(' (
 		parameter[&$params] (',' parameter[&$params])*
 	)? ')' {
-$new_table = make_shared<SymbolTable>(Method($ID.text, $methodType.d_type, table_top->name(), $params), table_top);
+$new_table = make_shared<SymbolTable>(Method($ID.text, $methodType.d_type, $params), table_top);
 table_top = $new_table;
   } block[$ID.text] {
 table_top = table_top->parent();
-table_top->add_method($ID.text, $methodType.d_type, table_top->name(), $params, e_handler->get_lambda(IDENT_DEFINED, $ID.line, $ID.pos, vector<string>{$ID.text, table_top->name()}));
+table_top->add_method($ID.text, $methodType.d_type, $params, e_handler->get_lambda(IDENT_DEFINED, $ID.line, $ID.pos, vector<string>{$ID.text, table_top->name()}));
 table_top->add_child($new_table);
     };
 
@@ -138,9 +138,9 @@ block[string method_name]
 	locals[shared_ptr<SymbolTable> new_table]
 	@init {
 if(method_name == ""){
-  $new_table = make_shared<SymbolTable>(Method(table_top->name() + "_" + to_string(scope_counter), "", table_top->name()), table_top);
+  $new_table = make_shared<SymbolTable>(Method(table_top->name() + "_" + to_string(scope_counter), ""), table_top);
   scope_counter++;
-  table_top->add_method($new_table->name(), "void", table_top->name(), vector<string>{});
+  table_top->add_method($new_table->name(), "void", vector<string>{});
   table_top->add_child($new_table);
   table_top = $new_table;
 }

@@ -42,7 +42,7 @@ class DecafController {
 private:
   ifstream file_stream;
   shared_ptr<DataNode> tree_root;
-  SymbolTable symb_table;
+  pair<SymbolTable, vector<vector<string>>> symb_table;
   ErrorHandler e_handler;
 
 public:
@@ -50,7 +50,7 @@ public:
   void load_file(string &);
   shared_ptr<DataNode> get_parse_root();
   vector<ErrorItem> get_errors();
-  SymbolTable symbol_table();
+  pair<SymbolTable, vector<vector<string>>> symbol_table();
 };
 
 #endif

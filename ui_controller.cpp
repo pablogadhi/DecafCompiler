@@ -85,14 +85,16 @@ void UIController::parse_file() {
     main_notebook->set_current_page(1);
 
     // Populate symbol table
-    auto table = decaf.symbol_table();
+    auto table = decaf.symbol_table().first;
+    auto envs = decaf.symbol_table().second;
 
     RefPtr<TreeStore> symbol_data = TreeStore::create(symb_columns);
-    for (auto &s : table.symbols()) {
+    for (int i = 0; i < table.symbols().size(); i++) {
+      auto s = table.symbols()[i];
       auto symb_row = *(symbol_data->append());
       symb_row[symb_columns.name] = s.name();
       symb_row[symb_columns.type] = s.type();
-      symb_row[symb_columns.env] = s.env();
+      symb_row[symb_columns.env] = envs[0][i];
       symb_row[symb_columns.size] = s.size();
       symb_row[symb_columns.offset] = s.offset();
     }
@@ -101,11 +103,12 @@ void UIController::parse_file() {
 
     // Populate type table
     RefPtr<TreeStore> type_data = TreeStore::create(type_columns);
-    for (auto &t : table.types()) {
+    for (int i = 0; i < table.types().size(); i++) {
+      auto t = table.types()[i];
       auto type_row = *(type_data->append());
       type_row[type_columns.name] = t.name();
       type_row[type_columns.type] = t.type();
-      type_row[type_columns.env] = t.env();
+      type_row[type_columns.env] = envs[1][i];
       type_row[type_columns.size] = t.size();
     }
 
@@ -113,11 +116,12 @@ void UIController::parse_file() {
 
     // Populate method table
     RefPtr<TreeStore> method_data = TreeStore::create(meth_columns);
-    for (auto &m : table.methods()) {
+    for (int i = 0; i < table.methods().size(); i++) {
+      auto m = table.methods()[i];
       auto meth_row = *(method_data->append());
       meth_row[meth_columns.name] = m.name();
       meth_row[meth_columns.type] = m.type();
-      meth_row[meth_columns.env] = m.env();
+      meth_row[meth_columns.env] = envs[2][i];
       string params = "";
       for (auto &param : m.param_signature()) {
         params += param + ", ";

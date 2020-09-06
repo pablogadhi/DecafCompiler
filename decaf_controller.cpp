@@ -31,7 +31,9 @@ void DecafController::load_file(string &file_name) {
 
 shared_ptr<DataNode> DecafController::get_parse_root() { return tree_root; }
 vector<ErrorItem> DecafController::get_errors() { return e_handler.errors(); }
-SymbolTable DecafController::symbol_table() { return symb_table; }
+pair<SymbolTable, vector<vector<string>>> DecafController::symbol_table() {
+  return symb_table;
+}
 
 TreeListener::TreeListener(DecafParser *parser_ptr) {
   parser = parser_ptr;

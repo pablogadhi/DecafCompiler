@@ -3,9 +3,9 @@
 
 #include "error_item.h"
 #include <functional>
-#include <map>
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 using namespace std;
@@ -14,15 +14,13 @@ class TableRow {
 private:
   string row_name = "";
   string row_type = "";
-  string row_env = "";
 
 public:
-  TableRow(string, string, string);
+  TableRow(string, string);
   TableRow();
   ~TableRow();
-  string name();
+  string name() const;
   string type();
-  string env();
 };
 
 class Symbol : public TableRow {
@@ -31,7 +29,7 @@ private:
   int s_offset = -1;
 
 public:
-  Symbol(string, string, string, int, int);
+  Symbol(string, string, int, int);
   Symbol();
   ~Symbol();
   int size();
@@ -43,7 +41,7 @@ private:
   int t_size = -1;
 
 public:
-  Type(string, string, string, int);
+  Type(string, string, int);
   Type();
   ~Type();
   int size();
@@ -54,11 +52,28 @@ private:
   vector<string> m_param_signature;
 
 public:
-  Method(string, string, string,
-         vector<string> param_signature = vector<string>{});
+  Method(string, string, vector<string> param_signature = vector<string>{});
   Method();
   ~Method();
-  vector<string> &param_signature();
+  vector<string> param_signature() const;
+};
+
+struct MethodHasher {
+  hash<string> str_hash;
+  size_t operator()(const Method &key) const {
+    size_t hashed_args = 0;
+    for (auto &arg : key.param_signature()) {
+      hashed_args += str_hash(arg);
+    }
+    return str_hash(key.name()) + hashed_args;
+  }
+};
+
+struct MethodComparator {
+  bool operator()(const Method &lmeth, const Method &rmeth) const {
+    return lmeth.name() == rmeth.name() &&
+           lmeth.param_signature() == rmeth.param_signature();
+  }
 };
 
 class SymbolTable : public enable_shared_from_this<SymbolTable> {
@@ -70,7 +85,8 @@ private:
   vector<Method> t_methods;
 
   shared_ptr<SymbolTable> t_parent;
-  map<string, shared_ptr<SymbolTable>> t_children;
+  unordered_map<Method, shared_ptr<SymbolTable>, MethodHasher, MethodComparator>
+      t_children;
 
 public:
   SymbolTable();
@@ -85,15 +101,16 @@ public:
   vector<Method> &methods();
   int next_symbol_offset();
   void add_symbol(
-      string, string, string, int, function<void()> = [] {});
+      string, string, int, function<void()> = [] {});
   void add_type(
-      string, string, string, int, function<void()> = [] {});
+      string, string, int, function<void()> = [] {});
   void add_method(
-      string, string, string, vector<string>, function<void()> = [] {});
+      string, string, vector<string>, function<void()> = [] {});
   shared_ptr<SymbolTable> parent();
   void add_child(shared_ptr<SymbolTable>);
-  map<string, shared_ptr<SymbolTable>> &children();
-  SymbolTable flatten();
+  unordered_map<Method, shared_ptr<SymbolTable>, MethodHasher, MethodComparator>
+      &children();
+  pair<SymbolTable, vector<vector<string>>> flatten();
 };
 
 template <class InfoType>
