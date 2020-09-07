@@ -64,7 +64,7 @@ if($struct_size != nullptr){
 	varType ID ';' {$name = $ID.text; $d_type = $varType.d_type; $size = $varType.size; $line = $ID.line; $pos = $ID.pos;
     }
 	| varType ID '[' NUM ']' ';' {
-$name = $ID.text; $d_type = "__array(" + $varType.d_type + ")__"; $size = $varType.size * stoi($NUM.text); $line = $ID.line; $pos = $ID.pos;
+$name = $ID.text; $d_type = $varType.d_type; $size = $varType.size * stoi($NUM.text) ; $line = $ID.line; $pos = $ID.pos;
 if(stoi($NUM.text) <= 0){
   e_handler->get_lambda(WRONG_NUM_ARRAY, $NUM.line, $NUM.pos)();
 }
@@ -94,7 +94,7 @@ varType
 	| 'struct' ID {
 auto struct_name = $ID.text;
 Type type_ctr;
-if(get_where<Type>(table_top->types(), [struct_name](Type& t){ return t.name() == struct_name && t.type() == "struct";}, &type_ctr)){
+if(recursive_lookup<Type>(table_top, [&](shared_ptr<SymbolTable> table){return table->types();}, [struct_name](Type& t){ return t.name() == struct_name && t.type() == "struct";}, &type_ctr)){
   $d_type = type_ctr.name(); $size = type_ctr.size();
 } else {
   e_handler->get_lambda(IDENT_NOT_DEFINED, $ID.line, $ID.pos, vector<string>{struct_name});
@@ -104,16 +104,21 @@ if(get_where<Type>(table_top->types(), [struct_name](Type& t){ return t.name() =
 	| 'void' {$d_type = "void"; $size = 0;};
 
 methodDeclaration
-	locals[vector<string> params, shared_ptr<SymbolTable> new_table]:
+	locals[vector<Symbol> params, shared_ptr<SymbolTable> new_table]:
 	methodType ID '(' (
 		parameter[&$params] (',' parameter[&$params])*
 	)? ')' {
-$new_table = make_shared<SymbolTable>(Method($ID.text, $methodType.d_type, $params), table_top);
+vector<string> param_types;
+transform($params.begin(), $params.end(), back_inserter(param_types), [](Symbol &s){return s.type();});
+$new_table = make_shared<SymbolTable>(Method($ID.text, $methodType.d_type, param_types), table_top);
+table_top->add_method($ID.text, $methodType.d_type, param_types, e_handler->get_lambda(IDENT_DEFINED, $ID.line, $ID.pos, vector<string>{$ID.text, table_top->name()}));
+table_top->add_child($new_table);
+for(auto &symb: $params){
+  $new_table->add_symbol(symb.name(), symb.type(), symb.size());
+}
 table_top = $new_table;
   } block[$ID.text] {
 table_top = table_top->parent();
-table_top->add_method($ID.text, $methodType.d_type, $params, e_handler->get_lambda(IDENT_DEFINED, $ID.line, $ID.pos, vector<string>{$ID.text, table_top->name()}));
-table_top->add_child($new_table);
     };
 
 methodType
@@ -123,24 +128,25 @@ methodType
 	| 'boolean' {$d_type = "boolean";}
 	| 'void' {$d_type = "void";};
 
-parameter[vector<string> *meth_params]:
-	parameterType ID {meth_params->push_back($parameterType.d_type);}
+parameter[vector<Symbol> *meth_params]:
+	parameterType ID {meth_params->push_back(Symbol($ID.text, $parameterType.d_type, $parameterType.size, 0));
+    }
 	//TODO Check if this is allowed
 	| parameterType ID '[' ']';
 
 parameterType
-	returns[string d_type]:
-	'int' {$d_type = "int";}
-	| 'char' {$d_type = "char";}
-	| 'boolean' {$d_type = "boolean";};
+	returns[string d_type, int size]:
+	'int' {$d_type = "int"; $size = 4;}
+	| 'char' {$d_type = "char"; $size = 1;}
+	| 'boolean' {$d_type = "boolean"; $size = 1;};
 
 block[string method_name]
 	locals[shared_ptr<SymbolTable> new_table]
 	@init {
 if(method_name == ""){
-  $new_table = make_shared<SymbolTable>(Method(table_top->name() + "_" + to_string(scope_counter), ""), table_top);
+  $new_table = make_shared<SymbolTable>(Method(table_top->name() + "_" + to_string(scope_counter), table_top->id().type()), table_top);
   scope_counter++;
-  table_top->add_method($new_table->name(), "void", vector<string>{});
+  table_top->add_method($new_table->name(), table_top->id().type(), vector<string>{});
   table_top->add_child($new_table);
   table_top = $new_table;
 }
@@ -173,22 +179,26 @@ if($expression.d_type != table_top->id().type()){
 	| block[""]
 	| location '=' expression {
 if($location.d_type != $expression.d_type){
-	e_handler->get_lambda(EXPR_TYPE_ERROR, $expression.start->getLine(), $expression.start->getCharPositionInLine(), vector<string>{$expression.d_type, $location.d_type})();
+  e_handler->get_lambda(EXPR_TYPE_ERROR, $expression.start->getLine(), $expression.start->getCharPositionInLine(), vector<string>{$expression.d_type, $location.d_type})();
 }
-	}
+  }
 	| (expression)? ';';
 
 location
 	returns[string d_type]
-	locals[bool array_check = false]: (
+	locals[bool array_check = false, shared_ptr<SymbolTable> old_top]: (
 		ID
+		//TODO Evaluate expression and get the right index
 		| ID '[' expression ']' {$array_check = true;}
 	) {
 Symbol out;
-if(recursive_lookup<Symbol>(table_top, [&](shared_ptr<SymbolTable> t){return t->symbols();}, [&](Symbol &s){return s.name() == $ID.text;}, &out)){
+shared_ptr<SymbolTable> parent_table;
+if(recursive_lookup<Symbol>(table_top, [&](shared_ptr<SymbolTable> t){return t->symbols();}, [&](Symbol &s){return s.name() == $ID.text;}, parent_table, &out)){
   $d_type = out.type();
   if($array_check){
-    if(out.type().substr(0, 7) != "__array"){
+    Type type_info;
+    recursive_lookup<Type>(table_top, [&](shared_ptr<SymbolTable> t){return t->types();}, [&](Type &t){return t.name() == out.type();}, &type_info);
+    if(type_info.size() == out.size()){
       e_handler->get_lambda(IDENT_NOT_ARRAY, $ID.line, $ID.pos, vector<string>{$ID.text})();
     }
     if($expression.d_type != "int"){
@@ -199,15 +209,20 @@ if(recursive_lookup<Symbol>(table_top, [&](shared_ptr<SymbolTable> t){return t->
   e_handler->get_lambda(IDENT_NOT_DEFINED, $ID.line, $ID.pos, vector<string>{$ID.text})();
 }
   } (
-		'.' {table_top = table_top->children()[Method($ID.text, "struct")];} location {
-$d_type = $location.d_type;
-table_top = table_top->parent();
-			}
+		'.' {
+  $old_top = table_top;
+  if(parent_table != nullptr){
+  auto children = parent_table->children();
+  if(children.find(Method($ID.text, "")) != children.end()){
+    table_top = children[Method($ID.text, "")];
+  }
+  }
+} location {$d_type = $location.d_type; table_top = $old_top;}
 	)?;
 
 expression
 	returns[string d_type]:
-	location {$d_type = $location.d_type;}
+	literal {$d_type = $literal.d_type;}
 	| methodCall {
 if($methodCall.d_type == "void"){
   e_handler->get_lambda(NO_RETURN_IN_EXPR, $methodCall.line, $methodCall.pos, vector<string>{$methodCall.text})();
@@ -215,7 +230,7 @@ if($methodCall.d_type == "void"){
   $d_type = $methodCall.d_type;
 }
   }
-	| literal {$d_type = $literal.d_type;}
+	| location {$d_type = $location.d_type;}
 	| '(' expression ')' {$d_type = $expression.d_type;}
 	| '!' expression {
 if($expression.d_type != "boolean"){
@@ -259,13 +274,13 @@ if($lexpr.d_type != "boolean" || $rexpr.d_type != "boolean"){
   e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"boolean"})();
 }
 $d_type = "boolean";
-	}
+  }
 	| lexpr = expression '||' rexpr = expression {
 if($lexpr.d_type != "boolean" || $rexpr.d_type != "boolean"){
   e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"boolean"})();
 }
 $d_type = "boolean";
-	};
+  };
 
 // low_arith_expr[shared_ptr<SymbolTable> table] returns[string d_type]: high_arith_expr[$table] (
 // arith_low_op high_arith_expr[$table] )*;
@@ -292,9 +307,8 @@ if(!get_where<Method>(table_head->methods(), [&](Method &m){return m.name() == $
   auto msg_parts = vector<string>{$ID.text};
   msg_parts.insert(msg_parts.end(), $arg_types.begin(), $arg_types.end());
   e_handler->get_lambda(NO_METHOD_WITH_SIGN, $ID.line, $ID.pos, msg_parts)();
-}else{
-  $d_type = out.type(); $line = $ID.line; $pos = $ID.pos;
 }
+$d_type = out.type(); $line = $ID.line; $pos = $ID.pos;
   };
 
 arg[vector<string> *method_arg_types]:

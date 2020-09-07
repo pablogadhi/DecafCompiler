@@ -13,14 +13,18 @@ UIController::UIController() {
   builder->get_widget("symbol_table", symbol_table);
   builder->get_widget("type_table", type_table);
   builder->get_widget("method_table", method_table);
+  builder->get_widget("code_view", code_view);
+  builder->get_widget("compile_btn", compile_btn);
 
   main_window->set_default_size(800, 600);
   error_dialog->set_default_size(500, 400);
 
   file_chooser->signal_file_set().connect(
-      sigc::mem_fun(*this, &UIController::parse_file));
+      sigc::mem_fun(*this, &UIController::load_file));
   error_close_btn->signal_clicked().connect(
       sigc::mem_fun(*this, &UIController::close_error_window));
+  compile_btn->signal_clicked().connect(
+      sigc::mem_fun(*this, &UIController::save_and_compile));
 
   // TODO Refactor this ugly code
   // tree_view->append_column("index", m_columns.m_col_number);
@@ -65,10 +69,33 @@ void add_parsing_level(RefPtr<TreeStore> &store, shared_ptr<DataNode> parent,
   }
 }
 
-void UIController::parse_file() {
-  auto file_name = file_chooser->get_filename();
+void UIController::load_file() {
+  ifstream code_stream;
+  file_name = file_chooser->get_filename();
+
+  code_stream.open(file_name);
+  stringstream temp_buffer;
+  temp_buffer << code_stream.rdbuf();
+  string content = temp_buffer.str();
+
+  code_view->get_buffer()->set_text(content);
+  parse_text(content);
+}
+
+void UIController::save_and_compile() {
+  string content = code_view->get_buffer()->get_text();
+
+  ofstream file_stream;
+  file_stream.open(file_name);
+  file_stream << content;
+  file_stream.close();
+
+  parse_text(content);
+}
+
+void UIController::parse_text(string &content) {
   auto decaf = DecafController();
-  decaf.load_file(file_name);
+  decaf.parse_text(content);
 
   if (decaf.get_errors().size() == 0) {
     // Populate syntax tree and show it

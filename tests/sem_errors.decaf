@@ -1,24 +1,29 @@
 class Program {
+
   struct myStruct{
     int val;
     char val;
   }
 
-  int test;
-  int test;
-  int otherGlob;
+  struct myStruct{
+    char otherVal;
+  }
 
   int function(char val){
     int test2;
     char test2;
 
   }
-  int function(int val){
 
-  }
   char function(char val){
 
   }
+
+  int function(int val){
+    nonExistantVal = 0;
+  }
+
+  
 
   void otherFunc(){
     char otherGlob;

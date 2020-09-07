@@ -126,6 +126,7 @@ bool get_where(vector<InfoType> &table_vector,
   return false;
 }
 
+// TODO Figure something out without overloading
 template <class InfoType>
 bool recursive_lookup(
     shared_ptr<SymbolTable> table,
@@ -139,6 +140,25 @@ bool recursive_lookup(
       return false;
     }
   }
+  return true;
+}
+
+template <class InfoType>
+bool recursive_lookup(
+    shared_ptr<SymbolTable> table,
+    function<vector<InfoType>(shared_ptr<SymbolTable>)> vector_lambda,
+    function<bool(InfoType &)> predicate, shared_ptr<SymbolTable> &found_in,
+    InfoType *out = nullptr) {
+  vector<InfoType> vector_to_search = vector_lambda(table);
+  if (!get_where(vector_to_search, predicate, out)) {
+    if (table->parent() != nullptr) {
+      return recursive_lookup(table->parent(), vector_lambda, predicate,
+                              found_in, out);
+    } else {
+      return false;
+    }
+  }
+  found_in = table;
   return true;
 }
 

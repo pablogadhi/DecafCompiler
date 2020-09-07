@@ -60,12 +60,16 @@ void SymbolTable::add_symbol(string name, string type, int size,
     t_symbols.push_back(Symbol(name, type, size, next_symbol_offset()));
 
     Type type_ctr;
-    get_where<Type>(
-        t_types, [&](Type &t) { return t.name() == type; }, &type_ctr);
+    shared_ptr<SymbolTable> found_in;
+    auto self_ptr = shared_from_this();
+    recursive_lookup<Type>(
+        self_ptr, [&](shared_ptr<SymbolTable> table) { return table->types(); },
+        [&](Type &t) { return t.name() == type; }, found_in, &type_ctr);
     if (type_ctr.type() == "struct") {
       auto struct_inst_table =
-          make_shared<SymbolTable>(Method(name, type), shared_from_this());
-      auto types_table = this->children()[Method(type_ctr.name(), "struct")];
+          make_shared<SymbolTable>(Method(name, type), self_ptr);
+      auto types_table =
+          found_in->children()[Method(type_ctr.name(), "struct")];
       for (auto &memb : types_table->types()) {
         struct_inst_table->add_symbol(memb.name(), memb.type(), memb.size());
       }

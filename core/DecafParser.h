@@ -1,5 +1,5 @@
 
-// Generated from Decaf.g4 by ANTLR 4.7.1
+// Generated from /home/gadhi/Documents/Compis/Decaf/Decaf.g4 by ANTLR 4.8
 
 #pragma once
 
@@ -177,7 +177,7 @@ public:
 
   class  MethodDeclarationContext : public antlr4::ParserRuleContext {
   public:
-    vector<string> params;
+    vector<Symbol> params;
     shared_ptr<SymbolTable> new_table;
     DecafParser::MethodTypeContext *methodTypeContext = nullptr;;
     antlr4::Token *idToken = nullptr;;
@@ -215,10 +215,11 @@ public:
 
   class  ParameterContext : public antlr4::ParserRuleContext {
   public:
-    vector<string> * meth_params;
+    vector<Symbol> * meth_params;
     DecafParser::ParameterTypeContext *parameterTypeContext = nullptr;;
+    antlr4::Token *idToken = nullptr;;
     ParameterContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    ParameterContext(antlr4::ParserRuleContext *parent, size_t invokingState, vector<string> * meth_params);
+    ParameterContext(antlr4::ParserRuleContext *parent, size_t invokingState, vector<Symbol> * meth_params);
     virtual size_t getRuleIndex() const override;
     ParameterTypeContext *parameterType();
     antlr4::tree::TerminalNode *ID();
@@ -230,11 +231,12 @@ public:
    
   };
 
-  ParameterContext* parameter(vector<string> * meth_params);
+  ParameterContext* parameter(vector<Symbol> * meth_params);
 
   class  ParameterTypeContext : public antlr4::ParserRuleContext {
   public:
     string d_type;
+    int size;
     ParameterTypeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
 
@@ -294,6 +296,7 @@ public:
   public:
     string d_type;
     bool array_check = false;
+    shared_ptr<SymbolTable> old_top;
     antlr4::Token *idToken = nullptr;;
     DecafParser::ExpressionContext *expressionContext = nullptr;;
     DecafParser::LocationContext *locationContext = nullptr;;
@@ -316,17 +319,17 @@ public:
   public:
     string d_type;
     DecafParser::ExpressionContext *lexpr = nullptr;;
-    DecafParser::LocationContext *locationContext = nullptr;;
-    DecafParser::MethodCallContext *methodCallContext = nullptr;;
     DecafParser::LiteralContext *literalContext = nullptr;;
+    DecafParser::MethodCallContext *methodCallContext = nullptr;;
+    DecafParser::LocationContext *locationContext = nullptr;;
     DecafParser::ExpressionContext *expressionContext = nullptr;;
     DecafParser::ExpressionContext *rexpr = nullptr;;
     DecafParser::Eq_opContext *op = nullptr;;
     ExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    LocationContext *location();
-    MethodCallContext *methodCall();
     LiteralContext *literal();
+    MethodCallContext *methodCall();
+    LocationContext *location();
     std::vector<ExpressionContext *> expression();
     ExpressionContext* expression(size_t i);
     Arith_high_opContext *arith_high_op();

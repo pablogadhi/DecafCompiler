@@ -2,9 +2,8 @@
 
 DecafController::DecafController() {}
 
-void DecafController::load_file(string &file_name) {
-  file_stream.open(file_name);
-  ANTLRInputStream input(file_stream);
+void DecafController::parse_text(string &code_str) {
+  ANTLRInputStream input(code_str);
   auto error_listener = CustomErrorListener(&e_handler);
 
   DecafLexer lexer(&input);

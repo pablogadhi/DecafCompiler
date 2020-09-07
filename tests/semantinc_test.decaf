@@ -6,7 +6,7 @@ class Program {
     char val1;
   } instance;
 
-  struct myStruct otherInstance;
+  struct myStruct diffInstance;
 
   int function(char val, int val2){
     int outerVar;

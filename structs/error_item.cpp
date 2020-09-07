@@ -41,8 +41,9 @@ function<void()> ErrorHandler::get_lambda(ErrorType e_type, int line, int pos,
     }
     signature += ")";
 
-    error_msg =
-        "Method " + msg_parts[0] + " was defined with signature " + signature;
+    error_msg = "No method " + msg_parts[0] + " was defined with signature " +
+                signature;
+    break;
   }
   case WRONG_RETURN_TYPE:
     error_msg = "Wrong return type of method" + msg_parts[0] + ", " +
@@ -57,6 +58,7 @@ function<void()> ErrorHandler::get_lambda(ErrorType e_type, int line, int pos,
   case INDEX_NOT_INT:
     error_msg = "Expression used to access an item in array " + msg_parts[0] +
                 " must be of type int";
+    break;
   case EXPR_TYPE_ERROR:
     error_msg = "Wrong type " + msg_parts[0] + " found in expression, " +
                 msg_parts[1] + " was expected";
@@ -67,6 +69,9 @@ function<void()> ErrorHandler::get_lambda(ErrorType e_type, int line, int pos,
   case CAN_NOT_USER_OPERATOR:
     error_msg =
         "Can't use operator " + msg_parts[0] + " on type " + msg_parts[1];
+    break;
+  case NOT_A_STRUCT:
+    error_msg = "Identifier " + msg_parts[0] + " is not a struct";
     break;
   default:
     break;

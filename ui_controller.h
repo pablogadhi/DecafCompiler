@@ -70,11 +70,13 @@ private:
   Notebook *main_notebook;
   FileChooserButton *file_chooser;
   Button *error_close_btn;
+  Button *compile_btn;
   TreeView *tree_view;
   TreeView *error_list;
   TreeView *symbol_table;
   TreeView *type_table;
   TreeView *method_table;
+  TextView *code_view;
 
   ModelColumns m_columns;
   ErrorColumns e_columns;
@@ -82,11 +84,15 @@ private:
   SymbolColumns symb_columns;
   MethodColumns meth_columns;
 
+  string file_name;
+
 public:
   UIController();
   ~UIController();
   Window *main();
-  void parse_file();
+  void load_file();
+  void save_and_compile();
+  void parse_text(string &);
   void close_error_window();
 };
 
