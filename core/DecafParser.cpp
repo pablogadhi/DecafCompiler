@@ -1,5 +1,5 @@
 
-// Generated from Decaf.g4 by ANTLR 4.7.1
+// Generated from /home/gadhi/Documents/Compis/Decaf/Decaf.g4 by ANTLR 4.8
 
 
 #include "DecafListener.h"
@@ -1949,6 +1949,7 @@ DecafParser::ExpressionContext* DecafParser::expression(int precedence) {
   size_t parentState = getState();
   DecafParser::ExpressionContext *_localctx = _tracker.createInstance<ExpressionContext>(_ctx, parentState);
   DecafParser::ExpressionContext *previousContext = _localctx;
+  (void)previousContext; // Silence compiler, in case the context is not used by generated code.
   size_t startState = 24;
   enterRecursionRule(_localctx, 24, DecafParser::RuleExpression, precedence);
 

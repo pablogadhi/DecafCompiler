@@ -1,5 +1,5 @@
 
-// Generated from Decaf.g4 by ANTLR 4.7.1
+// Generated from /home/gadhi/Documents/Compis/Decaf/Decaf.g4 by ANTLR 4.8
 
 #pragma once
 
@@ -281,7 +281,7 @@ public:
     vector<int> next_list;
     StatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
    
-    StatementContext() : antlr4::ParserRuleContext() { }
+    StatementContext() = default;
     void copyFrom(StatementContext *context);
     using antlr4::ParserRuleContext::copyFrom;
 
@@ -416,7 +416,7 @@ public:
     int next_instr;
     ExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
    
-    ExpressionContext() : antlr4::ParserRuleContext() { }
+    ExpressionContext() = default;
     void copyFrom(ExpressionContext *context);
     using antlr4::ParserRuleContext::copyFrom;
 
@@ -730,7 +730,7 @@ public:
     shared_ptr<Address> addr;
     LiteralContext(antlr4::ParserRuleContext *parent, size_t invokingState);
    
-    LiteralContext() : antlr4::ParserRuleContext() { }
+    LiteralContext() = default;
     void copyFrom(LiteralContext *context);
     using antlr4::ParserRuleContext::copyFrom;
 

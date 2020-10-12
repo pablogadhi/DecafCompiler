@@ -2,6 +2,12 @@
 
 TACode &InterCodeVisitor::intermediate_code() { return ta_code; }
 
+Any InterCodeVisitor::visitBlock(DecafParser::BlockContext *ctx) {
+  visitChildren(ctx);
+  ctx->next_list = ta_code.make_list(ta_code.next_instr());
+  return nullptr;
+}
+
 Any InterCodeVisitor::visitIfStatement(DecafParser::IfStatementContext *ctx) {
   int next_instr;
   int second_next_instr;
@@ -32,6 +38,11 @@ Any InterCodeVisitor::visitIfStatement(DecafParser::IfStatementContext *ctx) {
     ta_code.back_patch(ctx->expression()->false_list, second_next_instr);
     ctx->next_list = ta_code.merge(temp_next_list, ctx->false_block->next_list);
   }
+
+  next_instr = ta_code.next_instr();
+  new_label = make_shared<Literal>("string", ta_code.new_label());
+  ta_code.gen(Operator::LABEL, dynamic_pointer_cast<Address>(new_label));
+  ta_code.back_patch(ctx->next_list, next_instr);
 
   return nullptr;
 }

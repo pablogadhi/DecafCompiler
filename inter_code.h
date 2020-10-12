@@ -14,6 +14,8 @@ private:
 public:
   TACode &intermediate_code();
 
+  Any visitBlock(DecafParser::BlockContext *ctx);
+
   Any visitIfStatement(DecafParser::IfStatementContext *ctx);
   // Any visitWhileStatement(DecafParser::WhileStatementContext *ctx);
   Any visitAssignStatement(DecafParser::AssignStatementContext *ctx);
