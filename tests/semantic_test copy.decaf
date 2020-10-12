@@ -1,0 +1,74 @@
+class Program {
+
+  int globalArray[10];
+
+  struct myStruct{
+    int val;
+    char val;
+  }
+
+  struct myStruct{
+    char otherVal;
+  }
+
+  int function(char val){
+    int test2;
+    char test2;
+
+  }
+
+  char function(char val){
+
+  }
+
+  int function(int val){
+    nonExistantVal = 0;
+    nonExistentFunc();
+  }
+
+  char nonIntFunction(){
+    return 'c';
+  }
+
+  int intFunction(){
+    return 5;
+  }
+
+  void arrayTest(){
+    int array[0];
+    int array2[4];
+    function(array[2], array[3]);
+    function(nonIntFunction());
+  }
+
+  void otherFunc(){
+    return 10;
+  }
+
+  int otherFunc2(){
+    return 'j';
+  }
+
+  void exprFunction(){
+    char charVar;
+    bool comp;
+    int intVar;
+    struct myStruct instance;
+    charVar[5] = 'c';
+    globalArray['c'] = 5;
+
+    if('g'){
+      while(5 + 7){
+
+      }
+    }
+
+    intVar = true % 8;
+    comp = 'c' < 7;
+    comp = instance == 8;
+    comp = 'c' != false;
+    comp = !'c' && intVar;
+    intVar = instance;
+  }
+
+}

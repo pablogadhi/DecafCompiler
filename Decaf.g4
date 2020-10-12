@@ -2,6 +2,7 @@ grammar Decaf;
 
 @parser::postinclude {
 #include "../structs/symb_table.h"
+#include "../structs/triple.h"
 #include "../structs/error_item.h"
 }
 
@@ -22,7 +23,7 @@ pair<SymbolTable, vector<vector<string>>> DecafParser::symbol_table() {
   return table_head->flatten();
 }
 
-void DecafParser::set_error_handler(ErrorHandler *handler){
+void DecafParser::set_error_handler(ErrorHandler *handler) {
   e_handler = handler;
 }
 }
@@ -141,6 +142,7 @@ parameterType
 	| 'boolean' {$d_type = "boolean"; $size = 1;};
 
 block[string method_name]
+	returns[vector<int> next_list]
 	locals[shared_ptr<SymbolTable> new_table]
 	@init {
 if(method_name == ""){
@@ -155,109 +157,121 @@ if(method_name == ""){
 if(method_name == ""){
   table_top = table_top->parent();
 }
-  }: '{' (varDeclaration[nullptr])* (statement)* '}';
+  }:
+	'{' (varDeclaration[nullptr])* (
+		statement {$next_list = $statement.next_list;}
+	)* '}';
 
-statement:
+statement
+	returns[vector<int> next_list]:
 	'if' '(' expression {
 if($expression.d_type != "boolean"){
   e_handler->get_lambda(EXPR_TYPE_ERROR, $expression.start->getLine(), $expression.start->getCharPositionInLine()+ 1, vector<string>{$expression.d_type, "boolean"})();
 }
-  } ')' block[""] ('else' block[""])?
+} ')' true_block = block[""] ('else' false_block = block[""])? # ifStatement
 	| 'while' '(' expression {
 if($expression.d_type != "boolean"){
   e_handler->get_lambda(EXPR_TYPE_ERROR, $expression.start->getLine(), $expression.start->getCharPositionInLine(), vector<string>{$expression.d_type, "boolean"})();
 }
-  } ')' block[""]
+  } ')' block[""] # whileStatement
 	| r = 'return' (
 		expression {
 if($expression.d_type != table_top->id().type()){
   e_handler->get_lambda(WRONG_RETURN_TYPE, $r.line, $r.pos, vector<string>{table_top->name(), table_top->id().type(), $expression.d_type})();
 }
   }
-	)? ';'
-	| methodCall ';'
-	| block[""]
+	)? ';'				# returnStatement
+	| methodCall ';'	# methodCallStatement
+	| block[""]			# blockStatement
 	| location '=' expression {
 if($location.d_type != $expression.d_type){
   e_handler->get_lambda(EXPR_TYPE_ERROR, $expression.start->getLine(), $expression.start->getCharPositionInLine(), vector<string>{$expression.d_type, $location.d_type})();
-}
-  }
-	| (expression)? ';';
+} 
+}	# assignStatement
+	| (expression)? ';'																																																											# exprStatement;
 
 location
-	returns[string d_type]
-	locals[bool array_check = false, shared_ptr<SymbolTable> old_top]: (
+	returns[string d_type, shared_ptr<Address> addr]
+	locals[bool array_check = false, shared_ptr<SymbolTable> old_top, Symbol out]: (
 		ID
-		//TODO Evaluate expression and get the right index
 		| ID '[' expression ']' {$array_check = true;}
 	) {
-Symbol out;
 shared_ptr<SymbolTable> parent_table;
-if(recursive_lookup<Symbol>(table_top, [&](shared_ptr<SymbolTable> t){return t->symbols();}, [&](Symbol &s){return s.name() == $ID.text;}, parent_table, &out)){
-  $d_type = out.type();
+if(recursive_lookup<Symbol>(table_top, [&](shared_ptr<SymbolTable> t){return t->symbols();}, [&](Symbol &s){return s.name() == $ID.text;}, parent_table, &$out)){
+  $d_type = $out.type();
   if($array_check){
     Type type_info;
-    recursive_lookup<Type>(table_top, [&](shared_ptr<SymbolTable> t){return t->types();}, [&](Type &t){return t.name() == out.type();}, &type_info);
-    if(type_info.size() == out.size()){
+    recursive_lookup<Type>(table_top, [&](shared_ptr<SymbolTable> t){return t->types();}, [&](Type &t){return t.name() == $out.type();}, &type_info);
+    if(type_info.size() == $out.size()){
       e_handler->get_lambda(IDENT_NOT_ARRAY, $ID.line, $ID.pos, vector<string>{$ID.text})();
-    }
-    if($expression.d_type != "int"){
+    } else if($expression.d_type != "int"){
       e_handler->get_lambda(INDEX_NOT_INT, $ID.line, $ID.pos, vector<string>{$ID.text})();
-    }
+    } 
   }
 } else {
   e_handler->get_lambda(IDENT_NOT_DEFINED, $ID.line, $ID.pos, vector<string>{$ID.text})();
 }
   } (
 		'.' {
-  $old_top = table_top;
-  if(parent_table != nullptr){
-  auto children = parent_table->children();
-  if(children.find(Method($ID.text, "")) != children.end()){
-    table_top = children[Method($ID.text, "")];
+$old_top = table_top;
+if(parent_table != nullptr){
+auto children = parent_table->children();
+if(children.find(Method($ID.text, "")) != children.end()){
+  table_top = children[Method($ID.text, "")];
+}
   }
-  }
-} location {$d_type = $location.d_type; table_top = $old_top;}
+} child = location {
+$d_type = $location.d_type;
+table_top = $old_top;
+}
 	)?;
 
 expression
-	returns[string d_type]:
-	literal {$d_type = $literal.d_type;}
+	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]
+	locals[int next_instr]:
+	literal {
+$d_type = $literal.d_type;
+} # literalExpr
 	| methodCall {
 if($methodCall.d_type == "void"){
   e_handler->get_lambda(NO_RETURN_IN_EXPR, $methodCall.line, $methodCall.pos, vector<string>{$methodCall.text})();
 }else{
   $d_type = $methodCall.d_type;
 }
-  }
-	| location {$d_type = $location.d_type;}
-	| '(' expression ')' {$d_type = $expression.d_type;}
+} # methodCallExpr
+	| location {
+$d_type = $location.d_type;
+} # locationExpr
+	| '(' expression ')' {
+$d_type = $expression.d_type;
+} # parensExpr
 	| '!' expression {
 if($expression.d_type != "boolean"){
   e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $expression.start->getLine(), $expression.start->getCharPositionInLine(), vector<string>{"boolean"})();
-}
+} 
 $d_type = $expression.d_type;
-}
-	| '-' expression {$d_type = $expression.d_type;}
-	// | low_arith_expr | eq_expr
+} # notExpr
+	| '-' expression {
+$d_type = $expression.d_type;
+} # minusExpr
 	| lexpr = expression arith_high_op rexpr = expression {
 if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
   e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
 }
 $d_type = $lexpr.d_type;
-  }
+} # aritHighExpr
 	| lexpr = expression arith_low_op rexpr = expression {
 if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
   e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
 }
 $d_type = $lexpr.d_type;
-  }
+} # aritLowExpr
 	| lexpr = expression rel_op rexpr = expression {
 if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
   e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
 }
 $d_type = "boolean";
-  }
+} # relExpr
 	| lexpr = expression op = eq_op rexpr = expression {
 auto valid_types = vector<string>{"int", "char", "boolean"};
 if($lexpr.d_type != $rexpr.d_type){
@@ -268,33 +282,19 @@ if($lexpr.d_type != $rexpr.d_type){
   e_handler->get_lambda(CAN_NOT_USER_OPERATOR, $rexpr.start->getLine(), $rexpr.start->getCharPositionInLine(), vector<string>{$rexpr.d_type})();
 }
 $d_type = "boolean";
-  }
-	| lexpr = expression '&&' rexpr = expression {
+} # eqExpr
+	| lexpr = expression and_op rexpr = expression {
 if($lexpr.d_type != "boolean" || $rexpr.d_type != "boolean"){
   e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"boolean"})();
 }
 $d_type = "boolean";
-  }
-	| lexpr = expression '||' rexpr = expression {
+} # andExpr
+	| lexpr = expression or_op rexpr = expression {
 if($lexpr.d_type != "boolean" || $rexpr.d_type != "boolean"){
   e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"boolean"})();
 }
 $d_type = "boolean";
-  };
-
-// low_arith_expr[shared_ptr<SymbolTable> table] returns[string d_type]: high_arith_expr[$table] (
-// arith_low_op high_arith_expr[$table] )*;
-
-// high_arith_expr[shared_ptr<SymbolTable> table]: expression[$table] (arith_high_op
-// expression[$table])*;
-
-// or_expr[shared_ptr<SymbolTable> table]: and_expr[$table] ('||' and_expr[$table])*;
-
-// and_expr[shared_ptr<SymbolTable> table]: eq_expr[$table] ('&&' eq_expr[$table])*;
-
-// eq_expr[shared_ptr<SymbolTable> table]: rel_expr[$table] (rel_op rel_expr[$table])*;
-
-// rel_expr[shared_ptr<SymbolTable> table]: expression[$table] (rel_op expression[$table])*;
+} # orExpr;
 
 methodCall
 	returns[string d_type, int line, int pos]
@@ -314,19 +314,38 @@ $d_type = out.type(); $line = $ID.line; $pos = $ID.pos;
 arg[vector<string> *method_arg_types]:
 	expression {method_arg_types->push_back($expression.d_type);};
 
-arith_high_op: '*' | '/' | '%';
+arith_high_op
+	returns[Operator op]:
+	'*' {$op = Operator::MUL;}
+	| '/' {$op = Operator::DIV;}
+	| '%' {$op = Operator::MOD;};
 
-arith_low_op: '+' | '-';
+arith_low_op
+	returns[Operator op]:
+	'+' {$op = Operator::SUM;}
+	| '-' {$op = Operator::MINUS;};
 
-rel_op: '<' | '<=' | '>' | '>=';
+rel_op
+	returns[Operator op]:
+	'<' {$op = Operator::LESS;}
+	| '<=' {$op = Operator::LESS_EQ;}
+	| '>' {$op = Operator::GREATER; }
+	| '>=' {$op = Operator::GREATER_EQ;};
 
-eq_op: '==' | '!=';
+eq_op
+	returns[Operator op]:
+	'==' {$op = Operator::EQ;}
+	| '!=' {$op = Operator::NOT_EQ;};
+
+and_op: '&&';
+
+or_op: '||';
 
 literal
-	returns[string d_type]:
-	int_literal {$d_type = "int";}
-	| char_literal {$d_type = "char";}
-	| bool_literal {$d_type = "boolean";};
+	returns[string d_type, shared_ptr<Address> addr]:
+	int_literal {$d_type = "int";}			# intLiteral
+	| char_literal {$d_type = "char";}		# charLiteral
+	| bool_literal {$d_type = "boolean";}	# boolLiteral;
 
 int_literal: NUM;
 

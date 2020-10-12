@@ -15,6 +15,7 @@ UIController::UIController() {
   builder->get_widget("method_table", method_table);
   builder->get_widget("code_view", code_view);
   builder->get_widget("compile_btn", compile_btn);
+  builder->get_widget("intermediate_code_view", inter_code_view);
 
   main_window->set_default_size(800, 600);
   error_dialog->set_default_size(500, 400);
@@ -98,7 +99,7 @@ void UIController::parse_text(string &content) {
   decaf.parse_text(content);
 
   if (decaf.get_errors().size() == 0) {
-    // Populate syntax tree and show it
+    // Populate syntax tree
     RefPtr<TreeStore> refTreeStore = TreeStore::create(m_columns);
 
     TreeModel::iterator iter = refTreeStore->append();
@@ -108,8 +109,6 @@ void UIController::parse_text(string &content) {
 
     tree_view->set_model(refTreeStore);
     tree_view->expand_all();
-
-    main_notebook->set_current_page(1);
 
     // Populate symbol table
     auto table = decaf.symbol_table().first;
@@ -157,6 +156,12 @@ void UIController::parse_text(string &content) {
     }
 
     method_table->set_model(method_data);
+
+    // Set intermediate code
+    inter_code_view->get_buffer()->set_text(decaf.intermediate_code());
+
+    // Show a specific Tab
+    main_notebook->set_current_page(3);
 
   } else {
     RefPtr<TreeStore> data = TreeStore::create(e_columns);

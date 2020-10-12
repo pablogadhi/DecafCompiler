@@ -1,0 +1,18 @@
+class Program {
+	struct testStruct {
+		int val0;
+		int val1;
+	}
+	void main() {
+		int a;
+		int b;
+		int c[5];
+		struct testStruct instance;
+
+		a = 5 + b;
+		b = -a;
+		c[3]= a * b + 1;
+		c[5 - 1] = b;
+		b = instance.val1;
+	}
+}

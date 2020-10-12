@@ -1,5 +1,5 @@
 
-// Generated from /home/gadhi/Documents/Compis/Decaf/Decaf.g4 by ANTLR 4.8
+// Generated from Decaf.g4 by ANTLR 4.7.1
 
 #pragma once
 
@@ -8,6 +8,7 @@
 
 
 #include "../structs/symb_table.h"
+#include "../structs/triple.h"
 #include "../structs/error_item.h"
 
 
@@ -31,8 +32,9 @@ public:
     RuleVarType = 4, RuleMethodDeclaration = 5, RuleMethodType = 6, RuleParameter = 7, 
     RuleParameterType = 8, RuleBlock = 9, RuleStatement = 10, RuleLocation = 11, 
     RuleExpression = 12, RuleMethodCall = 13, RuleArg = 14, RuleArith_high_op = 15, 
-    RuleArith_low_op = 16, RuleRel_op = 17, RuleEq_op = 18, RuleLiteral = 19, 
-    RuleInt_literal = 20, RuleChar_literal = 21, RuleBool_literal = 22
+    RuleArith_low_op = 16, RuleRel_op = 17, RuleEq_op = 18, RuleAnd_op = 19, 
+    RuleOr_op = 20, RuleLiteral = 21, RuleInt_literal = 22, RuleChar_literal = 23, 
+    RuleBool_literal = 24
   };
 
   DecafParser(antlr4::TokenStream *input);
@@ -68,6 +70,8 @@ public:
   class Arith_low_opContext;
   class Rel_opContext;
   class Eq_opContext;
+  class And_opContext;
+  class Or_opContext;
   class LiteralContext;
   class Int_literalContext;
   class Char_literalContext;
@@ -252,7 +256,9 @@ public:
   class  BlockContext : public antlr4::ParserRuleContext {
   public:
     string method_name;
+    vector<int> next_list;
     shared_ptr<SymbolTable> new_table;
+    DecafParser::StatementContext *statementContext = nullptr;;
     BlockContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     BlockContext(antlr4::ParserRuleContext *parent, size_t invokingState, string method_name);
     virtual size_t getRuleIndex() const override;
@@ -272,22 +278,105 @@ public:
 
   class  StatementContext : public antlr4::ParserRuleContext {
   public:
-    DecafParser::ExpressionContext *expressionContext = nullptr;;
-    antlr4::Token *r = nullptr;;
-    DecafParser::LocationContext *locationContext = nullptr;;
+    vector<int> next_list;
     StatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    ExpressionContext *expression();
-    std::vector<BlockContext *> block();
-    BlockContext* block(size_t i);
-    MethodCallContext *methodCall();
-    LocationContext *location();
+   
+    StatementContext() : antlr4::ParserRuleContext() { }
+    void copyFrom(StatementContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
 
+    virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  WhileStatementContext : public StatementContext {
+  public:
+    WhileStatementContext(StatementContext *ctx);
+
+    DecafParser::ExpressionContext *expressionContext = nullptr;
+    ExpressionContext *expression();
+    BlockContext *block();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
+  };
+
+  class  BlockStatementContext : public StatementContext {
+  public:
+    BlockStatementContext(StatementContext *ctx);
+
+    BlockContext *block();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  MethodCallStatementContext : public StatementContext {
+  public:
+    MethodCallStatementContext(StatementContext *ctx);
+
+    MethodCallContext *methodCall();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  ExprStatementContext : public StatementContext {
+  public:
+    ExprStatementContext(StatementContext *ctx);
+
+    ExpressionContext *expression();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  AssignStatementContext : public StatementContext {
+  public:
+    AssignStatementContext(StatementContext *ctx);
+
+    DecafParser::LocationContext *locationContext = nullptr;
+    DecafParser::ExpressionContext *expressionContext = nullptr;
+    LocationContext *location();
+    ExpressionContext *expression();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  IfStatementContext : public StatementContext {
+  public:
+    IfStatementContext(StatementContext *ctx);
+
+    DecafParser::ExpressionContext *expressionContext = nullptr;
+    DecafParser::BlockContext *true_block = nullptr;
+    DecafParser::BlockContext *false_block = nullptr;
+    ExpressionContext *expression();
+    std::vector<BlockContext *> block();
+    BlockContext* block(size_t i);
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  ReturnStatementContext : public StatementContext {
+  public:
+    ReturnStatementContext(StatementContext *ctx);
+
+    antlr4::Token *r = nullptr;
+    DecafParser::ExpressionContext *expressionContext = nullptr;
+    ExpressionContext *expression();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   StatementContext* statement();
@@ -295,10 +384,13 @@ public:
   class  LocationContext : public antlr4::ParserRuleContext {
   public:
     string d_type;
+    shared_ptr<Address> addr;
     bool array_check = false;
     shared_ptr<SymbolTable> old_top;
+    Symbol out;
     antlr4::Token *idToken = nullptr;;
     DecafParser::ExpressionContext *expressionContext = nullptr;;
+    DecafParser::LocationContext *child = nullptr;;
     DecafParser::LocationContext *locationContext = nullptr;;
     LocationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
@@ -318,30 +410,188 @@ public:
   class  ExpressionContext : public antlr4::ParserRuleContext {
   public:
     string d_type;
-    DecafParser::ExpressionContext *lexpr = nullptr;;
-    DecafParser::LiteralContext *literalContext = nullptr;;
-    DecafParser::MethodCallContext *methodCallContext = nullptr;;
-    DecafParser::LocationContext *locationContext = nullptr;;
-    DecafParser::ExpressionContext *expressionContext = nullptr;;
-    DecafParser::ExpressionContext *rexpr = nullptr;;
-    DecafParser::Eq_opContext *op = nullptr;;
+    shared_ptr<Address> addr;
+    vector<int> false_list;
+    vector<int> true_list;
+    int next_instr;
     ExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    LiteralContext *literal();
-    MethodCallContext *methodCall();
-    LocationContext *location();
-    std::vector<ExpressionContext *> expression();
-    ExpressionContext* expression(size_t i);
-    Arith_high_opContext *arith_high_op();
-    Arith_low_opContext *arith_low_op();
-    Rel_opContext *rel_op();
-    Eq_opContext *eq_op();
+   
+    ExpressionContext() : antlr4::ParserRuleContext() { }
+    void copyFrom(ExpressionContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
 
+    virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  MethodCallExprContext : public ExpressionContext {
+  public:
+    MethodCallExprContext(ExpressionContext *ctx);
+
+    DecafParser::MethodCallContext *methodCallContext = nullptr;
+    MethodCallContext *methodCall();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
+  };
+
+  class  EqExprContext : public ExpressionContext {
+  public:
+    EqExprContext(ExpressionContext *ctx);
+
+    DecafParser::ExpressionContext *lexpr = nullptr;
+    DecafParser::Eq_opContext *op = nullptr;
+    DecafParser::ExpressionContext *rexpr = nullptr;
+    DecafParser::ExpressionContext *expressionContext = nullptr;
+    std::vector<ExpressionContext *> expression();
+    ExpressionContext* expression(size_t i);
+    Eq_opContext *eq_op();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  NotExprContext : public ExpressionContext {
+  public:
+    NotExprContext(ExpressionContext *ctx);
+
+    DecafParser::ExpressionContext *expressionContext = nullptr;
+    ExpressionContext *expression();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  LocationExprContext : public ExpressionContext {
+  public:
+    LocationExprContext(ExpressionContext *ctx);
+
+    DecafParser::LocationContext *locationContext = nullptr;
+    LocationContext *location();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  LiteralExprContext : public ExpressionContext {
+  public:
+    LiteralExprContext(ExpressionContext *ctx);
+
+    DecafParser::LiteralContext *literalContext = nullptr;
+    LiteralContext *literal();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  OrExprContext : public ExpressionContext {
+  public:
+    OrExprContext(ExpressionContext *ctx);
+
+    DecafParser::ExpressionContext *lexpr = nullptr;
+    DecafParser::ExpressionContext *rexpr = nullptr;
+    DecafParser::ExpressionContext *expressionContext = nullptr;
+    Or_opContext *or_op();
+    std::vector<ExpressionContext *> expression();
+    ExpressionContext* expression(size_t i);
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  AritHighExprContext : public ExpressionContext {
+  public:
+    AritHighExprContext(ExpressionContext *ctx);
+
+    DecafParser::ExpressionContext *lexpr = nullptr;
+    DecafParser::ExpressionContext *rexpr = nullptr;
+    DecafParser::ExpressionContext *expressionContext = nullptr;
+    Arith_high_opContext *arith_high_op();
+    std::vector<ExpressionContext *> expression();
+    ExpressionContext* expression(size_t i);
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  AritLowExprContext : public ExpressionContext {
+  public:
+    AritLowExprContext(ExpressionContext *ctx);
+
+    DecafParser::ExpressionContext *lexpr = nullptr;
+    DecafParser::ExpressionContext *rexpr = nullptr;
+    DecafParser::ExpressionContext *expressionContext = nullptr;
+    Arith_low_opContext *arith_low_op();
+    std::vector<ExpressionContext *> expression();
+    ExpressionContext* expression(size_t i);
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  ParensExprContext : public ExpressionContext {
+  public:
+    ParensExprContext(ExpressionContext *ctx);
+
+    DecafParser::ExpressionContext *expressionContext = nullptr;
+    ExpressionContext *expression();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  RelExprContext : public ExpressionContext {
+  public:
+    RelExprContext(ExpressionContext *ctx);
+
+    DecafParser::ExpressionContext *lexpr = nullptr;
+    DecafParser::ExpressionContext *rexpr = nullptr;
+    DecafParser::ExpressionContext *expressionContext = nullptr;
+    Rel_opContext *rel_op();
+    std::vector<ExpressionContext *> expression();
+    ExpressionContext* expression(size_t i);
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  MinusExprContext : public ExpressionContext {
+  public:
+    MinusExprContext(ExpressionContext *ctx);
+
+    DecafParser::ExpressionContext *expressionContext = nullptr;
+    ExpressionContext *expression();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  AndExprContext : public ExpressionContext {
+  public:
+    AndExprContext(ExpressionContext *ctx);
+
+    DecafParser::ExpressionContext *lexpr = nullptr;
+    DecafParser::ExpressionContext *rexpr = nullptr;
+    DecafParser::ExpressionContext *expressionContext = nullptr;
+    And_opContext *and_op();
+    std::vector<ExpressionContext *> expression();
+    ExpressionContext* expression(size_t i);
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   ExpressionContext* expression();
@@ -388,6 +638,7 @@ public:
 
   class  Arith_high_opContext : public antlr4::ParserRuleContext {
   public:
+    Operator op;
     Arith_high_opContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
 
@@ -402,6 +653,7 @@ public:
 
   class  Arith_low_opContext : public antlr4::ParserRuleContext {
   public:
+    Operator op;
     Arith_low_opContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
 
@@ -416,6 +668,7 @@ public:
 
   class  Rel_opContext : public antlr4::ParserRuleContext {
   public:
+    Operator op;
     Rel_opContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
 
@@ -430,6 +683,7 @@ public:
 
   class  Eq_opContext : public antlr4::ParserRuleContext {
   public:
+    Operator op;
     Eq_opContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
 
@@ -442,20 +696,80 @@ public:
 
   Eq_opContext* eq_op();
 
-  class  LiteralContext : public antlr4::ParserRuleContext {
+  class  And_opContext : public antlr4::ParserRuleContext {
   public:
-    string d_type;
-    LiteralContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    And_opContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    Int_literalContext *int_literal();
-    Char_literalContext *char_literal();
-    Bool_literalContext *bool_literal();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
+  };
+
+  And_opContext* and_op();
+
+  class  Or_opContext : public antlr4::ParserRuleContext {
+  public:
+    Or_opContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Or_opContext* or_op();
+
+  class  LiteralContext : public antlr4::ParserRuleContext {
+  public:
+    string d_type;
+    shared_ptr<Address> addr;
+    LiteralContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+   
+    LiteralContext() : antlr4::ParserRuleContext() { }
+    void copyFrom(LiteralContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
+
+    virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  IntLiteralContext : public LiteralContext {
+  public:
+    IntLiteralContext(LiteralContext *ctx);
+
+    Int_literalContext *int_literal();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  CharLiteralContext : public LiteralContext {
+  public:
+    CharLiteralContext(LiteralContext *ctx);
+
+    Char_literalContext *char_literal();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  BoolLiteralContext : public LiteralContext {
+  public:
+    BoolLiteralContext(LiteralContext *ctx);
+
+    Bool_literalContext *bool_literal();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   LiteralContext* literal();

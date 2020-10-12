@@ -87,11 +87,12 @@ private:
   shared_ptr<SymbolTable> t_parent;
   unordered_map<Method, shared_ptr<SymbolTable>, MethodHasher, MethodComparator>
       t_children;
+  int base_offset = 0;
 
 public:
   SymbolTable();
   SymbolTable(Method);
-  SymbolTable(Method, shared_ptr<SymbolTable>);
+  SymbolTable(Method, shared_ptr<SymbolTable>, int b_offset = 0);
   ~SymbolTable();
   void init_basic_types();
   Method &id();

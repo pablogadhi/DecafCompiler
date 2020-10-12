@@ -3,12 +3,19 @@ class Program {
     int a;
     int b;
     int c;
-    int d;
-    int e;
-    a = c * d + c / d;
-    b = c * (d + c) / d;
-    b = (c * d) + (c / d);
-    d = a || b && c;
-    e = a && b || c;
+    boolean d;
+    boolean e;
+    a = c * b + c / b;
+    b = a + b * c;
+    b = c * (a + c) / a;
+    b = (c * a) + (c / a);
+    d = true || false && true;
+    e = d && false || d;
+
+    if(5 < 4 || 7 < 8 && 4 != 7){
+      a = 0;
+    }else{
+        
+    }
   }
 }

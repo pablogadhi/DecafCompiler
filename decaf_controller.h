@@ -42,6 +42,7 @@ class DecafController {
 private:
   shared_ptr<DataNode> tree_root;
   pair<SymbolTable, vector<vector<string>>> symb_table;
+  string inter_code;
   ErrorHandler e_handler;
 
 public:
@@ -50,6 +51,7 @@ public:
   shared_ptr<DataNode> get_parse_root();
   vector<ErrorItem> get_errors();
   pair<SymbolTable, vector<vector<string>>> symbol_table();
+  string intermediate_code();
 };
 
 #endif

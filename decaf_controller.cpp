@@ -1,4 +1,5 @@
 #include "decaf_controller.h"
+#include "inter_code.h"
 
 DecafController::DecafController() {}
 
@@ -21,11 +22,16 @@ void DecafController::parse_text(string &code_str) {
   // parser.addParseListener(&draw_listener);
 
   DecafParser::ProgramContext *tree = parser.program();
-  symb_table = parser.symbol_table();
-  ParseTreeWalker::DEFAULT.walk(&draw_listener, tree);
 
+  if (e_handler.errors().size() == 0) {
+    symb_table = parser.symbol_table();
+    auto inter_visitor = InterCodeVisitor();
+    inter_visitor.visit(tree);
+    inter_code = inter_visitor.intermediate_code().translate();
+  }
+
+  ParseTreeWalker::DEFAULT.walk(&draw_listener, tree);
   tree_root = draw_listener.get_current();
-  // std::cout << "Program parsed!" << std::endl;
 }
 
 shared_ptr<DataNode> DecafController::get_parse_root() { return tree_root; }
@@ -33,10 +39,11 @@ vector<ErrorItem> DecafController::get_errors() { return e_handler.errors(); }
 pair<SymbolTable, vector<vector<string>>> DecafController::symbol_table() {
   return symb_table;
 }
+string DecafController::intermediate_code() { return inter_code; }
 
 TreeListener::TreeListener(DecafParser *parser_ptr) {
   parser = parser_ptr;
-  current_node = make_shared<DataNode>(DataNode("program"));
+  current_node = make_shared<DataNode>("program");
 }
 
 TreeListener::~TreeListener() {}

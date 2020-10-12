@@ -77,6 +77,7 @@ private:
   TreeView *type_table;
   TreeView *method_table;
   TextView *code_view;
+  TextView *inter_code_view;
 
   ModelColumns m_columns;
   ErrorColumns e_columns;

@@ -28,8 +28,9 @@ vector<string> Method::param_signature() const { return m_param_signature; }
 
 SymbolTable::SymbolTable() {}
 SymbolTable::SymbolTable(Method id) : t_id(id) {}
-SymbolTable::SymbolTable(Method id, shared_ptr<SymbolTable> parent)
-    : t_id(id), t_parent(parent) {}
+SymbolTable::SymbolTable(Method id, shared_ptr<SymbolTable> parent,
+                         int b_offset)
+    : t_id(id), t_parent(parent), base_offset(b_offset) {}
 SymbolTable::~SymbolTable() {}
 
 void SymbolTable::init_basic_types() {
@@ -45,7 +46,7 @@ vector<Type> &SymbolTable::types() { return t_types; }
 vector<Method> &SymbolTable::methods() { return t_methods; }
 
 int SymbolTable::next_symbol_offset() {
-  int offset = 0;
+  int offset = base_offset;
   if (!t_symbols.empty()) {
     auto last_symb = t_symbols.back();
     offset = last_symb.offset() + last_symb.size();
@@ -57,7 +58,8 @@ void SymbolTable::add_symbol(string name, string type, int size,
                              function<void()> error_func) {
   if (!get_where<Symbol>(t_symbols,
                          [=](Symbol &s) { return s.name() == name; })) {
-    t_symbols.push_back(Symbol(name, type, size, next_symbol_offset()));
+    auto new_symbol = Symbol(name, type, size, next_symbol_offset());
+    t_symbols.push_back(new_symbol);
 
     Type type_ctr;
     shared_ptr<SymbolTable> found_in;
@@ -66,8 +68,8 @@ void SymbolTable::add_symbol(string name, string type, int size,
         self_ptr, [&](shared_ptr<SymbolTable> table) { return table->types(); },
         [&](Type &t) { return t.name() == type; }, found_in, &type_ctr);
     if (type_ctr.type() == "struct") {
-      auto struct_inst_table =
-          make_shared<SymbolTable>(Method(name, type), self_ptr);
+      auto struct_inst_table = make_shared<SymbolTable>(
+          Method(name, type), self_ptr, new_symbol.offset());
       auto types_table =
           found_in->children()[Method(type_ctr.name(), "struct")];
       for (auto &memb : types_table->types()) {

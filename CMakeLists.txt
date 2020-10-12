@@ -25,12 +25,14 @@ set(DATA_STRUCTURE_FILES
   ${PROJECT_SOURCE_DIR}/structs/data_tree.cpp
   ${PROJECT_SOURCE_DIR}/structs/symb_table.cpp
   ${PROJECT_SOURCE_DIR}/structs/error_item.cpp
+  ${PROJECT_SOURCE_DIR}/structs/triple.cpp
 )
  
 set(ALL_SRC_FILES
   ${PROJECT_SOURCE_DIR}/main.cpp
   ${PROJECT_SOURCE_DIR}/decaf_controller.cpp
   ${PROJECT_SOURCE_DIR}/ui_controller.cpp
+  ${PROJECT_SOURCE_DIR}/inter_code.cpp
   ${DECAF_CORE_FILES}
   ${DATA_STRUCTURE_FILES}
 )
