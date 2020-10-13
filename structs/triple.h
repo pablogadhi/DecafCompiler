@@ -27,6 +27,11 @@ enum class Operator {
   IF,
   IFFALSE,
   LABEL,
+  CALL,
+  RET,
+  PARAM,
+  PUSH,
+  POP
 };
 
 class Address {
@@ -57,14 +62,17 @@ private:
   Operator t_op;
   shared_ptr<Address> t_arg0;
   shared_ptr<Address> t_arg1;
+  bool t_temp_offset = false;
 
 public:
-  Triple(Operator, shared_ptr<Address>, shared_ptr<Address> arg1 = nullptr);
+  Triple(Operator, shared_ptr<Address>, shared_ptr<Address> arg1 = nullptr,
+         bool temp_offset = false);
   ~Triple();
   Operator op();
   shared_ptr<Address> arg0();
   shared_ptr<Address> arg1();
   void set_arg0(shared_ptr<Address>);
+  bool temp_offset();
 };
 
 class TACode {
@@ -77,13 +85,14 @@ public:
   ~TACode();
   vector<shared_ptr<Triple>> &code();
   shared_ptr<Address> gen(Operator, shared_ptr<Address>,
-                          shared_ptr<Address> arg1 = nullptr);
+                          shared_ptr<Address> arg1 = nullptr,
+                          bool temp_offset = false);
   string translate();
   vector<int> make_list(int);
   vector<int> merge(vector<int>, vector<int>);
   void back_patch(vector<int>, int);
   int next_instr();
-  string new_label();
+  string new_label(string prefix = "_LOCAL_");
 };
 
 #endif

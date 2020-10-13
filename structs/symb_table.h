@@ -50,12 +50,16 @@ public:
 class Method : public TableRow {
 private:
   vector<string> m_param_signature;
+  string m_alias = "";
 
 public:
-  Method(string, string, vector<string> param_signature = vector<string>{});
+  Method(string, string, vector<string> param_signature = vector<string>{},
+         string alias = "");
   Method();
   ~Method();
   vector<string> param_signature() const;
+  void set_alias(string);
+  string alias();
 };
 
 struct MethodHasher {
@@ -106,7 +110,8 @@ public:
   void add_type(
       string, string, int, function<void()> = [] {});
   void add_method(
-      string, string, vector<string>, function<void()> = [] {});
+      string, string, vector<string>, string alias = "",
+      function<void()> = [] {});
   shared_ptr<SymbolTable> parent();
   void add_child(shared_ptr<SymbolTable>);
   unordered_map<Method, shared_ptr<SymbolTable>, MethodHasher, MethodComparator>

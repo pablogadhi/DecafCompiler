@@ -72,41 +72,47 @@ public:
   virtual void enterLocation(DecafParser::LocationContext * /*ctx*/) override { }
   virtual void exitLocation(DecafParser::LocationContext * /*ctx*/) override { }
 
-  virtual void enterMethodCallExpr(DecafParser::MethodCallExprContext * /*ctx*/) override { }
-  virtual void exitMethodCallExpr(DecafParser::MethodCallExprContext * /*ctx*/) override { }
+  virtual void enterParensExpr(DecafParser::ParensExprContext * /*ctx*/) override { }
+  virtual void exitParensExpr(DecafParser::ParensExprContext * /*ctx*/) override { }
 
-  virtual void enterEqExpr(DecafParser::EqExprContext * /*ctx*/) override { }
-  virtual void exitEqExpr(DecafParser::EqExprContext * /*ctx*/) override { }
+  virtual void enterAritExpr(DecafParser::AritExprContext * /*ctx*/) override { }
+  virtual void exitAritExpr(DecafParser::AritExprContext * /*ctx*/) override { }
 
-  virtual void enterNotExpr(DecafParser::NotExprContext * /*ctx*/) override { }
-  virtual void exitNotExpr(DecafParser::NotExprContext * /*ctx*/) override { }
-
-  virtual void enterLocationExpr(DecafParser::LocationExprContext * /*ctx*/) override { }
-  virtual void exitLocationExpr(DecafParser::LocationExprContext * /*ctx*/) override { }
-
-  virtual void enterLiteralExpr(DecafParser::LiteralExprContext * /*ctx*/) override { }
-  virtual void exitLiteralExpr(DecafParser::LiteralExprContext * /*ctx*/) override { }
-
-  virtual void enterOrExpr(DecafParser::OrExprContext * /*ctx*/) override { }
-  virtual void exitOrExpr(DecafParser::OrExprContext * /*ctx*/) override { }
-
-  virtual void enterAritHighExpr(DecafParser::AritHighExprContext * /*ctx*/) override { }
-  virtual void exitAritHighExpr(DecafParser::AritHighExprContext * /*ctx*/) override { }
+  virtual void enterBooleanExpr(DecafParser::BooleanExprContext * /*ctx*/) override { }
+  virtual void exitBooleanExpr(DecafParser::BooleanExprContext * /*ctx*/) override { }
 
   virtual void enterAritLowExpr(DecafParser::AritLowExprContext * /*ctx*/) override { }
   virtual void exitAritLowExpr(DecafParser::AritLowExprContext * /*ctx*/) override { }
 
-  virtual void enterParensExpr(DecafParser::ParensExprContext * /*ctx*/) override { }
-  virtual void exitParensExpr(DecafParser::ParensExprContext * /*ctx*/) override { }
-
-  virtual void enterRelExpr(DecafParser::RelExprContext * /*ctx*/) override { }
-  virtual void exitRelExpr(DecafParser::RelExprContext * /*ctx*/) override { }
+  virtual void enterAritHighExpr(DecafParser::AritHighExprContext * /*ctx*/) override { }
+  virtual void exitAritHighExpr(DecafParser::AritHighExprContext * /*ctx*/) override { }
 
   virtual void enterMinusExpr(DecafParser::MinusExprContext * /*ctx*/) override { }
   virtual void exitMinusExpr(DecafParser::MinusExprContext * /*ctx*/) override { }
 
+  virtual void enterOrExpr(DecafParser::OrExprContext * /*ctx*/) override { }
+  virtual void exitOrExpr(DecafParser::OrExprContext * /*ctx*/) override { }
+
   virtual void enterAndExpr(DecafParser::AndExprContext * /*ctx*/) override { }
   virtual void exitAndExpr(DecafParser::AndExprContext * /*ctx*/) override { }
+
+  virtual void enterEqExpr(DecafParser::EqExprContext * /*ctx*/) override { }
+  virtual void exitEqExpr(DecafParser::EqExprContext * /*ctx*/) override { }
+
+  virtual void enterRelExpr(DecafParser::RelExprContext * /*ctx*/) override { }
+  virtual void exitRelExpr(DecafParser::RelExprContext * /*ctx*/) override { }
+
+  virtual void enterNotExpr(DecafParser::NotExprContext * /*ctx*/) override { }
+  virtual void exitNotExpr(DecafParser::NotExprContext * /*ctx*/) override { }
+
+  virtual void enterLiteralExpr(DecafParser::LiteralExprContext * /*ctx*/) override { }
+  virtual void exitLiteralExpr(DecafParser::LiteralExprContext * /*ctx*/) override { }
+
+  virtual void enterMethodCallExpr(DecafParser::MethodCallExprContext * /*ctx*/) override { }
+  virtual void exitMethodCallExpr(DecafParser::MethodCallExprContext * /*ctx*/) override { }
+
+  virtual void enterLocationExpr(DecafParser::LocationExprContext * /*ctx*/) override { }
+  virtual void exitLocationExpr(DecafParser::LocationExprContext * /*ctx*/) override { }
 
   virtual void enterMethodCall(DecafParser::MethodCallContext * /*ctx*/) override { }
   virtual void exitMethodCall(DecafParser::MethodCallContext * /*ctx*/) override { }

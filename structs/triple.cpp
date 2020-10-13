@@ -2,7 +2,6 @@
 #include <stack>
 
 Address::Address(int value) : a_value(value) {}
-// Address::~Address() {}
 int Address::value() { return a_value; }
 void Address::change(int new_value) { a_value = new_value; }
 
@@ -12,20 +11,23 @@ Literal::~Literal() {}
 string Literal::type() { return l_type; }
 string Literal::value() { return l_value; }
 
-Triple::Triple(Operator op, shared_ptr<Address> arg0, shared_ptr<Address> arg1)
-    : Address(-1), t_op(op), t_arg0(arg0), t_arg1(arg1) {}
+Triple::Triple(Operator op, shared_ptr<Address> arg0, shared_ptr<Address> arg1,
+               bool temp_offset)
+    : Address(-1), t_op(op), t_arg0(arg0), t_arg1(arg1),
+      t_temp_offset(temp_offset) {}
 Triple::~Triple() {}
 Operator Triple::op() { return t_op; }
 shared_ptr<Address> Triple::arg0() { return t_arg0; }
 shared_ptr<Address> Triple::arg1() { return t_arg1; }
 void Triple::set_arg0(shared_ptr<Address> new_arg0) { t_arg0 = new_arg0; }
+bool Triple::temp_offset() { return t_temp_offset; }
 
 TACode::TACode() {}
 TACode::~TACode() {}
 vector<shared_ptr<Triple>> &TACode::code() { return code_vec; }
 shared_ptr<Address> TACode::gen(Operator op, shared_ptr<Address> arg0,
-                                shared_ptr<Address> arg1) {
-  auto new_triple = make_shared<Triple>(op, arg0, arg1);
+                                shared_ptr<Address> arg1, bool temp_offset) {
+  auto new_triple = make_shared<Triple>(op, arg0, arg1, temp_offset);
   code_vec.push_back(new_triple);
   return dynamic_pointer_cast<Address>(new_triple);
 }
@@ -68,6 +70,16 @@ string operator_symbol(Operator op) {
     return "goto";
   case Operator::IF:
     return "if";
+  case Operator::CALL:
+    return "call";
+  case Operator::RET:
+    return "ret";
+  case Operator::PARAM:
+    return "param";
+  case Operator::PUSH:
+    return "push";
+  case Operator::POP:
+    return "pop";
   default:
     return "";
   }
@@ -79,13 +91,23 @@ string deduct_address(shared_ptr<Address> address_ptr,
   if (as_literal != nullptr) {
     return as_literal->value();
   }
+
   if (address_ptr->value() != -1) {
     return "_MEM[" + to_string(address_ptr->value()) + "]";
   }
 
-  auto temp = temp_vars.top();
-  temp_vars.pop();
-  return temp;
+  auto as_triple = dynamic_pointer_cast<Triple>(address_ptr);
+  if (as_triple != nullptr) {
+    auto temp = temp_vars.top();
+    temp_vars.pop();
+
+    if (as_triple->temp_offset()) {
+      temp = "_MEM[" + temp + "]";
+    }
+    return temp;
+  }
+
+  return "";
 }
 
 string new_temp(stack<string> &temp_vars) {
@@ -99,16 +121,13 @@ string TACode::translate() {
   stack<string> temp_vars;
 
   for (auto &instr : code_vec) {
-    string code_line = "";
+    string code_line = "    ";
 
     switch (instr->op()) {
     case Operator::ASSIGN: {
       auto r_value = deduct_address(instr->arg1(), temp_vars);
       auto l_value = deduct_address(instr->arg0(), temp_vars);
-      if (l_value.substr(0, TEMP_NAME.size()) == TEMP_NAME) {
-        l_value = "_MEM[" + l_value + "]";
-      }
-      code_line = l_value + " = " + r_value + "\n";
+      code_line += l_value + " = " + r_value + "\n";
       break;
     }
     case Operator::MUL:
@@ -133,25 +152,36 @@ string TACode::translate() {
     case Operator::NOT:
       goto unary_op;
     case Operator::LABEL: {
-      auto label_literal = dynamic_pointer_cast<Literal>(instr->arg0());
-      code_line = label_literal->value() + ":\n";
+      code_line = "\n" + deduct_address(instr->arg0(), temp_vars) + ":\n";
       break;
     }
     case Operator::IF:
     case Operator::JUMP:
-      code_line = operator_symbol(instr->op()) + " " +
-                  deduct_address(instr->arg0(), temp_vars) + "\n";
+    case Operator::CALL:
+    case Operator::PARAM:
+    case Operator::PUSH:
+      goto simple_op;
+    case Operator::POP:
+      code_line +=
+          operator_symbol(instr->op()) + " " + new_temp(temp_vars) + "\n";
+      break;
+    case Operator::RET:
+      code_line += operator_symbol(instr->op()) + "\n";
       break;
 
     unary_op:
-      code_line = new_temp(temp_vars) + " = " + operator_symbol(instr->op()) +
-                  " " + deduct_address(instr->arg0(), temp_vars) + "\n";
+      code_line += new_temp(temp_vars) + " = " + operator_symbol(instr->op()) +
+                   " " + deduct_address(instr->arg0(), temp_vars) + "\n";
       break;
     binary_op:
-      code_line = new_temp(temp_vars) + " = " +
-                  deduct_address(instr->arg0(), temp_vars) + " " +
-                  operator_symbol(instr->op()) + " " +
-                  deduct_address(instr->arg1(), temp_vars) + "\n";
+      code_line += new_temp(temp_vars) + " = " +
+                   deduct_address(instr->arg0(), temp_vars) + " " +
+                   operator_symbol(instr->op()) + " " +
+                   deduct_address(instr->arg1(), temp_vars) + "\n";
+      break;
+    simple_op:
+      code_line += operator_symbol(instr->op()) + " " +
+                   deduct_address(instr->arg0(), temp_vars) + "\n";
       break;
 
     default:
@@ -179,8 +209,8 @@ void TACode::back_patch(vector<int> list, int label_idx) {
 }
 
 int TACode::next_instr() { return code_vec.size(); }
-string TACode::new_label() {
-  string label = "_CODE_" + to_string(label_counter);
+string TACode::new_label(string prefix) {
+  string label = prefix + to_string(label_counter);
   label_counter++;
   return label;
 }

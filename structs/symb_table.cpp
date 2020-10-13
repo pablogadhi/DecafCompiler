@@ -20,11 +20,15 @@ Type::Type() : TableRow() {}
 Type::~Type() {}
 int Type::size() { return t_size; }
 
-Method::Method(string name, string type, vector<string> param_signature)
-    : TableRow(name, type), m_param_signature(param_signature) {}
+Method::Method(string name, string type, vector<string> param_signature,
+               string alias)
+    : TableRow(name, type), m_param_signature(param_signature), m_alias(alias) {
+}
 Method::Method() : TableRow() {}
 Method::~Method() {}
 vector<string> Method::param_signature() const { return m_param_signature; }
+void Method::set_alias(string alias) { m_alias = alias; }
+string Method::alias() { return m_alias; }
 
 SymbolTable::SymbolTable() {}
 SymbolTable::SymbolTable(Method id) : t_id(id) {}
@@ -92,11 +96,11 @@ void SymbolTable::add_type(string name, string type, int size,
 }
 
 void SymbolTable::add_method(string name, string r_type, vector<string> params,
-                             function<void()> error_func) {
+                             string alias, function<void()> error_func) {
   if (!get_where<Method>(t_methods, [=](Method &m) {
         return m.name() == name && m.param_signature() == params;
       })) {
-    t_methods.push_back(Method(name, r_type, params));
+    t_methods.push_back(Method(name, r_type, params, alias));
   } else {
     error_func();
   }

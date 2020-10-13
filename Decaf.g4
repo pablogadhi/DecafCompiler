@@ -28,21 +28,14 @@ void DecafParser::set_error_handler(ErrorHandler *handler) {
 }
 }
 
-fragment LETTER:[a-zA-Z];
-fragment DIGIT: [0-9];
-ID: LETTER (LETTER | DIGIT)*;
-NUM: DIGIT (DIGIT)*;
-//TODO Change CHAR definition to the right one
-CHAR: '\'' LETTER '\'';
-WS: [ \t\r\n]+ -> channel(HIDDEN);
-
 program
+	locals[Method main]
 	@init {
 table_head->init_basic_types();
 table_top = table_head;
   }
 	@after {
-if(!get_where<Method>(table_head->methods(), [](Method& m){return m.name() == "main" && m.param_signature().size() == 0;})){
+if(!get_where<Method>(table_head->methods(), [](Method& m){return m.name() == "main" && m.param_signature().size() == 0;}, &$main)){
   e_handler->get_lambda(NO_MAIN, 0, 0)();
   }
 }: 'class' 'Program' '{' (declaration)* '}';
@@ -105,14 +98,16 @@ if(recursive_lookup<Type>(table_top, [&](shared_ptr<SymbolTable> table){return t
 	| 'void' {$d_type = "void"; $size = 0;};
 
 methodDeclaration
-	locals[vector<Symbol> params, shared_ptr<SymbolTable> new_table]:
+	locals[vector<Symbol> params, shared_ptr<SymbolTable> new_table, string alias]:
 	methodType ID '(' (
 		parameter[&$params] (',' parameter[&$params])*
 	)? ')' {
 vector<string> param_types;
 transform($params.begin(), $params.end(), back_inserter(param_types), [](Symbol &s){return s.type();});
 $new_table = make_shared<SymbolTable>(Method($ID.text, $methodType.d_type, param_types), table_top);
-table_top->add_method($ID.text, $methodType.d_type, param_types, e_handler->get_lambda(IDENT_DEFINED, $ID.line, $ID.pos, vector<string>{$ID.text, table_top->name()}));
+$alias = $ID.text + "_" + to_string(scope_counter);
+scope_counter++;
+table_top->add_method($ID.text, $methodType.d_type, param_types, $alias, e_handler->get_lambda(IDENT_DEFINED, $ID.line, $ID.pos, vector<string>{$ID.text, table_top->name()}));
 table_top->add_child($new_table);
 for(auto &symb: $params){
   $new_table->add_symbol(symb.name(), symb.type(), symb.size());
@@ -192,7 +187,7 @@ if($location.d_type != $expression.d_type){
 
 location
 	returns[string d_type, shared_ptr<Address> addr]
-	locals[bool array_check = false, shared_ptr<SymbolTable> old_top, Symbol out]: (
+	locals[bool array_check = false, shared_ptr<SymbolTable> old_top, Symbol out, Type type_info]: (
 		ID
 		| ID '[' expression ']' {$array_check = true;}
 	) {
@@ -200,9 +195,8 @@ shared_ptr<SymbolTable> parent_table;
 if(recursive_lookup<Symbol>(table_top, [&](shared_ptr<SymbolTable> t){return t->symbols();}, [&](Symbol &s){return s.name() == $ID.text;}, parent_table, &$out)){
   $d_type = $out.type();
   if($array_check){
-    Type type_info;
-    recursive_lookup<Type>(table_top, [&](shared_ptr<SymbolTable> t){return t->types();}, [&](Type &t){return t.name() == $out.type();}, &type_info);
-    if(type_info.size() == $out.size()){
+    recursive_lookup<Type>(table_top, [&](shared_ptr<SymbolTable> t){return t->types();}, [&](Type &t){return t.name() == $out.type();}, &$type_info);
+    if($type_info.size() == $out.size()){
       e_handler->get_lambda(IDENT_NOT_ARRAY, $ID.line, $ID.pos, vector<string>{$ID.text})();
     } else if($expression.d_type != "int"){
       e_handler->get_lambda(INDEX_NOT_INT, $ID.line, $ID.pos, vector<string>{$ID.text})();
@@ -227,8 +221,104 @@ table_top = $old_top;
 	)?;
 
 expression
+	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]:
+	'(' expression ')' {$d_type = $expression.d_type;}	# parensExpr
+	| aritLowExpr {$d_type = $aritLowExpr.d_type;}		# aritExpr
+	| orExpr {$d_type = $orExpr.d_type;}				# booleanExpr;
+
+aritLowExpr
+	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]:
+	lexpr = aritHighExpr {$d_type = $lexpr.d_type;} (
+		arith_low_op rexpr = aritLowExpr {
+if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
+  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
+} 
+}
+	)?;
+
+aritHighExpr
+	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]:
+	lexpr = minusExpr {$d_type = $lexpr.d_type;} (
+		arith_high_op rexpr = aritHighExpr {
+if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
+  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
+}
+}
+	)?;
+
+minusExpr
 	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]
-	locals[int next_instr]:
+	locals[bool check_type = false]:
+	('-' {$check_type = true;})? atomExpr {
+// TODO Check the expression type
+$d_type = $atomExpr.d_type;
+};
+
+orExpr
+	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]:
+	lexpr = andExpr {$d_type = $lexpr.d_type;} (
+		or_op rexpr = orExpr {
+if($lexpr.d_type != "boolean" || $rexpr.d_type != "boolean"){
+  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"boolean"})();
+}else{
+  $d_type = "boolean";
+}
+}
+	)?;
+
+andExpr
+	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]:
+	lexpr = eqExpr {$d_type = $lexpr.d_type;} (
+		and_op rexpr = andExpr {
+if($lexpr.d_type != "boolean" || $rexpr.d_type != "boolean"){
+  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"boolean"})();
+}else{
+  $d_type = "boolean";
+} 
+}
+	)?;
+
+eqExpr
+	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]:
+	lexpr = relExpr {$d_type = $lexpr.d_type;} (
+		op = eq_op rexpr = eqExpr {
+auto valid_types = vector<string>{"int", "char", "boolean"};
+if($lexpr.d_type != $rexpr.d_type){
+  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{$lexpr.d_type})();
+}else if(find(valid_types.begin(), valid_types.end(), $lexpr.d_type) == valid_types.end()){
+  e_handler->get_lambda(CAN_NOT_USE_OPERATOR, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{$lexpr.d_type})();
+}else if(find(valid_types.begin(), valid_types.end(), $rexpr.d_type) == valid_types.end()){
+  e_handler->get_lambda(CAN_NOT_USE_OPERATOR, $rexpr.start->getLine(), $rexpr.start->getCharPositionInLine(), vector<string>{$rexpr.d_type})();
+}else{
+  $d_type = "boolean";
+}
+}
+	)?;
+
+relExpr
+	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]:
+	lexpr = notExpr {$d_type = $lexpr.d_type;} (
+		rel_op rexpr = relExpr {
+if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
+  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
+}else{
+  $d_type = "boolean";
+}
+}
+	)?;
+
+notExpr
+	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]
+	locals[bool check_type = false]:
+	('!' {$check_type = true;})? atomExpr {
+if($check_type && $atomExpr.d_type != "boolean"){
+  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $atomExpr.start->getLine(), $atomExpr.start->getCharPositionInLine(), vector<string>{"boolean"})();
+} 
+$d_type = $atomExpr.d_type;
+};
+
+atomExpr
+	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]:
 	literal {
 $d_type = $literal.d_type;
 } # literalExpr
@@ -241,74 +331,20 @@ if($methodCall.d_type == "void"){
 } # methodCallExpr
 	| location {
 $d_type = $location.d_type;
-} # locationExpr
-	| '(' expression ')' {
-$d_type = $expression.d_type;
-} # parensExpr
-	| '!' expression {
-if($expression.d_type != "boolean"){
-  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $expression.start->getLine(), $expression.start->getCharPositionInLine(), vector<string>{"boolean"})();
-} 
-$d_type = $expression.d_type;
-} # notExpr
-	| '-' expression {
-$d_type = $expression.d_type;
-} # minusExpr
-	| lexpr = expression arith_high_op rexpr = expression {
-if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
-  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
-}
-$d_type = $lexpr.d_type;
-} # aritHighExpr
-	| lexpr = expression arith_low_op rexpr = expression {
-if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
-  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
-}
-$d_type = $lexpr.d_type;
-} # aritLowExpr
-	| lexpr = expression rel_op rexpr = expression {
-if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
-  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
-}
-$d_type = "boolean";
-} # relExpr
-	| lexpr = expression op = eq_op rexpr = expression {
-auto valid_types = vector<string>{"int", "char", "boolean"};
-if($lexpr.d_type != $rexpr.d_type){
-  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{$lexpr.d_type})();
-}else if(find(valid_types.begin(), valid_types.end(), $lexpr.d_type) == valid_types.end()){
-  e_handler->get_lambda(CAN_NOT_USER_OPERATOR, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{$lexpr.d_type})();
-}else if(find(valid_types.begin(), valid_types.end(), $rexpr.d_type) == valid_types.end()){
-  e_handler->get_lambda(CAN_NOT_USER_OPERATOR, $rexpr.start->getLine(), $rexpr.start->getCharPositionInLine(), vector<string>{$rexpr.d_type})();
-}
-$d_type = "boolean";
-} # eqExpr
-	| lexpr = expression and_op rexpr = expression {
-if($lexpr.d_type != "boolean" || $rexpr.d_type != "boolean"){
-  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"boolean"})();
-}
-$d_type = "boolean";
-} # andExpr
-	| lexpr = expression or_op rexpr = expression {
-if($lexpr.d_type != "boolean" || $rexpr.d_type != "boolean"){
-  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"boolean"})();
-}
-$d_type = "boolean";
-} # orExpr;
+} # locationExpr;
 
 methodCall
-	returns[string d_type, int line, int pos]
-	locals[vector<string> arg_types]:
+	returns[string d_type, int line, int pos, shared_ptr<Address> addr]
+	locals[vector<string> arg_types, Method out]:
 	ID '(' (
 		arg[&$arg_types] (',' arg[&$arg_types])*
 	)? ')' {
-Method out;
-if(!get_where<Method>(table_head->methods(), [&](Method &m){return m.name() == $ID.text && m.param_signature() == $arg_types;}, &out)){
+if(!get_where<Method>(table_head->methods(), [&](Method &m){return m.name() == $ID.text && m.param_signature() == $arg_types;}, &$out)){
   auto msg_parts = vector<string>{$ID.text};
   msg_parts.insert(msg_parts.end(), $arg_types.begin(), $arg_types.end());
   e_handler->get_lambda(NO_METHOD_WITH_SIGN, $ID.line, $ID.pos, msg_parts)();
 }
-$d_type = out.type(); $line = $ID.line; $pos = $ID.pos;
+$d_type = $out.type(); $line = $ID.line; $pos = $ID.pos;
   };
 
 arg[vector<string> *method_arg_types]:
@@ -352,3 +388,11 @@ int_literal: NUM;
 char_literal: CHAR;
 
 bool_literal: 'true' | 'false';
+
+fragment LETTER: [a-zA-Z];
+fragment DIGIT: [0-9];
+ID: LETTER (LETTER | DIGIT)*;
+NUM: DIGIT (DIGIT)*;
+//TODO Change CHAR definition to the right one
+CHAR: '\'' LETTER '\'';
+WS: [ \t\r\n]+ -> channel(HIDDEN);

@@ -70,41 +70,47 @@ public:
   virtual void enterLocation(DecafParser::LocationContext *ctx) = 0;
   virtual void exitLocation(DecafParser::LocationContext *ctx) = 0;
 
-  virtual void enterMethodCallExpr(DecafParser::MethodCallExprContext *ctx) = 0;
-  virtual void exitMethodCallExpr(DecafParser::MethodCallExprContext *ctx) = 0;
+  virtual void enterParensExpr(DecafParser::ParensExprContext *ctx) = 0;
+  virtual void exitParensExpr(DecafParser::ParensExprContext *ctx) = 0;
 
-  virtual void enterEqExpr(DecafParser::EqExprContext *ctx) = 0;
-  virtual void exitEqExpr(DecafParser::EqExprContext *ctx) = 0;
+  virtual void enterAritExpr(DecafParser::AritExprContext *ctx) = 0;
+  virtual void exitAritExpr(DecafParser::AritExprContext *ctx) = 0;
 
-  virtual void enterNotExpr(DecafParser::NotExprContext *ctx) = 0;
-  virtual void exitNotExpr(DecafParser::NotExprContext *ctx) = 0;
-
-  virtual void enterLocationExpr(DecafParser::LocationExprContext *ctx) = 0;
-  virtual void exitLocationExpr(DecafParser::LocationExprContext *ctx) = 0;
-
-  virtual void enterLiteralExpr(DecafParser::LiteralExprContext *ctx) = 0;
-  virtual void exitLiteralExpr(DecafParser::LiteralExprContext *ctx) = 0;
-
-  virtual void enterOrExpr(DecafParser::OrExprContext *ctx) = 0;
-  virtual void exitOrExpr(DecafParser::OrExprContext *ctx) = 0;
-
-  virtual void enterAritHighExpr(DecafParser::AritHighExprContext *ctx) = 0;
-  virtual void exitAritHighExpr(DecafParser::AritHighExprContext *ctx) = 0;
+  virtual void enterBooleanExpr(DecafParser::BooleanExprContext *ctx) = 0;
+  virtual void exitBooleanExpr(DecafParser::BooleanExprContext *ctx) = 0;
 
   virtual void enterAritLowExpr(DecafParser::AritLowExprContext *ctx) = 0;
   virtual void exitAritLowExpr(DecafParser::AritLowExprContext *ctx) = 0;
 
-  virtual void enterParensExpr(DecafParser::ParensExprContext *ctx) = 0;
-  virtual void exitParensExpr(DecafParser::ParensExprContext *ctx) = 0;
-
-  virtual void enterRelExpr(DecafParser::RelExprContext *ctx) = 0;
-  virtual void exitRelExpr(DecafParser::RelExprContext *ctx) = 0;
+  virtual void enterAritHighExpr(DecafParser::AritHighExprContext *ctx) = 0;
+  virtual void exitAritHighExpr(DecafParser::AritHighExprContext *ctx) = 0;
 
   virtual void enterMinusExpr(DecafParser::MinusExprContext *ctx) = 0;
   virtual void exitMinusExpr(DecafParser::MinusExprContext *ctx) = 0;
 
+  virtual void enterOrExpr(DecafParser::OrExprContext *ctx) = 0;
+  virtual void exitOrExpr(DecafParser::OrExprContext *ctx) = 0;
+
   virtual void enterAndExpr(DecafParser::AndExprContext *ctx) = 0;
   virtual void exitAndExpr(DecafParser::AndExprContext *ctx) = 0;
+
+  virtual void enterEqExpr(DecafParser::EqExprContext *ctx) = 0;
+  virtual void exitEqExpr(DecafParser::EqExprContext *ctx) = 0;
+
+  virtual void enterRelExpr(DecafParser::RelExprContext *ctx) = 0;
+  virtual void exitRelExpr(DecafParser::RelExprContext *ctx) = 0;
+
+  virtual void enterNotExpr(DecafParser::NotExprContext *ctx) = 0;
+  virtual void exitNotExpr(DecafParser::NotExprContext *ctx) = 0;
+
+  virtual void enterLiteralExpr(DecafParser::LiteralExprContext *ctx) = 0;
+  virtual void exitLiteralExpr(DecafParser::LiteralExprContext *ctx) = 0;
+
+  virtual void enterMethodCallExpr(DecafParser::MethodCallExprContext *ctx) = 0;
+  virtual void exitMethodCallExpr(DecafParser::MethodCallExprContext *ctx) = 0;
+
+  virtual void enterLocationExpr(DecafParser::LocationExprContext *ctx) = 0;
+  virtual void exitLocationExpr(DecafParser::LocationExprContext *ctx) = 0;
 
   virtual void enterMethodCall(DecafParser::MethodCallContext *ctx) = 0;
   virtual void exitMethodCall(DecafParser::MethodCallContext *ctx) = 0;

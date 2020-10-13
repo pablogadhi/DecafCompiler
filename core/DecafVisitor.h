@@ -56,29 +56,33 @@ public:
 
     virtual antlrcpp::Any visitLocation(DecafParser::LocationContext *context) = 0;
 
-    virtual antlrcpp::Any visitMethodCallExpr(DecafParser::MethodCallExprContext *context) = 0;
+    virtual antlrcpp::Any visitParensExpr(DecafParser::ParensExprContext *context) = 0;
 
-    virtual antlrcpp::Any visitEqExpr(DecafParser::EqExprContext *context) = 0;
+    virtual antlrcpp::Any visitAritExpr(DecafParser::AritExprContext *context) = 0;
 
-    virtual antlrcpp::Any visitNotExpr(DecafParser::NotExprContext *context) = 0;
-
-    virtual antlrcpp::Any visitLocationExpr(DecafParser::LocationExprContext *context) = 0;
-
-    virtual antlrcpp::Any visitLiteralExpr(DecafParser::LiteralExprContext *context) = 0;
-
-    virtual antlrcpp::Any visitOrExpr(DecafParser::OrExprContext *context) = 0;
-
-    virtual antlrcpp::Any visitAritHighExpr(DecafParser::AritHighExprContext *context) = 0;
+    virtual antlrcpp::Any visitBooleanExpr(DecafParser::BooleanExprContext *context) = 0;
 
     virtual antlrcpp::Any visitAritLowExpr(DecafParser::AritLowExprContext *context) = 0;
 
-    virtual antlrcpp::Any visitParensExpr(DecafParser::ParensExprContext *context) = 0;
-
-    virtual antlrcpp::Any visitRelExpr(DecafParser::RelExprContext *context) = 0;
+    virtual antlrcpp::Any visitAritHighExpr(DecafParser::AritHighExprContext *context) = 0;
 
     virtual antlrcpp::Any visitMinusExpr(DecafParser::MinusExprContext *context) = 0;
 
+    virtual antlrcpp::Any visitOrExpr(DecafParser::OrExprContext *context) = 0;
+
     virtual antlrcpp::Any visitAndExpr(DecafParser::AndExprContext *context) = 0;
+
+    virtual antlrcpp::Any visitEqExpr(DecafParser::EqExprContext *context) = 0;
+
+    virtual antlrcpp::Any visitRelExpr(DecafParser::RelExprContext *context) = 0;
+
+    virtual antlrcpp::Any visitNotExpr(DecafParser::NotExprContext *context) = 0;
+
+    virtual antlrcpp::Any visitLiteralExpr(DecafParser::LiteralExprContext *context) = 0;
+
+    virtual antlrcpp::Any visitMethodCallExpr(DecafParser::MethodCallExprContext *context) = 0;
+
+    virtual antlrcpp::Any visitLocationExpr(DecafParser::LocationExprContext *context) = 0;
 
     virtual antlrcpp::Any visitMethodCall(DecafParser::MethodCallContext *context) = 0;
 

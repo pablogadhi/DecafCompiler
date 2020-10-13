@@ -66,7 +66,7 @@ function<void()> ErrorHandler::get_lambda(ErrorType e_type, int line, int pos,
   case OPERAND_TYPE_MISSMATCH:
     error_msg = "Operands type missmatch, both must be of type " + msg_parts[0];
     break;
-  case CAN_NOT_USER_OPERATOR:
+  case CAN_NOT_USE_OPERATOR:
     error_msg =
         "Can't use operator " + msg_parts[0] + " on type " + msg_parts[1];
     break;
