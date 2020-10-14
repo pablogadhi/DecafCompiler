@@ -28,9 +28,6 @@ public:
   Any visitLocation(DecafParser::LocationContext *ctx);
 
   Any visitParensExpr(DecafParser::ParensExprContext *ctx);
-  // Any visitAritExpr(DecafParser::AritExprContext *ctx);
-  Any visitBooleanExpr(DecafParser::BooleanExprContext *ctx);
-
   Any visitLiteralExpr(DecafParser::LiteralExprContext *ctx);
   Any visitMethodCallExpr(DecafParser::MethodCallExprContext *ctx);
   Any visitLocationExpr(DecafParser::LocationExprContext *ctx);

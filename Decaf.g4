@@ -221,8 +221,7 @@ table_top = $old_top;
 	)?;
 
 expression
-	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]
-	locals[bool check_type = false]:
+	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]:
 	'(' expression ')' {$d_type = $expression.d_type;} # parensExpr
 	| literal {
 $d_type = $literal.d_type;
@@ -237,41 +236,39 @@ if($methodCall.d_type == "void"){
 	| location {
 $d_type = $location.d_type;
 } # locationExpr
-	| '!' {$check_type = true;} expression {
-if($check_type && $atomExpr.d_type != "boolean"){
-  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $atomExpr.start->getLine(), $atomExpr.start->getCharPositionInLine(), vector<string>{"boolean"})();
+	| '!' expression {
+if($expression.d_type != "boolean"){
+  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $expression.start->getLine(), $expression.start->getCharPositionInLine(), vector<string>{"boolean"})();
+}else{
+	$d_type = $expression.d_type;
 } 
-$d_type = $atomExpr.d_type;
 } # notExpr
-	| '-' {$check_type = true;} expression {
+	| '-' expression {
 // TODO Check the expression type
-$d_type = $notExpr.d_type;
+$d_type = $expression.d_type;
 } # minusExpr
-	| lexpr = expression {$d_type = $lexpr.d_type;} (
-		arith_high_op rexpr = expression {
+	| lexpr = expression arith_high_op rexpr = expression {
 if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
   e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
+}else{
+	$d_type = $lexpr.d_type;
 }
-}
-	)? # aritHighExpr
-	| lexpr = expression {$d_type = $lexpr.d_type;} (
-		arith_low_op rexpr = expression {
+} # aritHighExpr
+	| lexpr = expression arith_low_op rexpr = expression {
 if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
   e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
+}else{
+	$d_type = $lexpr.d_type;
 } 
-}
-	)? # aritLowExpr
-	| lexpr = expression {$d_type = $lexpr.d_type;} (
-		rel_op rexpr = expression {
+} # aritLowExpr
+	| lexpr = expression rel_op rexpr = expression {
 if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
   e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
 }else{
   $d_type = "boolean";
 }
-}
-	)? # relExpr
-	| lexpr = expression {$d_type = $lexpr.d_type;} (
-		op = eq_op rexpr = expression {
+} # relExpr
+	| lexpr = expression op = eq_op rexpr = expression {
 auto valid_types = vector<string>{"int", "char", "boolean"};
 if($lexpr.d_type != $rexpr.d_type){
   e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{$lexpr.d_type})();
@@ -282,26 +279,21 @@ if($lexpr.d_type != $rexpr.d_type){
 }else{
   $d_type = "boolean";
 }
-}
-	)? # eqExpr
-	| lexpr = expression {$d_type = $lexpr.d_type;} (
-		and_op rexpr = expression {
+} # eqExpr
+	| lexpr = expression and_op rexpr = expression {
 if($lexpr.d_type != "boolean" || $rexpr.d_type != "boolean"){
   e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"boolean"})();
 }else{
   $d_type = "boolean";
 } 
-}
-	)? # andExpr
-	| lexpr = expression {$d_type = $lexpr.d_type;} (
-		or_op rexpr = expression {
+} # andExpr
+	| lexpr = expression or_op rexpr = expression {
 if($lexpr.d_type != "boolean" || $rexpr.d_type != "boolean"){
   e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"boolean"})();
 }else{
   $d_type = "boolean";
 }
-}
-	)? # orExpr;
+} # orExpr;
 
 methodCall
 	returns[string d_type, int line, int pos, shared_ptr<Address> addr]
