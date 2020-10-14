@@ -75,20 +75,8 @@ public:
   virtual void enterParensExpr(DecafParser::ParensExprContext * /*ctx*/) override { }
   virtual void exitParensExpr(DecafParser::ParensExprContext * /*ctx*/) override { }
 
-  virtual void enterAritExpr(DecafParser::AritExprContext * /*ctx*/) override { }
-  virtual void exitAritExpr(DecafParser::AritExprContext * /*ctx*/) override { }
-
   virtual void enterBooleanExpr(DecafParser::BooleanExprContext * /*ctx*/) override { }
   virtual void exitBooleanExpr(DecafParser::BooleanExprContext * /*ctx*/) override { }
-
-  virtual void enterAritLowExpr(DecafParser::AritLowExprContext * /*ctx*/) override { }
-  virtual void exitAritLowExpr(DecafParser::AritLowExprContext * /*ctx*/) override { }
-
-  virtual void enterAritHighExpr(DecafParser::AritHighExprContext * /*ctx*/) override { }
-  virtual void exitAritHighExpr(DecafParser::AritHighExprContext * /*ctx*/) override { }
-
-  virtual void enterMinusExpr(DecafParser::MinusExprContext * /*ctx*/) override { }
-  virtual void exitMinusExpr(DecafParser::MinusExprContext * /*ctx*/) override { }
 
   virtual void enterOrExpr(DecafParser::OrExprContext * /*ctx*/) override { }
   virtual void exitOrExpr(DecafParser::OrExprContext * /*ctx*/) override { }
@@ -101,6 +89,15 @@ public:
 
   virtual void enterRelExpr(DecafParser::RelExprContext * /*ctx*/) override { }
   virtual void exitRelExpr(DecafParser::RelExprContext * /*ctx*/) override { }
+
+  virtual void enterAritLowExpr(DecafParser::AritLowExprContext * /*ctx*/) override { }
+  virtual void exitAritLowExpr(DecafParser::AritLowExprContext * /*ctx*/) override { }
+
+  virtual void enterAritHighExpr(DecafParser::AritHighExprContext * /*ctx*/) override { }
+  virtual void exitAritHighExpr(DecafParser::AritHighExprContext * /*ctx*/) override { }
+
+  virtual void enterMinusExpr(DecafParser::MinusExprContext * /*ctx*/) override { }
+  virtual void exitMinusExpr(DecafParser::MinusExprContext * /*ctx*/) override { }
 
   virtual void enterNotExpr(DecafParser::NotExprContext * /*ctx*/) override { }
   virtual void exitNotExpr(DecafParser::NotExprContext * /*ctx*/) override { }

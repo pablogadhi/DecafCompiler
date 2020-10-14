@@ -73,20 +73,8 @@ public:
   virtual void enterParensExpr(DecafParser::ParensExprContext *ctx) = 0;
   virtual void exitParensExpr(DecafParser::ParensExprContext *ctx) = 0;
 
-  virtual void enterAritExpr(DecafParser::AritExprContext *ctx) = 0;
-  virtual void exitAritExpr(DecafParser::AritExprContext *ctx) = 0;
-
   virtual void enterBooleanExpr(DecafParser::BooleanExprContext *ctx) = 0;
   virtual void exitBooleanExpr(DecafParser::BooleanExprContext *ctx) = 0;
-
-  virtual void enterAritLowExpr(DecafParser::AritLowExprContext *ctx) = 0;
-  virtual void exitAritLowExpr(DecafParser::AritLowExprContext *ctx) = 0;
-
-  virtual void enterAritHighExpr(DecafParser::AritHighExprContext *ctx) = 0;
-  virtual void exitAritHighExpr(DecafParser::AritHighExprContext *ctx) = 0;
-
-  virtual void enterMinusExpr(DecafParser::MinusExprContext *ctx) = 0;
-  virtual void exitMinusExpr(DecafParser::MinusExprContext *ctx) = 0;
 
   virtual void enterOrExpr(DecafParser::OrExprContext *ctx) = 0;
   virtual void exitOrExpr(DecafParser::OrExprContext *ctx) = 0;
@@ -99,6 +87,15 @@ public:
 
   virtual void enterRelExpr(DecafParser::RelExprContext *ctx) = 0;
   virtual void exitRelExpr(DecafParser::RelExprContext *ctx) = 0;
+
+  virtual void enterAritLowExpr(DecafParser::AritLowExprContext *ctx) = 0;
+  virtual void exitAritLowExpr(DecafParser::AritLowExprContext *ctx) = 0;
+
+  virtual void enterAritHighExpr(DecafParser::AritHighExprContext *ctx) = 0;
+  virtual void exitAritHighExpr(DecafParser::AritHighExprContext *ctx) = 0;
+
+  virtual void enterMinusExpr(DecafParser::MinusExprContext *ctx) = 0;
+  virtual void exitMinusExpr(DecafParser::MinusExprContext *ctx) = 0;
 
   virtual void enterNotExpr(DecafParser::NotExprContext *ctx) = 0;
   virtual void exitNotExpr(DecafParser::NotExprContext *ctx) = 0;

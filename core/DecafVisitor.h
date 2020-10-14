@@ -58,15 +58,7 @@ public:
 
     virtual antlrcpp::Any visitParensExpr(DecafParser::ParensExprContext *context) = 0;
 
-    virtual antlrcpp::Any visitAritExpr(DecafParser::AritExprContext *context) = 0;
-
     virtual antlrcpp::Any visitBooleanExpr(DecafParser::BooleanExprContext *context) = 0;
-
-    virtual antlrcpp::Any visitAritLowExpr(DecafParser::AritLowExprContext *context) = 0;
-
-    virtual antlrcpp::Any visitAritHighExpr(DecafParser::AritHighExprContext *context) = 0;
-
-    virtual antlrcpp::Any visitMinusExpr(DecafParser::MinusExprContext *context) = 0;
 
     virtual antlrcpp::Any visitOrExpr(DecafParser::OrExprContext *context) = 0;
 
@@ -75,6 +67,12 @@ public:
     virtual antlrcpp::Any visitEqExpr(DecafParser::EqExprContext *context) = 0;
 
     virtual antlrcpp::Any visitRelExpr(DecafParser::RelExprContext *context) = 0;
+
+    virtual antlrcpp::Any visitAritLowExpr(DecafParser::AritLowExprContext *context) = 0;
+
+    virtual antlrcpp::Any visitAritHighExpr(DecafParser::AritHighExprContext *context) = 0;
+
+    virtual antlrcpp::Any visitMinusExpr(DecafParser::MinusExprContext *context) = 0;
 
     virtual antlrcpp::Any visitNotExpr(DecafParser::NotExprContext *context) = 0;
 

@@ -14,14 +14,15 @@ void operate_binary_or_pass(
   }
 }
 
-template <class T>
-void operate_unary_or_pass(T *ctx, function<void()> operate) {
+template <class T, class ChildContext>
+void operate_unary_or_pass(T *ctx, function<void()> operate,
+                           ChildContext *child) {
   if (ctx->check_type) {
     operate();
   } else {
-    ctx->addr = ctx->atomExpr()->addr;
-    ctx->true_list = ctx->atomExpr()->true_list;
-    ctx->false_list = ctx->atomExpr()->false_list;
+    ctx->addr = child->addr;
+    ctx->true_list = child->true_list;
+    ctx->false_list = child->false_list;
   }
 }
 
@@ -146,8 +147,11 @@ Any InterCodeVisitor::visitWhileStatement(
 Any InterCodeVisitor::visitReturnStatement(
     DecafParser::ReturnStatementContext *ctx) {
   visitChildren(ctx);
-  ta_code.gen(Operator::PUSH, ctx->expression()->addr);
-  ta_code.gen(Operator::RET, nullptr);
+
+  if (ctx->expression() != nullptr) {
+    ta_code.gen(Operator::PUSH, ctx->expression()->addr);
+    ta_code.gen(Operator::RET, nullptr);
+  }
   return nullptr;
 }
 
@@ -223,12 +227,13 @@ Any InterCodeVisitor::visitParensExpr(DecafParser::ParensExprContext *ctx) {
   return nullptr;
 }
 
-Any InterCodeVisitor::visitAritExpr(DecafParser::AritExprContext *ctx) {
-  visitChildren(ctx);
-  pass_middle_expr<DecafParser::AritExprContext,
-                   DecafParser::AritLowExprContext>(ctx, ctx->aritLowExpr());
-  return nullptr;
-}
+// Any InterCodeVisitor::visitAritExpr(DecafParser::AritExprContext *ctx) {
+//   visitChildren(ctx);
+//   pass_middle_expr<DecafParser::AritExprContext,
+//                    DecafParser::AritLowExprContext>(ctx, ctx->aritLowExpr());
+//   return nullptr;
+// }
+
 Any InterCodeVisitor::visitBooleanExpr(DecafParser::BooleanExprContext *ctx) {
   visitChildren(ctx);
   pass_middle_expr<DecafParser::BooleanExprContext, DecafParser::OrExprContext>(
@@ -238,9 +243,11 @@ Any InterCodeVisitor::visitBooleanExpr(DecafParser::BooleanExprContext *ctx) {
 
 Any InterCodeVisitor::visitMinusExpr(DecafParser::MinusExprContext *ctx) {
   visitChildren(ctx);
-  operate_unary_or_pass<DecafParser::MinusExprContext>(ctx, [&]() {
-    ctx->addr = ta_code.gen(Operator::MINUS, ctx->atomExpr()->addr);
-  });
+  operate_unary_or_pass<DecafParser::MinusExprContext,
+                        DecafParser::NotExprContext>(
+      ctx,
+      [&]() { ctx->addr = ta_code.gen(Operator::MINUS, ctx->notExpr()->addr); },
+      ctx->notExpr());
   return nullptr;
 }
 
@@ -265,14 +272,18 @@ Any InterCodeVisitor::visitAritLowExpr(DecafParser::AritLowExprContext *ctx) {
 Any InterCodeVisitor::visitNotExpr(DecafParser::NotExprContext *ctx) {
   visitChildren(ctx);
 
-  operate_unary_or_pass<DecafParser::NotExprContext>(ctx, [&]() {
-    if (control_flow) {
-      ctx->true_list = ctx->atomExpr()->false_list;
-      ctx->false_list = ctx->atomExpr()->true_list;
-    } else {
-      ctx->addr = ta_code.gen(Operator::NOT, ctx->atomExpr()->addr);
-    }
-  });
+  operate_unary_or_pass<DecafParser::NotExprContext,
+                        DecafParser::AtomExprContext>(
+      ctx,
+      [&]() {
+        if (control_flow) {
+          ctx->true_list = ctx->atomExpr()->false_list;
+          ctx->false_list = ctx->atomExpr()->true_list;
+        } else {
+          ctx->addr = ta_code.gen(Operator::NOT, ctx->atomExpr()->addr);
+        }
+      },
+      ctx->atomExpr());
 
   return nullptr;
 }

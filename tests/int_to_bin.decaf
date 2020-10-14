@@ -1,0 +1,28 @@
+class Program {
+  void main() {
+    int tempRes[32];
+    int result[32];
+    int num;
+    int lastIndex;
+    int index;
+
+    num = 90;
+    index = 0;
+
+    while(num > 0){
+      if(num % 2 == 0){
+        tempRes[index] = 0;
+      }else{
+        tempRes[index] = 1;
+      }
+      num = num / 2;
+      index = index + 1;
+    }
+
+    lastIndex = index;
+    while(index > 0){
+      result[lastIndex - index] = tempRes[index];
+      index = index - 1;
+    }
+  }
+}

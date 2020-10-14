@@ -31,8 +31,8 @@ public:
     RuleProgram = 0, RuleDeclaration = 1, RuleVarDeclaration = 2, RuleStructDeclaration = 3, 
     RuleVarType = 4, RuleMethodDeclaration = 5, RuleMethodType = 6, RuleParameter = 7, 
     RuleParameterType = 8, RuleBlock = 9, RuleStatement = 10, RuleLocation = 11, 
-    RuleExpression = 12, RuleAritLowExpr = 13, RuleAritHighExpr = 14, RuleMinusExpr = 15, 
-    RuleOrExpr = 16, RuleAndExpr = 17, RuleEqExpr = 18, RuleRelExpr = 19, 
+    RuleExpression = 12, RuleOrExpr = 13, RuleAndExpr = 14, RuleEqExpr = 15, 
+    RuleRelExpr = 16, RuleAritLowExpr = 17, RuleAritHighExpr = 18, RuleMinusExpr = 19, 
     RuleNotExpr = 20, RuleAtomExpr = 21, RuleMethodCall = 22, RuleArg = 23, 
     RuleArith_high_op = 24, RuleArith_low_op = 25, RuleRel_op = 26, RuleEq_op = 27, 
     RuleAnd_op = 28, RuleOr_op = 29, RuleLiteral = 30, RuleInt_literal = 31, 
@@ -66,13 +66,13 @@ public:
   class StatementContext;
   class LocationContext;
   class ExpressionContext;
-  class AritLowExprContext;
-  class AritHighExprContext;
-  class MinusExprContext;
   class OrExprContext;
   class AndExprContext;
   class EqExprContext;
   class RelExprContext;
+  class AritLowExprContext;
+  class AritHighExprContext;
+  class MinusExprContext;
   class NotExprContext;
   class AtomExprContext;
   class MethodCallContext;
@@ -450,18 +450,6 @@ public:
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
-  class  AritExprContext : public ExpressionContext {
-  public:
-    AritExprContext(ExpressionContext *ctx);
-
-    DecafParser::AritLowExprContext *aritLowExprContext = nullptr;
-    AritLowExprContext *aritLowExpr();
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
   class  ParensExprContext : public ExpressionContext {
   public:
     ParensExprContext(ExpressionContext *ctx);
@@ -475,73 +463,6 @@ public:
   };
 
   ExpressionContext* expression();
-
-  class  AritLowExprContext : public antlr4::ParserRuleContext {
-  public:
-    string d_type;
-    shared_ptr<Address> addr;
-    vector<int> false_list;
-    vector<int> true_list;
-    DecafParser::AritHighExprContext *lexpr = nullptr;;
-    DecafParser::AritLowExprContext *rexpr = nullptr;;
-    AritLowExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    AritHighExprContext *aritHighExpr();
-    Arith_low_opContext *arith_low_op();
-    AritLowExprContext *aritLowExpr();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  AritLowExprContext* aritLowExpr();
-
-  class  AritHighExprContext : public antlr4::ParserRuleContext {
-  public:
-    string d_type;
-    shared_ptr<Address> addr;
-    vector<int> false_list;
-    vector<int> true_list;
-    DecafParser::MinusExprContext *lexpr = nullptr;;
-    DecafParser::AritHighExprContext *rexpr = nullptr;;
-    AritHighExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    MinusExprContext *minusExpr();
-    Arith_high_opContext *arith_high_op();
-    AritHighExprContext *aritHighExpr();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  AritHighExprContext* aritHighExpr();
-
-  class  MinusExprContext : public antlr4::ParserRuleContext {
-  public:
-    string d_type;
-    shared_ptr<Address> addr;
-    vector<int> false_list;
-    vector<int> true_list;
-    bool check_type = false;
-    DecafParser::AtomExprContext *atomExprContext = nullptr;;
-    MinusExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    AtomExprContext *atomExpr();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  MinusExprContext* minusExpr();
 
   class  OrExprContext : public antlr4::ParserRuleContext {
   public:
@@ -619,11 +540,11 @@ public:
     shared_ptr<Address> addr;
     vector<int> false_list;
     vector<int> true_list;
-    DecafParser::NotExprContext *lexpr = nullptr;;
+    DecafParser::AritLowExprContext *lexpr = nullptr;;
     DecafParser::RelExprContext *rexpr = nullptr;;
     RelExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    NotExprContext *notExpr();
+    AritLowExprContext *aritLowExpr();
     Rel_opContext *rel_op();
     RelExprContext *relExpr();
 
@@ -635,6 +556,73 @@ public:
   };
 
   RelExprContext* relExpr();
+
+  class  AritLowExprContext : public antlr4::ParserRuleContext {
+  public:
+    string d_type;
+    shared_ptr<Address> addr;
+    vector<int> false_list;
+    vector<int> true_list;
+    DecafParser::AritHighExprContext *lexpr = nullptr;;
+    DecafParser::AritLowExprContext *rexpr = nullptr;;
+    AritLowExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    AritHighExprContext *aritHighExpr();
+    Arith_low_opContext *arith_low_op();
+    AritLowExprContext *aritLowExpr();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  AritLowExprContext* aritLowExpr();
+
+  class  AritHighExprContext : public antlr4::ParserRuleContext {
+  public:
+    string d_type;
+    shared_ptr<Address> addr;
+    vector<int> false_list;
+    vector<int> true_list;
+    DecafParser::MinusExprContext *lexpr = nullptr;;
+    DecafParser::AritHighExprContext *rexpr = nullptr;;
+    AritHighExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    MinusExprContext *minusExpr();
+    Arith_high_opContext *arith_high_op();
+    AritHighExprContext *aritHighExpr();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  AritHighExprContext* aritHighExpr();
+
+  class  MinusExprContext : public antlr4::ParserRuleContext {
+  public:
+    string d_type;
+    shared_ptr<Address> addr;
+    vector<int> false_list;
+    vector<int> true_list;
+    bool check_type = false;
+    DecafParser::NotExprContext *notExprContext = nullptr;;
+    MinusExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    NotExprContext *notExpr();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  MinusExprContext* minusExpr();
 
   class  NotExprContext : public antlr4::ParserRuleContext {
   public:

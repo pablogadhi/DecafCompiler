@@ -93,23 +93,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitAritExpr(DecafParser::AritExprContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitBooleanExpr(DecafParser::BooleanExprContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitAritLowExpr(DecafParser::AritLowExprContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitAritHighExpr(DecafParser::AritHighExprContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitMinusExpr(DecafParser::MinusExprContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -126,6 +110,18 @@ public:
   }
 
   virtual antlrcpp::Any visitRelExpr(DecafParser::RelExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitAritLowExpr(DecafParser::AritLowExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitAritHighExpr(DecafParser::AritHighExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitMinusExpr(DecafParser::MinusExprContext *ctx) override {
     return visitChildren(ctx);
   }
 

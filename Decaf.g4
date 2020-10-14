@@ -223,36 +223,7 @@ table_top = $old_top;
 expression
 	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]:
 	'(' expression ')' {$d_type = $expression.d_type;}	# parensExpr
-	| aritLowExpr {$d_type = $aritLowExpr.d_type;}		# aritExpr
 	| orExpr {$d_type = $orExpr.d_type;}				# booleanExpr;
-
-aritLowExpr
-	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]:
-	lexpr = aritHighExpr {$d_type = $lexpr.d_type;} (
-		arith_low_op rexpr = aritLowExpr {
-if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
-  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
-} 
-}
-	)?;
-
-aritHighExpr
-	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]:
-	lexpr = minusExpr {$d_type = $lexpr.d_type;} (
-		arith_high_op rexpr = aritHighExpr {
-if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
-  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
-}
-}
-	)?;
-
-minusExpr
-	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]
-	locals[bool check_type = false]:
-	('-' {$check_type = true;})? atomExpr {
-// TODO Check the expression type
-$d_type = $atomExpr.d_type;
-};
 
 orExpr
 	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]:
@@ -297,7 +268,7 @@ if($lexpr.d_type != $rexpr.d_type){
 
 relExpr
 	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]:
-	lexpr = notExpr {$d_type = $lexpr.d_type;} (
+	lexpr = aritLowExpr {$d_type = $lexpr.d_type;} (
 		rel_op rexpr = relExpr {
 if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
   e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
@@ -306,6 +277,34 @@ if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
 }
 }
 	)?;
+
+aritLowExpr
+	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]:
+	lexpr = aritHighExpr {$d_type = $lexpr.d_type;} (
+		arith_low_op rexpr = aritLowExpr {
+if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
+  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
+} 
+}
+	)?;
+
+aritHighExpr
+	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]:
+	lexpr = minusExpr {$d_type = $lexpr.d_type;} (
+		arith_high_op rexpr = aritHighExpr {
+if($lexpr.d_type != "int" || $rexpr.d_type != "int"){
+  e_handler->get_lambda(OPERAND_TYPE_MISSMATCH, $lexpr.start->getLine(), $lexpr.start->getCharPositionInLine(), vector<string>{"int"})();
+}
+}
+	)?;
+
+minusExpr
+	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]
+	locals[bool check_type = false]:
+	('-' {$check_type = true;})? notExpr {
+// TODO Check the expression type
+$d_type = $notExpr.d_type;
+};
 
 notExpr
 	returns[string d_type, shared_ptr<Address> addr, vector<int> false_list, vector<int> true_list]
