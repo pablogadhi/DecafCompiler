@@ -24,5 +24,7 @@ class Program {
       result[lastIndex - index] = tempRes[index];
       index = index - 1;
     }
+	
+   return;
   }
 }

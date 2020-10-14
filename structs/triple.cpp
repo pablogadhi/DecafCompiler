@@ -1,4 +1,7 @@
 #include "triple.h"
+#include <algorithm>
+#include <map>
+#include <set>
 #include <stack>
 
 Address::Address(int value) : a_value(value) {}
@@ -30,6 +33,35 @@ shared_ptr<Address> TACode::gen(Operator op, shared_ptr<Address> arg0,
   auto new_triple = make_shared<Triple>(op, arg0, arg1, temp_offset);
   code_vec.push_back(new_triple);
   return dynamic_pointer_cast<Address>(new_triple);
+}
+
+void TACode::optimize_code() {
+  // Remove unused labels
+  set<string> found;
+  set<string> declared;
+  map<string, int> declared_indices;
+
+  for (int i = 0; i < code_vec.size(); i++) {
+    auto instr = code_vec[i];
+    if (instr->op() == Operator::JUMP || instr->op() == Operator::CALL) {
+      auto label = dynamic_pointer_cast<Literal>(instr->arg0());
+      found.insert(label->value());
+    } else if (instr->op() == Operator::LABEL) {
+      auto label = dynamic_pointer_cast<Literal>(instr->arg0());
+      declared.insert(label->value());
+      declared_indices[label->value()] = i;
+    }
+  }
+
+  vector<string> not_used;
+  set_difference(declared.begin(), declared.end(), found.begin(), found.end(),
+                 back_inserter(not_used));
+  for (int i = 0; i < not_used.size(); i++) {
+    auto label_str = not_used[i];
+    if (label_str.substr(0, 7) == "_LOCAL_") {
+      code_vec.erase(code_vec.begin() + declared_indices[label_str] - i);
+    }
+  }
 }
 
 const string TEMP_NAME = "_tmp_";
@@ -119,6 +151,8 @@ string new_temp(stack<string> &temp_vars) {
 string TACode::translate() {
   string final_code = "";
   stack<string> temp_vars;
+
+  optimize_code();
 
   for (auto &instr : code_vec) {
     string code_line = "    ";

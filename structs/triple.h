@@ -80,6 +80,8 @@ private:
   vector<shared_ptr<Triple>> code_vec;
   int label_counter = 0;
 
+  void optimize_code();
+
 public:
   TACode();
   ~TACode();
