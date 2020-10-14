@@ -10,7 +10,7 @@ class Program {
     index = 0;
 
     while(num > 0){
-      if(num % 2 == 0){
+      if((num % 2) == 0){
         tempRes[index] = 0;
       }else{
         tempRes[index] = 1;

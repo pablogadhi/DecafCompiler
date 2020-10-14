@@ -89,19 +89,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitParensExpr(DecafParser::ParensExprContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitBooleanExpr(DecafParser::BooleanExprContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitOrExpr(DecafParser::OrExprContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitAndExpr(DecafParser::AndExprContext *ctx) override {
+  virtual antlrcpp::Any visitMethodCallExpr(DecafParser::MethodCallExprContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -109,23 +97,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitRelExpr(DecafParser::RelExprContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitAritLowExpr(DecafParser::AritLowExprContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitAritHighExpr(DecafParser::AritHighExprContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitMinusExpr(DecafParser::MinusExprContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitNotExpr(DecafParser::NotExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitLocationExpr(DecafParser::LocationExprContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -133,11 +109,31 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitMethodCallExpr(DecafParser::MethodCallExprContext *ctx) override {
+  virtual antlrcpp::Any visitOrExpr(DecafParser::OrExprContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitLocationExpr(DecafParser::LocationExprContext *ctx) override {
+  virtual antlrcpp::Any visitAritHighExpr(DecafParser::AritHighExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitAritLowExpr(DecafParser::AritLowExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitParensExpr(DecafParser::ParensExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitRelExpr(DecafParser::RelExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitMinusExpr(DecafParser::MinusExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitAndExpr(DecafParser::AndExprContext *ctx) override {
     return visitChildren(ctx);
   }
 
