@@ -48,6 +48,7 @@ public:
 
 
   pair<SymbolTable, vector<vector<string>>> symbol_table();
+  shared_ptr<SymbolTable> &symbols();
   void set_error_handler(ErrorHandler*);
 
 

@@ -96,7 +96,7 @@ void UIController::save_and_compile() {
 
 void UIController::parse_text(string &content) {
   auto decaf = DecafController();
-  decaf.parse_text(content);
+  decaf.parse_text(content, file_name);
 
   if (decaf.get_errors().size() == 0) {
     // Populate syntax tree

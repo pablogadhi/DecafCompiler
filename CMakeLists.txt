@@ -33,6 +33,7 @@ set(ALL_SRC_FILES
   ${PROJECT_SOURCE_DIR}/decaf_controller.cpp
   ${PROJECT_SOURCE_DIR}/ui_controller.cpp
   ${PROJECT_SOURCE_DIR}/inter_code.cpp
+  ${PROJECT_SOURCE_DIR}/code_generator.cpp
   ${DECAF_CORE_FILES}
   ${DATA_STRUCTURE_FILES}
 )

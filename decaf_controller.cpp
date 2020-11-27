@@ -1,9 +1,10 @@
 #include "decaf_controller.h"
+#include "code_generator.h"
 #include "inter_code.h"
 
 DecafController::DecafController() {}
 
-void DecafController::parse_text(string &code_str) {
+void DecafController::parse_text(string &code_str, string file_name) {
   ANTLRInputStream input(code_str);
   auto error_listener = CustomErrorListener(&e_handler);
 
@@ -27,7 +28,10 @@ void DecafController::parse_text(string &code_str) {
     symb_table = parser.symbol_table();
     auto inter_visitor = InterCodeVisitor();
     inter_visitor.visit(tree);
-    inter_code = inter_visitor.intermediate_code().translate();
+    vector<Triple> mem_code;
+    tie(mem_code, inter_code) = inter_visitor.intermediate_code().translate();
+    auto generator = CodeGenerator(mem_code, parser.symbols());
+    generator.generate(file_name);
   }
 
   ParseTreeWalker::DEFAULT.walk(&draw_listener, tree);

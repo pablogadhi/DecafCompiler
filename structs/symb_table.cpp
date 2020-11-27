@@ -41,6 +41,10 @@ void SymbolTable::init_basic_types() {
   t_types.push_back(Type("char", "basic", 1));
   t_types.push_back(Type("boolean", "basic", 1));
   t_types.push_back(Type("int", "basic", 4));
+
+  t_methods.push_back(
+      Method("printInt", "void", vector<string>{"int"}, "print_int"));
+  t_methods.push_back(Method("inputInt", "int", vector<string>{}, "input_int"));
 }
 
 Method &SymbolTable::id() { return t_id; }

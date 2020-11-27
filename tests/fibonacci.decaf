@@ -11,7 +11,8 @@ class Program {
     int n;
     int res;
 
-    n = 12;
+    n = inputInt();
     res = fib(n);
+    printInt(res);
   }
 }

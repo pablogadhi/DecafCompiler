@@ -42,6 +42,10 @@ pair<SymbolTable, vector<vector<string>>> DecafParser::symbol_table() {
   return table_head->flatten();
 }
 
+shared_ptr<SymbolTable> &DecafParser::symbols() {
+	return table_head;
+}
+
 void DecafParser::set_error_handler(ErrorHandler *handler) {
   e_handler = handler;
 }

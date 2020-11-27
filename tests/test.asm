@@ -43,8 +43,7 @@ _fib_0:
   jmp .local_2
 
 .local_1:
-  mov rax, [r14+0]
-  mov r12, rax
+  mov r12, [r14+0]
 
   call _dealloc_mem
   pop r15

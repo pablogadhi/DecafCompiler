@@ -18,12 +18,20 @@ Triple::Triple(Operator op, shared_ptr<Address> arg0, shared_ptr<Address> arg1,
                bool temp_offset)
     : Address(-1), t_op(op), t_arg0(arg0), t_arg1(arg1),
       t_temp_offset(temp_offset) {}
+Triple::Triple(Operator op) : Address(-1), t_op(op) {}
 Triple::~Triple() {}
 Operator Triple::op() { return t_op; }
-shared_ptr<Address> Triple::arg0() { return t_arg0; }
-shared_ptr<Address> Triple::arg1() { return t_arg1; }
+shared_ptr<Address> &Triple::arg0() { return t_arg0; }
+shared_ptr<Address> &Triple::arg1() { return t_arg1; }
 void Triple::set_arg0(shared_ptr<Address> new_arg0) { t_arg0 = new_arg0; }
+void Triple::set_arg1(shared_ptr<Address> new_arg1) { t_arg1 = new_arg1; }
 bool Triple::temp_offset() { return t_temp_offset; }
+
+Temp::Temp(string name) : Address(-1), t_name(name) {}
+Temp::~Temp() {}
+string Temp::name() { return t_name; }
+bool Temp::as_offset() { return t_as_offset; }
+void Temp::set_as_offset(bool new_val) { t_as_offset = new_val; }
 
 TACode::TACode() {}
 TACode::~TACode() {}
@@ -117,7 +125,7 @@ string operator_symbol(Operator op) {
   }
 }
 
-string deduct_address(shared_ptr<Address> address_ptr,
+string deduct_address(shared_ptr<Address> &address_ptr,
                       stack<string> &temp_vars) {
   auto as_literal = dynamic_pointer_cast<Literal>(address_ptr);
   if (as_literal != nullptr) {
@@ -133,9 +141,13 @@ string deduct_address(shared_ptr<Address> address_ptr,
     auto temp = temp_vars.top();
     temp_vars.pop();
 
+    auto temp_rep = make_shared<Temp>(temp);
     if (as_triple->temp_offset()) {
       temp = "_MEM[" + temp + "]";
+      temp_rep->set_as_offset(true);
     }
+
+    address_ptr = dynamic_pointer_cast<Address>(temp_rep);
     return temp;
   }
 
@@ -148,7 +160,8 @@ string new_temp(stack<string> &temp_vars) {
   return new_temp;
 }
 
-string TACode::translate() {
+pair<vector<Triple>, string> TACode::translate() {
+  vector<Triple> mem_code;
   string final_code = "";
   stack<string> temp_vars;
 
@@ -156,12 +169,14 @@ string TACode::translate() {
 
   for (auto &instr : code_vec) {
     string code_line = "    ";
+    Triple mem_instr(instr->op());
 
     switch (instr->op()) {
     case Operator::ASSIGN: {
       auto r_value = deduct_address(instr->arg1(), temp_vars);
       auto l_value = deduct_address(instr->arg0(), temp_vars);
       code_line += l_value + " = " + r_value + "\n";
+      mem_instr = *instr;
       break;
     }
     case Operator::MUL:
@@ -187,6 +202,7 @@ string TACode::translate() {
       goto unary_op;
     case Operator::LABEL: {
       code_line = "\n" + deduct_address(instr->arg0(), temp_vars) + ":\n";
+      mem_instr = *instr;
       break;
     }
     case Operator::IF:
@@ -198,24 +214,35 @@ string TACode::translate() {
     case Operator::POP:
       code_line +=
           operator_symbol(instr->op()) + " " + new_temp(temp_vars) + "\n";
+      mem_instr.set_arg0(make_shared<Temp>(temp_vars.top()));
       break;
     case Operator::RET:
       code_line += operator_symbol(instr->op()) + "\n";
       break;
 
-    unary_op:
+    unary_op : {
       code_line += new_temp(temp_vars) + " = " + operator_symbol(instr->op()) +
                    " " + deduct_address(instr->arg0(), temp_vars) + "\n";
+      auto mem_temp = make_shared<Temp>(temp_vars.top());
+      mem_code.push_back(Triple(Operator::ASSIGN, mem_temp, instr->arg0()));
+      mem_instr = Triple(instr->op(), mem_temp);
       break;
-    binary_op:
+    }
+    binary_op : {
       code_line += new_temp(temp_vars) + " = " +
                    deduct_address(instr->arg0(), temp_vars) + " " +
                    operator_symbol(instr->op()) + " " +
                    deduct_address(instr->arg1(), temp_vars) + "\n";
+
+      auto mem_temp = make_shared<Temp>(temp_vars.top());
+      mem_code.push_back(Triple(Operator::ASSIGN, mem_temp, instr->arg0()));
+      mem_instr = Triple(instr->op(), mem_temp, instr->arg1());
       break;
+    }
     simple_op:
       code_line += operator_symbol(instr->op()) + " " +
                    deduct_address(instr->arg0(), temp_vars) + "\n";
+      mem_instr = *instr;
       break;
 
     default:
@@ -223,9 +250,10 @@ string TACode::translate() {
     }
 
     final_code += code_line;
+    mem_code.push_back(mem_instr);
   }
 
-  return final_code;
+  return make_pair(mem_code, final_code);
 }
 
 vector<int> TACode::make_list(int instr_idx) {

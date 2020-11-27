@@ -15,12 +15,17 @@ int scope_counter = 0;
 
 @parser::members {
 pair<SymbolTable, vector<vector<string>>> symbol_table();
+shared_ptr<SymbolTable> &symbols();
 void set_error_handler(ErrorHandler*);
 }
 
 @parser::definitions {
 pair<SymbolTable, vector<vector<string>>> DecafParser::symbol_table() {
   return table_head->flatten();
+}
+
+shared_ptr<SymbolTable> &DecafParser::symbols() {
+	return table_head;
 }
 
 void DecafParser::set_error_handler(ErrorHandler *handler) {

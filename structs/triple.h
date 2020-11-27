@@ -67,12 +67,27 @@ private:
 public:
   Triple(Operator, shared_ptr<Address>, shared_ptr<Address> arg1 = nullptr,
          bool temp_offset = false);
+  Triple(Operator);
   ~Triple();
   Operator op();
-  shared_ptr<Address> arg0();
-  shared_ptr<Address> arg1();
+  shared_ptr<Address> &arg0();
+  shared_ptr<Address> &arg1();
   void set_arg0(shared_ptr<Address>);
+  void set_arg1(shared_ptr<Address>);
   bool temp_offset();
+};
+
+class Temp : public Address {
+private:
+  string t_name = "";
+  bool t_as_offset = false;
+
+public:
+  Temp(string);
+  ~Temp();
+  string name();
+  bool as_offset();
+  void set_as_offset(bool);
 };
 
 class TACode {
@@ -89,7 +104,7 @@ public:
   shared_ptr<Address> gen(Operator, shared_ptr<Address>,
                           shared_ptr<Address> arg1 = nullptr,
                           bool temp_offset = false);
-  string translate();
+  pair<vector<Triple>, string> translate();
   vector<int> make_list(int);
   vector<int> merge(vector<int>, vector<int>);
   void back_patch(vector<int>, int);

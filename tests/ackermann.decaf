@@ -15,6 +15,11 @@ class Program {
 
   void main(){
     int result;
-    result = ackermann(1, 2);
+    int m;
+    int n;
+    m = inputInt();
+    n = inputInt();
+    result = ackermann(m, n);
+    printInt(result);
   }
 }

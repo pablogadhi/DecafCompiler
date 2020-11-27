@@ -47,7 +47,7 @@ private:
 
 public:
   DecafController();
-  void parse_text(string &);
+  void parse_text(string &, string);
   shared_ptr<DataNode> get_parse_root();
   vector<ErrorItem> get_errors();
   pair<SymbolTable, vector<vector<string>>> symbol_table();
